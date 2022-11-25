@@ -3,13 +3,13 @@ import {
   useRef,
   useState,
   forwardRef,
-  FC,
-  Dispatch,
-  SetStateAction,
-  KeyboardEvent,
-  ForwardedRef,
-  Ref,
-  MouseEventHandler,
+  type Dispatch,
+  type SetStateAction,
+  type KeyboardEvent,
+  type MouseEventHandler,
+  type ForwardedRef,
+  type FC,
+  type Ref,
 } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 import styles from './AutoComplete.module.css'

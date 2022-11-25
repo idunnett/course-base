@@ -1,5 +1,4 @@
 import * as z from "zod"
-import * as imports from "../null"
 import { CompleteCourse, RelatedCourseModel } from "./index"
 
 export const SegmentModel = z.object({

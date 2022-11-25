@@ -1,8 +1,8 @@
-import { useState, FC } from 'react'
+import { useState, type FC } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import SegmentList from './SegmentList'
 import SegmentPieChart from '../../diagrams/SegmentPieChart'
-import { FullCourse } from '../../../types'
+import type { FullCourse } from '../../../types'
 import { HiUsers } from 'react-icons/hi'
 import { BiBuildings } from 'react-icons/bi'
 

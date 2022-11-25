@@ -1,5 +1,5 @@
-import { Dispatch, FC, SetStateAction } from 'react'
-import { FullCourse } from '../../../types'
+import type { Dispatch, FC, SetStateAction } from 'react'
+import type { FullCourse } from '../../../types'
 import CourseButton from '../CourseButton'
 
 interface Props {

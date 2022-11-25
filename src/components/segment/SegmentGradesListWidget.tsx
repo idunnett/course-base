@@ -49,7 +49,7 @@ const SegmentGradesListWidget: FC<Props> = ({
     if (!destination) return
     const n = source.index - destination.index
     setSegmentTasks((prevState) => {
-      let updatedState = [...prevState]
+      const updatedState = [...prevState]
       if (n > 0) {
         for (let i = destination.index; i < updatedState.length; i++) {
           const segmentTask = updatedState[i]

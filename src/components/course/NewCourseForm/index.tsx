@@ -32,8 +32,8 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
   const [data, setData] = useState(INITIAL_DATA)
   const { currentStepIndex, steps, step, isFirstStep, isLastStep, next, back } =
     useMultiStepForm([
-      <CourseInfoForm {...data} updateFields={updateFields} />,
-      <CourseSegmentsForm {...data} updateFields={updateFields} />,
+      <CourseInfoForm {...data} updateFields={updateFields} key={1} />,
+      <CourseSegmentsForm {...data} updateFields={updateFields} key={2} />,
     ])
 
   const { mutate: createCourse } = trpc.course.create.useMutation({

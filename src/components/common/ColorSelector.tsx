@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
 import styles from './InputSegment/InputSegment.module.css'
 
 const colors = {
@@ -65,16 +65,16 @@ const ColorSelector: FC<Props> = ({
             key={key}
             type="button"
             onClick={() => setValue(color)}
-            className={`group relative text-white border-2 rounded-xl h-7 w-7 transition-all duration-200 ease-linear ${
+            className={`group relative h-7 w-7 rounded-xl border-2 text-white transition-all duration-200 ease-linear ${
               color === value
-                ? 'border-black dark:border-white scale-125'
+                ? 'scale-125 border-black dark:border-white'
                 : 'border-transparent hover:scale-105'
             }`}
             style={{
               backgroundColor: color,
             }}
           >
-            <span className="tooltip origin-bottom bottom-full left-1/2 -translate-x-1/2 mb-2">
+            <span className="tooltip bottom-full left-1/2 mb-2 origin-bottom -translate-x-1/2">
               {capitalize(key)}
             </span>
           </button>

@@ -1,9 +1,9 @@
-import { FC, ReactNode } from "react";
+import type { FC, ReactNode } from 'react'
 
 interface Props {
-  children: ReactNode;
-  className?: string;
-  style?: object;
+  children: ReactNode
+  className?: string
+  style?: object
 }
 
 const Widget: FC<Props> = ({ children, className, style }) => {
@@ -14,7 +14,7 @@ const Widget: FC<Props> = ({ children, className, style }) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Widget;
+export default Widget

@@ -1,4 +1,10 @@
-import { ChangeEvent, forwardRef, useEffect, useRef, useState } from 'react'
+import {
+  type ChangeEvent,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styles from './InputSegment.module.css'
 
 interface Props {
@@ -66,12 +72,12 @@ const InputSegment = forwardRef<HTMLInputElement, Props>(
     useEffect(() => {
       if (autoSelect && inputRef.current) inputRef.current.select()
       setInitialRender(true)
-    }, [])
+    }, [autoSelect])
 
     useEffect(() => {
       if (selectInputTrigger != null && initialRender && inputRef.current)
         inputRef.current.select()
-    }, [selectInputTrigger])
+    }, [selectInputTrigger, initialRender])
 
     const handleLabelStyles = () => {
       let styles = ''
@@ -127,4 +133,5 @@ const InputSegment = forwardRef<HTMLInputElement, Props>(
     )
   }
 )
+InputSegment.displayName = 'InputSegment'
 export default InputSegment

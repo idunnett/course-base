@@ -1,10 +1,10 @@
-import { FC, useEffect } from 'react'
+import { type FC, useEffect } from 'react'
 import ColorSelector from '../../common/ColorSelector'
 import InputSegment from '../../common/InputSegment'
 import Widget from '../../common/Widget'
 import SchoolAutoComplete from '../../school/SchoolAutoComplete'
-import { School } from '@prisma/client'
-import { CreateCourseFormData } from '../../../types'
+import type { School } from '@prisma/client'
+import type { CreateCourseFormData } from '../../../types'
 
 interface Props {
   name: string
@@ -35,7 +35,7 @@ const CourseInfoForm: FC<Props> = ({
     if (degreeYear !== undefined) return
     const firstNumIndex = code.search(/[0-9]/)
     if (firstNumIndex !== -1) updateFields({ degreeYear: code[firstNumIndex] })
-  }, [code])
+  }, [code, degreeYear])
 
   return (
     <Widget className="p-4">

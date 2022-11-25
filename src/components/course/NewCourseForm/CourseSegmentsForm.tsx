@@ -1,6 +1,6 @@
-import { Segment } from '@prisma/client'
-import { FC, useEffect, useState } from 'react'
-import { CreateCourseFormData } from '../../../types'
+import type { Segment } from '@prisma/client'
+import { type FC, useEffect, useState } from 'react'
+import type { CreateCourseFormData } from '../../../types'
 import InputSegment from '../../common/InputSegment'
 import Widget from '../../common/Widget'
 

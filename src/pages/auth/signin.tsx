@@ -75,7 +75,7 @@ const SignIn = () => {
         </form>
       </Widget>
       <p className="text-gray-900 dark:text-neutral-400">
-        Don't have an account?{' '}
+        {"Don't have an account? "}
         <Link href="/auth/signup" className="text-link" shallow>
           Sign Up
         </Link>

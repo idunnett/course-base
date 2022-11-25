@@ -1,4 +1,10 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import {
+  type Dispatch,
+  type FC,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { FaSpinner } from 'react-icons/fa'
 import CourseList from './CourseList'
 import Link from 'next/link'
@@ -7,7 +13,7 @@ import Form from '../../common/Form'
 import useDebounce from '../../../hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
-import { FullCourse } from '../../../types'
+import type { FullCourse } from '../../../types'
 
 interface Props {
   selectedCourse: FullCourse | null

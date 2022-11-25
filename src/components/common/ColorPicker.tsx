@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import styles from './InputSegment/InputSegment.module.css'
 

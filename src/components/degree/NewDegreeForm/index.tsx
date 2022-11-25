@@ -23,8 +23,8 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
   const [data, setData] = useState(INITIAL_DATA)
   const { currentStepIndex, steps, step, isFirstStep, isLastStep, next, back } =
     useMultiStepForm([
-      <GeneralInfoForm {...data} updateFields={updateFields} />,
-      <RequirementsForm {...data} updateFields={updateFields} />,
+      <GeneralInfoForm {...data} updateFields={updateFields} key={1} />,
+      <RequirementsForm {...data} updateFields={updateFields} key={2} />,
     ])
 
   function updateFields(fields: Partial<CreateDegreeFormData>) {

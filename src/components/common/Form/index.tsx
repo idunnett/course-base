@@ -1,4 +1,4 @@
-import { FC, FormEvent, ReactNode } from 'react'
+import type { FC, FormEvent, ReactNode } from 'react'
 import styles from './Form.module.css'
 
 interface Props {
@@ -17,7 +17,7 @@ const Form: FC<Props> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${styles.form} dark:bg-zinc-700 bg-white ${className}`}
+      className={`${styles.form} bg-white dark:bg-zinc-700 ${className}`}
     >
       {title && (
         <h1 className="text-slate-500 dark:text-neutral-200">{title}</h1>

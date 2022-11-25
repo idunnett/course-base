@@ -1,8 +1,8 @@
-import { FC, MouseEventHandler } from 'react'
+import type { FC, MouseEventHandler } from 'react'
 import { BiBuildings } from 'react-icons/bi'
 import { HiOutlineClock, HiUsers } from 'react-icons/hi'
 import { MdInsertChart } from 'react-icons/md'
-import { FullCourse } from '../../types'
+import type { FullCourse } from '../../types'
 import getTermName from '../../utils/termUtils'
 
 interface Props {

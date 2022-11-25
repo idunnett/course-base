@@ -1,59 +1,59 @@
-import { Course, Segment, Task } from "@prisma/client";
-import { FC, useMemo } from "react";
-import Xarrow from "react-xarrows";
-import styles from "./ScatterChart.module.css";
+import { Course, Segment, Task } from '@prisma/client'
+import { FC, useMemo } from 'react'
+import Xarrow from 'react-xarrows'
+import styles from './ScatterChart.module.css'
 
 interface Props {
-  course: Course & { segments: Segment[] };
-  tasks: Task[];
+  course: Course & { segments: Segment[] }
+  tasks: Task[]
 }
 
 const ScatterChart: FC<Props> = ({ course, tasks }) => {
   const min = useMemo(() => {
-    let min = 100;
+    let min = 100
     tasks
       .filter((t) => t.courseId === course.id)
       .forEach((task) => {
-        if (task.grade < min) min = task.grade;
-      });
+        if (task.grade < min) min = task.grade
+      })
 
-    if (min === 100) return 0;
-    return min;
-  }, [tasks]);
+    if (min === 100) return 0
+    return min
+  }, [tasks])
   const max = useMemo(() => {
-    let max = 0;
+    let max = 0
     tasks
       .filter((t) => t.courseId === course.id)
       .forEach((task) => {
-        if (task.grade > max) max = task.grade;
-      });
-    if (max === 0) return 100;
-    return max;
-  }, [tasks]);
+        if (task.grade > max) max = task.grade
+      })
+    if (max === 0) return 100
+    return max
+  }, [tasks])
   const segments = useMemo(() => {
-    let segmentDict: any = {};
+    const segmentDict: any = {}
     course.segments.forEach((segment) => {
-      const { id, ...rest } = segment;
-      segmentDict[id] = rest;
-    });
-    return segmentDict;
-  }, [tasks]);
+      const { id, ...rest } = segment
+      segmentDict[id] = rest
+    })
+    return segmentDict
+  }, [tasks])
   const scatterTasks = useMemo(() => {
-    let scatterTasks = tasks
+    const scatterTasks = tasks
       .filter((t) => t.courseId === course.id)
       .sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
       .map((task) => {
-        const percentage = ((task.grade - min) * 100) / (max - min);
+        const percentage = ((task.grade - min) * 100) / (max - min)
         return {
           ...task,
           percentage,
-        };
-      });
-    return scatterTasks;
-  }, [tasks, min, max]);
+        }
+      })
+    return scatterTasks
+  }, [tasks, min, max])
 
   return (
     <div className="flex h-full w-full">
@@ -78,7 +78,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
               >
                 <div id={task.id}></div>
                 <p className="tooltip bottom-full left-1/2 mb-2 origin-bottom -translate-x-1/2">
-                  {task.grade}%{" "}
+                  {task.grade}%{' '}
                   <span
                     className="font-normal text-slate-300"
                     style={{
@@ -94,7 +94,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
             </div>
             {index < scatterTasks.length - 1 &&
               (() => {
-                const endTask = scatterTasks[index + 1];
+                const endTask = scatterTasks[index + 1]
                 if (endTask)
                   return (
                     <Xarrow
@@ -103,22 +103,22 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
                       showHead={false}
                       strokeWidth={3}
                       lineColor={
-                        document.documentElement.classList.contains("dark")
-                          ? "#9ca3af4d"
-                          : "#d1d5db"
+                        document.documentElement.classList.contains('dark')
+                          ? '#9ca3af4d'
+                          : '#d1d5db'
                       }
                       curveness={0}
                       passProps={{
-                        className: styles["fade-in"],
+                        className: styles['fade-in'],
                       }}
                     />
-                  );
+                  )
               })()}
           </div>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ScatterChart;
+export default ScatterChart

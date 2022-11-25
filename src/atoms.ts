@@ -1,4 +1,4 @@
-import { School } from '@prisma/client'
+import type { School } from '@prisma/client'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
