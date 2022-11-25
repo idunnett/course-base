@@ -5,10 +5,10 @@ import { IoIosArrowForward } from 'react-icons/io'
 import Dashboard from './dashboard'
 
 const Home: NextPage = () => {
-  const session = useSession()
+  // const session = useSession()
 
-  if (session?.status === 'authenticated' && session?.data?.user?.id)
-    return <Dashboard />
+  // if (session?.status === 'authenticated' && session?.data?.user?.id)
+  //   return <Dashboard />
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 ">
