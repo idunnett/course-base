@@ -21,7 +21,6 @@ export const authOptions: NextAuthOptions = {
           where: { id: session.user.id },
           select: { schoolId: true },
         })
-        console.log(user)
         if (user) session.user.schoolId = user.schoolId || ''
       }
       return session
