@@ -42,7 +42,7 @@ const SchoolMenu = () => {
             color: school?.secondaryColor,
           }}
         >
-          {school?.shortName ?? school?.name ?? 'My school'}{' '}
+          {school.shortName ?? school.name ?? 'My school'}{' '}
           <HiChevronDown
             className={
               'h-4 w-4 transition-transform duration-100 ease-linear ' +
@@ -57,21 +57,21 @@ const SchoolMenu = () => {
           }
         >
           <Link
-            href={`/schools/${school?.id}`}
+            href={`/schools/${school.id}`}
             onClick={() => setOpen(false)}
             className="link text-slate-500 dark:text-neutral-200"
           >
             View school
           </Link>
           <Link
-            href={school ? `/schools/${school?.id}/degrees/new` : '/schools'}
+            href={`/schools/${school.id}/degrees/new`}
             onClick={() => setOpen(false)}
             className="link text-slate-500 dark:text-neutral-200"
           >
             Add degree
           </Link>
           <Link
-            href={school ? `/schools/${school?.id}/courses/new` : '/schools'}
+            href={`/schools/${school.id}/courses/new`}
             onClick={() => setOpen(false)}
             className="link text-slate-500 dark:text-neutral-200"
           >
