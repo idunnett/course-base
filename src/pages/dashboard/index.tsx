@@ -3,16 +3,17 @@ import CourseWidget from '../../components/course/CourseWidget'
 import { trpc } from '../../utils/trpc'
 
 const Dashboard = () => {
-  const { data: courses } = trpc.course.getMyCourses.useQuery(undefined, {
+  const { data: courses = null } = trpc.course.getMyCourses.useQuery(
+    undefined,
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+    }
+  )
+  const { data: tasks = null } = trpc.task.getMyTasks.useQuery(undefined, {
     refetchOnWindowFocus: false,
     retry: false,
   })
-  const { data: tasks } = trpc.task.getMyTasks.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-    retry: false,
-  })
-  console.log(courses)
-  console.log(tasks)
 
   if (courses && tasks)
     return (
