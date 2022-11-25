@@ -3,19 +3,22 @@ import CourseWidget from '../../components/course/CourseWidget'
 import { trpc } from '../../utils/trpc'
 
 const Dashboard = () => {
-  const courses = trpc.course.getMyCourses.useQuery(undefined, {
+  const { data: courses } = trpc.course.getMyCourses.useQuery(undefined, {
     refetchOnWindowFocus: false,
     retry: false,
   })
-  const tasks = trpc.task.getMyTasks.useQuery(undefined, {
+  const { data: tasks } = trpc.task.getMyTasks.useQuery(undefined, {
     refetchOnWindowFocus: false,
     retry: false,
   })
-  if (courses.data && tasks.data)
+  console.log(courses)
+  console.log(tasks)
+
+  if (courses && tasks)
     return (
       <div className="relative grid h-full w-full grid-cols-1 gap-4 overflow-auto p-4 pt-16 lg:grid-cols-2">
-        {courses?.data.map((course) => (
-          <CourseWidget key={course.id} course={course} tasks={tasks.data} />
+        {courses.map((course) => (
+          <CourseWidget key={course.id} course={course} tasks={tasks} />
         ))}
       </div>
     )
