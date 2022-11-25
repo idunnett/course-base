@@ -17,14 +17,12 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub
-        const schoolId =
-          (
-            await prisma.user.findUnique({
-              where: { id: session.user.id },
-              select: { schoolId: true },
-            })
-          )?.schoolId ?? ''
-        session.user.schoolId = schoolId
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { schoolId: true },
+        })
+        console.log(user)
+        if (user) session.user.schoolId = user.schoolId || ''
       }
       return session
     },
