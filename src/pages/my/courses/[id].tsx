@@ -73,13 +73,15 @@ const Course = () => {
           <div className="relative flex h-96 w-full flex-col">
             <ScatterChart course={course} tasks={tasks} />
           </div>
-          <TaskModal
-            modalData={modalData}
-            setModalData={setModalData}
-            course={course}
-            refetchTasks={refetchTasks}
-            isFetchingTasks={isFetchingTasks}
-          />
+          {modalData && (
+            <TaskModal
+              modalData={modalData}
+              setModalData={setModalData}
+              course={course}
+              refetchTasks={refetchTasks}
+              isFetchingTasks={isFetchingTasks}
+            />
+          )}
         </div>
       </div>
     )

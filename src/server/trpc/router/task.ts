@@ -30,7 +30,7 @@ export const taskRouter = router({
           message: 'You are not in this course.',
         })
       return await ctx.prisma.task.findMany({
-        where: { courseId: input },
+        where: { courseId: input, userId: ctx.session.user.id },
       })
     }),
   add: protectedProcedure

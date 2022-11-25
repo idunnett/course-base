@@ -13,7 +13,7 @@ export type ModalData = {
 }
 
 export type ModalDataTask = {
-  id: string | null
+  id: string | undefined
   title: string | null
   grade: string
   segmentId: string
@@ -22,7 +22,7 @@ export type ModalDataTask = {
 
 interface Props {
   course: Course
-  modalData: ModalData | null
+  modalData: ModalData
   setModalData: Dispatch<SetStateAction<ModalData | null>>
   isFetchingTasks: boolean
   refetchTasks: () => Promise<any>
@@ -90,7 +90,7 @@ const TaskModal: FC<Props> = ({
     })
 
   const handleAddTask = () => {
-    if (!modalData) return
+    if (!modalData || !modalData.task.grade.length) return
     addTask({
       ...modalData.task,
       segmentId: modalData.segment.id,
@@ -100,7 +100,7 @@ const TaskModal: FC<Props> = ({
   }
 
   const handleEditTask = () => {
-    if (!modalData?.task.id) return
+    if (!modalData?.task.id || !modalData.task.grade.length) return
     editTask({
       ...modalData.task,
       id: modalData.task.id,
@@ -123,117 +123,111 @@ const TaskModal: FC<Props> = ({
   }
 
   return (
-    <AnimatePresence
-      initial={false}
-      exitBeforeEnter={true}
-      onExitComplete={() => null}
-    >
-      {modalData && (
-        <Modal
-          handleClose={() => setModalData(null)}
-          title={
-            modalData?.task.id ? (
-              <>
-                <span
-                  className="font-bold"
-                  style={{
-                    color: course.color,
-                  }}
-                >
-                  {modalData.segment.name}
-                </span>{' '}
-                task
-              </>
-            ) : (
-              <>
-                Add to{' '}
-                <span
-                  className="font-bold"
-                  style={{
-                    color: course.color,
-                  }}
-                >
-                  {modalData?.segment.name}
-                </span>
-              </>
-            )
-          }
-        >
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              modalData?.task.id ? handleEditTask() : handleAddTask()
-            }}
-            className="flex w-full flex-col items-end"
-          >
-            <div className="flex w-full gap-8">
-              <div className="relative">
-                <InputSegment
-                  value={modalData?.task.grade.toString() ?? ''}
-                  onChange={(e) => {
-                    const input = e.target.value
-                    // regex to allow decimals and slashes
-                    const regex = /^\d*\.?\d*$/
-                    const divisionRegex = /^(\d+\.?\d*|\d*\.?\d+)\/\d*\.?\d*$/
-                    if (input.match(regex) || input.match(divisionRegex)) {
-                      setModalData({
-                        ...modalData,
-                        task: {
-                          ...modalData.task,
-                          grade: input,
-                        },
-                      })
-                    }
-                  }}
-                  label="Grade %"
-                  animate={false}
-                  placeholder="%"
-                  autoFocus={true}
-                  className="!w-32 text-right"
-                />
-                {gradeDivisionPreview != null && (
-                  <span className="absolute top-3 right-1 text-xs text-slate-600 dark:text-neutral-300">
-                    {gradeDivisionPreview}
-                  </span>
-                )}
-              </div>
-              {modalData.segment.quantity > 1 && (
-                <InputSegment
-                  value={modalData.task.title ?? ''}
-                  onChange={(e) =>
-                    setModalData({
-                      ...modalData,
-                      task: {
-                        ...modalData.task,
-                        title: e.target.value,
-                      },
-                    })
-                  }
-                  label="Title"
-                  animate={false}
-                  containerStyles={{
-                    width: '100%',
-                  }}
-                />
-              )}
-            </div>
-            <button
-              type="submit"
-              className="primary-btn mt-3"
-              disabled={isFetchingTasks}
+    <Modal
+      handleClose={() => setModalData(null)}
+      title={
+        modalData?.task.id ? (
+          <>
+            <span
+              className="font-bold"
+              style={{
+                color: course.color,
+              }}
             >
-              {isFetchingTasks || isLoadingAddTask || isLoadingEditTask ? (
-                <FaSpinner className="h-7 animate-spin text-white" />
-              ) : modalData?.task.id ? (
-                'Save'
-              ) : (
-                'Add'
-              )}
-            </button>
-          </form>
-        </Modal>
-      )}
-    </AnimatePresence>
+              {modalData.segment.name}
+            </span>{' '}
+            task
+          </>
+        ) : (
+          <>
+            Add to{' '}
+            <span
+              className="font-bold"
+              style={{
+                color: course.color,
+              }}
+            >
+              {modalData?.segment.name}
+            </span>
+          </>
+        )
+      }
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          modalData?.task.id ? handleEditTask() : handleAddTask()
+        }}
+        className="flex w-full flex-col items-end"
+      >
+        <div className="flex w-full gap-8">
+          <div className="relative">
+            <InputSegment
+              value={modalData?.task.grade.toString() ?? ''}
+              onChange={(e) => {
+                const input = e.target.value
+                if (parseFloat(input) > 100) return
+                // regex to allow decimals and slashes
+                const regex = /^\d*\.?\d*$/
+                const divisionRegex = /^(\d+\.?\d*|\d*\.?\d+)\/\d*\.?\d*$/
+                if (input.match(regex) || input.match(divisionRegex)) {
+                  setModalData({
+                    ...modalData,
+                    task: {
+                      ...modalData.task,
+                      grade: input,
+                    },
+                  })
+                }
+              }}
+              label="Grade %"
+              animate={false}
+              placeholder="%"
+              autoFocus={true}
+              className="!w-32 text-right"
+              maxLength={8}
+            />
+            {gradeDivisionPreview != null && (
+              <span className="absolute top-3 right-1 text-xs text-slate-600 dark:text-neutral-300">
+                {gradeDivisionPreview}
+              </span>
+            )}
+          </div>
+          {modalData.segment.quantity > 1 && (
+            <InputSegment
+              value={modalData.task.title ?? ''}
+              onChange={(e) =>
+                setModalData({
+                  ...modalData,
+                  task: {
+                    ...modalData.task,
+                    title: e.target.value,
+                  },
+                })
+              }
+              label="Title"
+              animate={false}
+              containerStyles={{
+                width: '100%',
+              }}
+            />
+          )}
+        </div>
+        <button
+          type="submit"
+          className="primary-btn mt-3"
+          disabled={isFetchingTasks}
+        >
+          {isFetchingTasks || isLoadingAddTask || isLoadingEditTask ? (
+            <FaSpinner className="h-7 animate-spin text-white" />
+          ) : modalData?.task.id ? (
+            'Save'
+          ) : (
+            'Add'
+          )}
+        </button>
+      </form>
+    </Modal>
   )
 }
 

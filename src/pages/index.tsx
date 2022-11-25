@@ -2,11 +2,10 @@ import { type NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { IoIosArrowForward } from 'react-icons/io'
-import Dashboard from './dashboard'
+import Dashboard from '../components/Dashboard'
 
 const Home: NextPage = () => {
   const session = useSession()
-
   if (session.status === 'authenticated') return <Dashboard />
 
   return (

@@ -37,7 +37,7 @@ const SegmentGradeWidget: FC<Props> = ({
     else
       setModalData({
         task: {
-          id: null,
+          id: undefined,
           grade: '',
           title: '',
           index: 0,

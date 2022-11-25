@@ -162,7 +162,7 @@ const SegmentGradesListWidget: FC<Props> = ({
             onClick={() => {
               setModalData({
                 task: {
-                  id: null,
+                  id: undefined,
                   grade: '',
                   title: '',
                   index: 0,

@@ -60,7 +60,10 @@ const UserMenu = () => {
           Profile
         </Link>
         <button
-          onClick={() => signOut()}
+          onClick={() => {
+            localStorage.clear()
+            signOut()
+          }}
           className="link text-slate-500 dark:text-neutral-200"
         >
           Sign out
