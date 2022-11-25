@@ -38,10 +38,10 @@ const Dashboard = () => {
         </h2>
         <p className="text-slate-500 dark:text-neutral-400">
           Get started by adding{' '}
-          {session.data?.user?.schoolId && 'your school and '}some courses.
+          {!session.data?.user?.schoolId && 'your school and '}some courses.
         </p>
         <div className="my-6 flex gap-4">
-          {session.data?.user?.schoolId && (
+          {!session.data?.user?.schoolId && (
             <Link
               href="/schools"
               className="secondary-btn flex items-center gap-1"
