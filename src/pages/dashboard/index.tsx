@@ -3,8 +3,14 @@ import CourseWidget from '../../components/course/CourseWidget'
 import { trpc } from '../../utils/trpc'
 
 const Dashboard = () => {
-  const courses = trpc.course.getMyCourses.useQuery()
-  const tasks = trpc.task.getMyTasks.useQuery()
+  const courses = trpc.course.getMyCourses.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
+  const tasks = trpc.task.getMyTasks.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
   if (courses.data && tasks.data)
     return (
       <div className="relative grid h-full w-full grid-cols-1 gap-4 overflow-auto p-4 pt-16 lg:grid-cols-2">
