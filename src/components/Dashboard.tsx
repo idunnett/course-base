@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { BiBuildings } from 'react-icons/bi'
 import { SlNotebook } from 'react-icons/sl'
@@ -6,6 +7,7 @@ import LoadingOrError from './common/LoadingOrError'
 import CourseWidget from './course/CourseWidget'
 
 const Dashboard = () => {
+  const session = useSession()
   const { data: courses, error: coursesError } =
     trpc.course.getMyCourses.useQuery(undefined, {
       retry: false,
@@ -35,16 +37,19 @@ const Dashboard = () => {
           Welcome to CourseBase!
         </h2>
         <p className="text-slate-500 dark:text-neutral-400">
-          Get started by adding your school and some courses.
+          Get started by adding{' '}
+          {session.data?.user?.schoolId && 'your school and '}some courses.
         </p>
         <div className="my-6 flex gap-4">
-          <Link
-            href="/schools"
-            className="secondary-btn flex items-center gap-1"
-          >
-            <BiBuildings />
-            Schools
-          </Link>
+          {session.data?.user?.schoolId && (
+            <Link
+              href="/schools"
+              className="secondary-btn flex items-center gap-1"
+            >
+              <BiBuildings />
+              Schools
+            </Link>
+          )}
           <Link
             href="/courses"
             className="secondary-btn flex items-center gap-1"
