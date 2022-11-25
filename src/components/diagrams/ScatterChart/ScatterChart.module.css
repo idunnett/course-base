@@ -1,0 +1,24 @@
+.inflate {
+    animation: inflate 200ms linear forwards;
+    transform-origin: center;
+}
+
+@keyframes inflate {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fade-in 500ms linear forwards;
+}
+
+@keyframes fade-in {
+    to{
+        opacity: 100%;
+    }
+}

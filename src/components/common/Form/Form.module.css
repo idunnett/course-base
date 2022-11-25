@@ -1,0 +1,7 @@
+.form{
+    @apply shadow-sm h-auto p-6 rounded-2xl flex flex-col gap-3;
+}
+
+.form h1{
+    @apply text-3xl font-bold;
+}

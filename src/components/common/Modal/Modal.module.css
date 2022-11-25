@@ -1,0 +1,12 @@
+.backdrop {
+    @apply fixed top-0 left-0 h-full w-full bg-black bg-opacity-10 flex items-center justify-center backdrop-blur-md overflow-hidden z-20;
+}
+
+.modal{
+    width: clamp(50%, 700px, 90%);
+    @apply m-auto p-8 rounded-2xl flex flex-col shadow-lg;
+}
+
+.modal h1{
+    @apply text-2xl font-semibold;
+}
