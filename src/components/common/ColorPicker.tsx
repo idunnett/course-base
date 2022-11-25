@@ -21,7 +21,7 @@ const ColorPicker: FC<Props> = ({ color, setColor, label }) => {
           <HexColorInput
             color={color}
             onChange={setColor}
-            className={`${styles.input} font-mono text-black brightness-95 dark:text-white`}
+            className={`${styles.input} bg-white font-mono text-black brightness-95 dark:bg-zinc-600 dark:text-white`}
             placeholder="ffffff"
           />
         </div>
