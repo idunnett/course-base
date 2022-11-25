@@ -7,10 +7,7 @@ import Dashboard from './dashboard'
 const Home: NextPage = () => {
   const session = useSession()
 
-  console.log(session)
-
-  if (session?.status === 'authenticated' && session?.data?.user?.id)
-    return <Dashboard />
+  if (session.status === 'authenticated') return <Dashboard />
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 ">

@@ -7,7 +7,7 @@ import SchoolMenu from './SchoolMenu'
 const AppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Whenever the user explicitly chooses dark mode
-    if (JSON.parse(localStorage.darkMode)) {
+    if (localStorage.darkMode && JSON.parse(localStorage.darkMode)) {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
