@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Layout>
         <Head>
-          <title>CourseBase</title>
+          <title>GradeBase</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="min-h-screen w-full bg-gray-100 dark:bg-zinc-800">

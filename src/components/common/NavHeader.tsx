@@ -7,7 +7,7 @@ const NavHeader = ({ children }: { children: ReactNode }) => {
       <Link href="/">
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-bold text-slate-500 dark:text-gray-300">
-            CourseBase
+            GradeBase
           </h1>
           <span className="text-xs italic text-slate-400 dark:text-gray-400">
             ALPHA

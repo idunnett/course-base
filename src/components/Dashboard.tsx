@@ -34,7 +34,7 @@ const Dashboard = () => {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-2">
         <h2 className="text-xl font-semibold text-slate-600 dark:text-neutral-300">
-          Welcome to CourseBase!
+          Welcome to GradeBase!
         </h2>
         <p className="text-slate-500 dark:text-neutral-400">
           Get started by adding{' '}

@@ -52,7 +52,7 @@ const School = () => {
                 {school._count.degrees} total
               </span>
             </h2>
-            <Link href="degrees/new" className="primary-btn">
+            <Link href={`/schools/${id}/degrees/new`} className="primary-btn">
               New
             </Link>
           </Widget>
