@@ -9,6 +9,7 @@ export const UserModel = z.object({
   password: z.string().nullish(),
   image: z.string().nullish(),
   schoolId: z.string(),
+  degreeId: z.string(),
   courseIds: z.string().array(),
   darkMode: z.boolean(),
 })

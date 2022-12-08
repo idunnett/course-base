@@ -1,46 +1,25 @@
 import { School } from '@prisma/client'
-import { FC, MouseEventHandler } from 'react'
-import { BiBuildings } from 'react-icons/bi'
+import { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
 import { HiUsers } from 'react-icons/hi'
+import Members from '../common/Members'
+import SchoolTag from './SchoolTag'
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   school: School
-  onClick?: MouseEventHandler<HTMLButtonElement>
-  disabled?: boolean
   className?: string
 }
 
-const SchoolButton: FC<Props> = ({
-  school,
-  onClick,
-  disabled = false,
-  className,
-}) => {
+const SchoolButton: FC<Props> = ({ school, onClick, className, ...props }) => {
   return (
     <button
       id="school-btn"
       type="button"
       onClick={onClick}
-      disabled={disabled}
-      className={`list-button items-end gap-2 p-2 ${className}`}
+      className={`list-button items-end gap-2 p-2 text-sm font-light ${className}`}
+      {...props}
     >
-      <div
-        className="flex w-min items-center gap-1 whitespace-nowrap rounded-md p-1"
-        style={{
-          backgroundColor: school.color,
-          color: school.secondaryColor,
-        }}
-      >
-        <BiBuildings className="text-xl" />
-        <span className="text-xl font-medium">{school.name}</span>
-      </div>
-      <p className="flex items-center gap-1 whitespace-nowrap text-sm font-light text-slate-500 dark:text-neutral-400">
-        <HiUsers />
-        <span>
-          {school.memberCount} member
-          {school.memberCount !== 1 && 's'}
-        </span>
-      </p>
+      <SchoolTag school={school} />
+      <Members number={school.memberCount} />
     </button>
   )
 }

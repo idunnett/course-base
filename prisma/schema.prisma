@@ -36,15 +36,37 @@ model School {
 }
 
 model Degree {
-  id              String   @id @default(cuid())
-  name            String
-  schoolId        String
-  school          School   @relation(fields: [schoolId], references: [id])
-  creditHours     Float
-  admissionYear   Int
-  memberCount     Int
-  requiredCourses Course[]
-  // subjectRequirements: Array<SubjectRequirement>
+  id                  String               @id @default(cuid())
+  name                String
+  schoolId            String
+  school              School               @relation(fields: [schoolId], references: [id])
+  credits             Float
+  admissionYear       Int
+  years               Int
+  memberCount         Int                  @default(1)
+  requiredCourseIds   String[]
+  partialCourses      PartialCourse[]
+  subjectRequirements SubjectRequirement[]
+}
+
+model SubjectRequirement {
+  id       String   @id @default(cuid())
+  subject  String[]
+  year     Int
+  credits  Float
+  orHigher Boolean  @default(false)
+  degree   Degree?  @relation(fields: [degreeId], references: [id])
+  degreeId String?
+}
+
+model PartialCourse {
+  id         String  @id @default(cuid())
+  code       String
+  name       String
+  credits    Float
+  degreeYear Int
+  degree     Degree? @relation(fields: [degreeId], references: [id])
+  degreeId   String?
 }
 
 model Course {
@@ -57,11 +79,9 @@ model Course {
   term        Term      @default(F)
   instructor  String
   memberCount Int       @default(1)
-  creditHours Float
+  credits     Float
   code        String
   schoolId    String
-  degreeId    String?
-  degree      Degree?   @relation(fields: [degreeId], references: [id])
   school      School    @relation(fields: [schoolId], references: [id])
 }
 
@@ -127,11 +147,11 @@ model User {
   password      String?
   image         String?
   schoolId      String    @default("")
+  degreeId      String    @default("")
   courseIds     String[]
   tasks         Task[]
   accounts      Account[]
   sessions      Session[]
-  // settings      Settings?
   darkMode      Boolean   @default(false)
 }
 

@@ -1,11 +1,11 @@
-import type { FC, MouseEventHandler } from 'react'
+import type { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
 import { BiBuildings } from 'react-icons/bi'
-import { HiOutlineClock, HiUsers } from 'react-icons/hi'
+import { HiClock, HiUsers } from 'react-icons/hi'
 import { MdInsertChart } from 'react-icons/md'
 import type { FullCourse } from '../../types'
 import getTermName from '../../utils/termUtils'
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   course: FullCourse
   onClick?: MouseEventHandler
   className?: string
@@ -14,16 +14,16 @@ interface Props {
 
 const CourseButton: FC<Props> = ({
   course,
-  onClick,
   className,
   showSchool = true,
+  ...props
 }) => {
   return (
     <button
       key={course.id}
       type="button"
-      onClick={onClick}
       className={`list-button flex-col justify-between ${className}`}
+      {...props}
     >
       <div className="flex w-full items-center justify-between gap-1 whitespace-nowrap">
         <div className="flex items-center">
@@ -47,8 +47,8 @@ const CourseButton: FC<Props> = ({
       <div className="flex w-full justify-between">
         <div className="flex gap-3 whitespace-nowrap text-sm font-light text-slate-600 dark:text-neutral-400">
           <div className="flex items-center gap-0.5">
-            <HiOutlineClock />
-            <span>{course.creditHours}</span>
+            <HiClock />
+            <span>{course.credits}</span>
           </div>
           <div className="flex items-center gap-0.5">
             <HiUsers />

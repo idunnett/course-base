@@ -1,9 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { GetServerSidePropsContext } from 'next'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FormEvent, useRef } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
+import { toRouteAtom } from '../../atoms'
 import InputSegment from '../../components/common/InputSegment'
 import Widget from '../../components/common/Widget'
 import OauthButtons from '../../components/OauthButtons'
@@ -24,13 +26,14 @@ const SignIn = () => {
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const { error } = useRouter().query
+  const toRoute = useAtomValue(toRouteAtom)
 
   const handleSignInWithCredentials = (e: FormEvent) => {
     e.preventDefault()
     signIn('credentials', {
       email: emailRef.current?.value,
       password: passwordRef.current?.value,
-      callbackUrl: '/',
+      callbackUrl: toRoute ?? '/',
     })
   }
 

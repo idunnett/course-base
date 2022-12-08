@@ -8,7 +8,7 @@ interface Props {
   name: string
   school: School | null
   degreeYears: string
-  creditHours: string
+  credits: string
   admissionYear: string
   updateFields: (fields: Partial<CreateDegreeFormData>) => void
 }
@@ -17,7 +17,7 @@ const GeneralInfoForm: React.FC<Props> = ({
   name,
   school,
   degreeYears,
-  creditHours,
+  credits,
   admissionYear,
   updateFields,
 }) => {
@@ -51,13 +51,13 @@ const GeneralInfoForm: React.FC<Props> = ({
           maxLength={1}
         />
         <InputSegment
-          label="Credit hours"
+          label="Credits"
           required
-          value={creditHours}
+          value={credits}
           onChange={(e) => {
             const num = Number(e.target.value.replace(/\D/g, ''))
             if (e.target.value && num === 0) return
-            updateFields({ creditHours: e.target.value.replace(/\D/g, '') })
+            updateFields({ credits: e.target.value.replace(/\D/g, '') })
           }}
           maxLength={3}
         />

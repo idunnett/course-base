@@ -18,7 +18,7 @@ const INITIAL_DATA: CreateCourseFormData = {
   code: '',
   school: null,
   degreeYear: undefined,
-  creditHours: '',
+  credits: '',
   segments: [],
 }
 
@@ -68,7 +68,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
       year: Number(data.year),
       term: getTerm(data.term),
       degreeYear: Number(data.degreeYear),
-      creditHours: Number(data.creditHours),
+      credits: Number(data.credits),
     }
     createCourse({ course, segments })
   }

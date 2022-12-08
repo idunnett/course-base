@@ -5,7 +5,7 @@ import styles from './Modal.module.css'
 
 interface Props {
   children: ReactNode
-  title: ReactNode
+  title?: ReactNode
   handleClose: () => void
 }
 

@@ -1,10 +1,14 @@
 import Link from 'next/link'
-import { ReactNode, useEffect } from 'react'
+import { type FC, type ReactNode, useEffect } from 'react'
 import NavHeader from '../../common/NavHeader'
 import UserMenu from './UserMenu'
 import SchoolMenu from './SchoolMenu'
 
-const AppLayout = ({ children }: { children: ReactNode }) => {
+interface Props {
+  children: ReactNode
+}
+
+const AppLayout: FC<Props> = ({ children }) => {
   useEffect(() => {
     // Whenever the user explicitly chooses dark mode
     if (localStorage.darkMode && JSON.parse(localStorage.darkMode)) {

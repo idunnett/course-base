@@ -1,18 +1,21 @@
 import * as z from "zod"
-import { CompleteSchool, RelatedSchoolModel, CompleteCourse, RelatedCourseModel } from "./index"
+import { CompleteSchool, RelatedSchoolModel, CompletePartialCourse, RelatedPartialCourseModel, CompleteSubjectRequirement, RelatedSubjectRequirementModel } from "./index"
 
 export const DegreeModel = z.object({
   id: z.string(),
   name: z.string(),
   schoolId: z.string(),
-  creditHours: z.number(),
+  credits: z.number(),
   admissionYear: z.number().int(),
+  years: z.number().int(),
   memberCount: z.number().int(),
+  requiredCourseIds: z.string().array(),
 })
 
 export interface CompleteDegree extends z.infer<typeof DegreeModel> {
   school: CompleteSchool
-  requiredCourses: CompleteCourse[]
+  partialCourses: CompletePartialCourse[]
+  subjectRequirements: CompleteSubjectRequirement[]
 }
 
 /**
@@ -22,5 +25,6 @@ export interface CompleteDegree extends z.infer<typeof DegreeModel> {
  */
 export const RelatedDegreeModel: z.ZodSchema<CompleteDegree> = z.lazy(() => DegreeModel.extend({
   school: RelatedSchoolModel,
-  requiredCourses: RelatedCourseModel.array(),
+  partialCourses: RelatedPartialCourseModel.array(),
+  subjectRequirements: RelatedSubjectRequirementModel.array(),
 }))

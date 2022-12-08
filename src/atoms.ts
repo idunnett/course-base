@@ -6,3 +6,5 @@ export const schoolAtom = atomWithStorage<School | null>('school', null)
 export const schoolIdAtom = atom((get) => get(schoolAtom)?.id)
 
 export const darkModeAtom = atomWithStorage<boolean>('darkMode', false)
+
+export const toRouteAtom = atom('/')

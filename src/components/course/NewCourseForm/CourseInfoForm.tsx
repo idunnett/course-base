@@ -14,7 +14,7 @@ interface Props {
   term: string
   instructor: string
   code: string
-  creditHours: string
+  credits: string
   school: School | null
   updateFields: (fields: Partial<CreateCourseFormData>) => void
 }
@@ -27,7 +27,7 @@ const CourseInfoForm: FC<Props> = ({
   term,
   instructor,
   code,
-  creditHours,
+  credits,
   school,
   updateFields,
 }) => {
@@ -71,13 +71,13 @@ const CourseInfoForm: FC<Props> = ({
           maxLength={1}
         />
         <InputSegment
-          value={creditHours}
+          value={credits}
           onChange={(e) => {
             const num = Number(e.target.value.replace(/\D/g, ''))
             if (e.target.value && num === 0) return
-            updateFields({ creditHours: e.target.value.replace(/\D/g, '') })
+            updateFields({ credits: e.target.value.replace(/\D/g, '') })
           }}
-          label="Credit Hours"
+          label="Credits"
           autoComplete={false}
           required
           maxLength={1}

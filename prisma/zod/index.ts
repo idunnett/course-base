@@ -1,5 +1,7 @@
 export * from "./school"
 export * from "./degree"
+export * from "./subjectrequirement"
+export * from "./partialcourse"
 export * from "./course"
 export * from "./segment"
 export * from "./task"

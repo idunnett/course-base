@@ -1,69 +1,41 @@
 import { FC, useEffect, useState } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
-import Widget from '../../common/Widget'
-import AutoComplete from '../../common/AutoComplete'
-import CourseButton from '../../course/CourseButton'
-import useDebounce from '../../../hooks/useDebounce'
-import { CreateDegreeFormData, FullCourse, PartialCourse } from '../../../types'
-import { trpc } from '../../../utils/trpc'
-import Modal from '../../common/Modal'
-import CourseDetails from '../../course/CourseDetails'
-import InputSegment from '../../common/InputSegment'
-import { HiOutlineClock } from 'react-icons/hi'
-
-function isCourseType(obj: FullCourse | PartialCourse): obj is FullCourse {
-  return !!(obj as FullCourse).id
-}
+import { HiClock } from 'react-icons/hi'
+import _ from 'lodash'
+import useDebounce from '../../../../hooks/useDebounce'
+import {
+  FullCourse,
+  CreatePartialCourse,
+  CreateDegreeFormData,
+} from '../../../../types'
+import { trpc } from '../../../../utils/trpc'
+import AutoComplete from '../../../common/AutoComplete'
+import InputSegment from '../../../common/InputSegment'
+import Modal from '../../../common/Modal'
+import Widget from '../../../common/Widget'
+import CourseButton from '../../../course/CourseButton'
+import CourseDetails from '../../../course/CourseDetails'
+import { isCourseType } from '../../../../utils/courseUtils'
 
 interface Props {
   degreeYears: string
-  creditHours: string
-  requiredCourses: Array<FullCourse | PartialCourse>
-  subjectRequirements: []
+  requiredCourses: Array<FullCourse | CreatePartialCourse>
   updateFields: (fields: Partial<CreateDegreeFormData>) => void
 }
 
-const RequirementsForm: FC<Props> = ({
+const CourseRequirements: FC<Props> = ({
   degreeYears,
-  creditHours,
   requiredCourses,
-  subjectRequirements,
   updateFields,
 }) => {
+  const [searchVal, setSearchVal] = useState('')
   const [codeInput, setCodeInput] = useState('')
   const [nameInput, setNameInput] = useState('')
-  const [creditHoursInput, setCreditHoursInput] = useState('')
-  const [searchVal, setSearchVal] = useState('')
+  const [creditsInput, setCreditsInput] = useState('1')
   const [showAddCourseInput, setShowAddCourseInput] = useState<number>(-1)
-  const [currentTotalCreditHours, setCurrentTotalCreditHours] = useState(
-    requiredCourses
-      .map((c) =>
-        typeof c.creditHours === 'string'
-          ? parseFloat(c.creditHours)
-          : c.creditHours
-      )
-      .reduce((a, b) => a + b, 0)
-  )
   const [modalData, setModalData] = useState<FullCourse | null>(null)
 
-  const debouncedSearchVal = useDebounce(searchVal)
-
-  useEffect(() => setSearchVal(codeInput), [codeInput])
-  useEffect(() => setSearchVal(nameInput), [nameInput])
-  useEffect(() => {
-    setCodeInput('')
-    setNameInput('')
-    setCreditHoursInput('')
-    setCurrentTotalCreditHours(
-      requiredCourses
-        .map((c) =>
-          typeof c.creditHours === 'string'
-            ? parseFloat(c.creditHours)
-            : c.creditHours
-        )
-        .reduce((a, b) => a + b, 0)
-    )
-  }, [requiredCourses])
+  const debouncedSearchVal = useDebounce(searchVal, 750)
 
   const { data, isError, isFetching } = trpc.course.search.useQuery(
     { searchVal: debouncedSearchVal },
@@ -73,30 +45,16 @@ const RequirementsForm: FC<Props> = ({
       refetchOnWindowFocus: false,
     }
   )
-
+  useEffect(() => setSearchVal(codeInput), [codeInput])
+  useEffect(() => setSearchVal(nameInput), [nameInput])
+  useEffect(() => {
+    setCodeInput('')
+    setNameInput('')
+    setCreditsInput('1')
+  }, [requiredCourses])
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="mb-1 text-3xl font-bold text-slate-500 dark:text-neutral-200">
-        Create a Degree
-      </h1>
-      <div className="flex justify-between text-slate-500 dark:text-neutral-200">
-        <h2 className="text-xl font-semibold">Course Requirements</h2>
-        <div className="flex items-center gap-2 text-lg">
-          <HiOutlineClock />
-          <p>
-            <span
-              className={`${
-                currentTotalCreditHours < parseFloat(creditHours) &&
-                'text-red-300'
-              }`}
-            >
-              {currentTotalCreditHours}
-            </span>
-            /{creditHours || 0}
-          </p>
-        </div>
-      </div>
-      {[...Array(Number(degreeYears))].map((_, year) => (
+    <>
+      {[...Array(Number(degreeYears))].map((_item, year) => (
         <div key={year} className="flex flex-col gap-1">
           <h3 className="text-md text-slate-400 dark:text-neutral-300">
             Year {year + 1} required courses
@@ -119,7 +77,8 @@ const RequirementsForm: FC<Props> = ({
                         className="secondary-btn"
                         onClick={() => {
                           setCodeInput('')
-                          const updatedRequiredCourses = [...requiredCourses]
+                          const updatedRequiredCourses =
+                            _.cloneDeep(requiredCourses)
                           updatedRequiredCourses.splice(index, 1)
                           updateFields({
                             requiredCourses: updatedRequiredCourses,
@@ -149,8 +108,8 @@ const RequirementsForm: FC<Props> = ({
                             </p>
                           </div>
                           <div className="flex items-center gap-0.5 text-sm font-light text-slate-600 dark:text-neutral-400">
-                            <HiOutlineClock />
-                            <span>{requiredCourse.creditHours}</span>
+                            <HiClock />
+                            <span>{requiredCourse.credits}</span>
                           </div>
                         </div>
                       )}
@@ -201,7 +160,8 @@ const RequirementsForm: FC<Props> = ({
                     isLoading={isFetching}
                     isError={isError}
                     onSuggestionItemSelect={(item) => {
-                      const updatedRequiredCourses = [...requiredCourses]
+                      const updatedRequiredCourses =
+                        _.cloneDeep(requiredCourses)
                       updatedRequiredCourses.push(item)
                       updateFields({ requiredCourses: updatedRequiredCourses })
                       setShowAddCourseInput(-1)
@@ -255,7 +215,8 @@ const RequirementsForm: FC<Props> = ({
                     isLoading={isFetching}
                     isError={isError}
                     onSuggestionItemSelect={(item) => {
-                      const updatedRequiredCourses = [...requiredCourses]
+                      const updatedRequiredCourses =
+                        _.cloneDeep(requiredCourses)
                       updatedRequiredCourses.push(item)
                       updateFields({ requiredCourses: updatedRequiredCourses })
                       setShowAddCourseInput(-1)
@@ -281,14 +242,14 @@ const RequirementsForm: FC<Props> = ({
                     )}
                   />
                   <InputSegment
-                    label="Credit Hours"
-                    placeholder="3.5"
+                    label="Credits"
+                    placeholder="3"
                     animate={false}
                     className="!text-lg"
                     containerClassName="!w-32 "
                     labelClassName="!w-16 text-xs flex items-end"
-                    value={creditHoursInput}
-                    onChange={(e) => setCreditHoursInput(e.target.value)}
+                    value={creditsInput}
+                    onChange={(e) => setCreditsInput(e.target.value)}
                   />
                 </div>
                 <button
@@ -300,7 +261,7 @@ const RequirementsForm: FC<Props> = ({
                     updatedRequiredCourses.push({
                       code: codeInput,
                       name: nameInput,
-                      creditHours: creditHoursInput,
+                      credits: creditsInput,
                       degreeYear: year + 1,
                     })
                     updateFields({ requiredCourses: updatedRequiredCourses })
@@ -329,12 +290,12 @@ const RequirementsForm: FC<Props> = ({
         </div>
       ))}
       {modalData && (
-        <Modal title="Course Details" handleClose={() => setModalData(null)}>
+        <Modal handleClose={() => setModalData(null)}>
           <CourseDetails course={modalData} />
         </Modal>
       )}
-    </div>
+    </>
   )
 }
 
-export default RequirementsForm
+export default CourseRequirements

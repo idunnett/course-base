@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { Term } from "@prisma/client"
-import { CompleteSegment, RelatedSegmentModel, CompleteDegree, RelatedDegreeModel, CompleteSchool, RelatedSchoolModel } from "./index"
+import { CompleteSegment, RelatedSegmentModel, CompleteSchool, RelatedSchoolModel } from "./index"
 
 export const CourseModel = z.object({
   id: z.string(),
@@ -11,15 +11,13 @@ export const CourseModel = z.object({
   term: z.nativeEnum(Term),
   instructor: z.string(),
   memberCount: z.number().int(),
-  creditHours: z.number(),
+  credits: z.number(),
   code: z.string(),
   schoolId: z.string(),
-  degreeId: z.string().nullish(),
 })
 
 export interface CompleteCourse extends z.infer<typeof CourseModel> {
   segments: CompleteSegment[]
-  degree?: CompleteDegree | null
   school: CompleteSchool
 }
 
@@ -30,6 +28,5 @@ export interface CompleteCourse extends z.infer<typeof CourseModel> {
  */
 export const RelatedCourseModel: z.ZodSchema<CompleteCourse> = z.lazy(() => CourseModel.extend({
   segments: RelatedSegmentModel.array(),
-  degree: RelatedDegreeModel.nullish(),
   school: RelatedSchoolModel,
 }))

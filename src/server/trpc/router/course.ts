@@ -168,7 +168,7 @@ export const courseRouter = router({
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.course.findUniqueOrThrow({
         where: { id: input },
-        include: { segments: true, school: true, degree: true },
+        include: { segments: true, school: true },
       })
     }),
 })

@@ -8,8 +8,8 @@ const CourseCreate = () => {
   const currentSchool = useAtomValue(schoolAtom)
   const [school, setSchool] = useState<School | null>(null)
 
-  // To avoid hydration issues
   useEffect(() => {
+    // To avoid hydration issues
     setSchool(currentSchool)
   }, [])
 

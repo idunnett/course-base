@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 ">
       <h1 className="text-5xl font-extrabold tracking-tight text-slate-400 dark:text-white sm:text-[5rem]">
-        Course
+        Grade
         <span className="text-slate-500 dark:text-slate-400">Base</span>
       </h1>
       <Link

@@ -3,7 +3,7 @@
 }
 
 .input {
-  @apply placeholder:text-gray-400 text-2xl rounded-xl px-4 py-3 w-full h-full outline-none focus:brightness-100 focus:shadow-inner-lg transition-all duration-200 ease-linear max-h-14;
+  @apply placeholder:text-gray-400 text-2xl rounded-lg px-4 py-3 w-full h-full outline-none focus:brightness-100 focus:shadow-inner-lg transition-all duration-200 ease-linear max-h-14;
 }
 
 .label {

@@ -9,6 +9,8 @@ import SchoolButton from './SchoolButton'
 
 interface Props {
   school: School | null
+  animate?: boolean
+  className?: string
   onSelect: (school: School) => void
   onInitialFetch?: (school: School) => void
   onShowInputField?: () => void
@@ -16,6 +18,8 @@ interface Props {
 
 const SchoolAutoComplete: FC<Props> = ({
   school = null,
+  animate = true,
+  className,
   onInitialFetch,
   onSelect,
   onShowInputField,
@@ -68,6 +72,8 @@ const SchoolAutoComplete: FC<Props> = ({
 
   return (
     <AutoComplete<School>
+      animate={animate}
+      className={className}
       mRef={autoCompleteRef}
       inputValue={schoolSearchVal}
       setInputValue={setSchoolSearchVal}
