@@ -1,6 +1,6 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
-import { Data } from 'react-minimal-pie-chart/types/commonTypes'
+import type { Data } from 'react-minimal-pie-chart/types/commonTypes'
 
 interface Props {
   segments: Data

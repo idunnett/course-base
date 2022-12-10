@@ -4,7 +4,7 @@ import type {
   School,
   SubjectRequirement,
 } from '@prisma/client'
-import { subjects } from '../constants'
+import type { subjects } from '../constants'
 
 type FullDegree = Degree & {
   requiredCourses: FullCourse[]

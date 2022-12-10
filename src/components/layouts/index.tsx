@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { schoolAtom, toRouteAtom } from '../../atoms'
 import { publicPaths } from '../../constants'
 import AppLayout from './AppLayout'

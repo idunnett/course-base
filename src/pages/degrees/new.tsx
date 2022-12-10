@@ -1,4 +1,4 @@
-import { School } from '@prisma/client'
+import type { School } from '@prisma/client'
 import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
 import { schoolAtom } from '../../atoms'

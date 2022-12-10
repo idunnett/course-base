@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
 import CourseDetails from '../../components/course/CourseDetails'
 import CourseSearchForm from '../../components/course/CourseSearchForm'
-import { FullCourse } from '../../types'
+import type { FullCourse } from '../../types'
 
 const CourseSearch = () => {
   const [selectedCourse, setSelectedCourse] = useState<FullCourse | null>(null)

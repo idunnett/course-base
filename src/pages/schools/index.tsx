@@ -1,11 +1,11 @@
-import { FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 import Form from '../../components/common/Form'
 import { useSetAtom } from 'jotai'
 import { schoolAtom } from '../../atoms'
 import SchoolAutoComplete from '../../components/school/SchoolAutoComplete'
 import { useRouter } from 'next/router'
-import { School } from '@prisma/client'
+import type { School } from '@prisma/client'
 import Link from 'next/link'
 import { trpc } from '../../utils/trpc'
 

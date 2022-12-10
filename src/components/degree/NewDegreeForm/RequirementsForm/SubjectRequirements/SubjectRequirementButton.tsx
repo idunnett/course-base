@@ -1,7 +1,7 @@
-import { SubjectRequirement } from '@prisma/client'
-import { ButtonHTMLAttributes, FC } from 'react'
+import type { SubjectRequirement } from '@prisma/client'
+import type { ButtonHTMLAttributes, FC } from 'react'
 import { HiClock } from 'react-icons/hi'
-import { CreateSubjectRequirement } from '../../../../../types'
+import type { CreateSubjectRequirement } from '../../../../../types'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   subjectRequirement: CreateSubjectRequirement | SubjectRequirement

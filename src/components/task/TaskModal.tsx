@@ -1,10 +1,15 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import {
+  type Dispatch,
+  type FC,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import Modal from '../common/Modal'
 import InputSegment from '../common/InputSegment'
 import useDebounce from '../../hooks/useDebounce'
 import { FaSpinner } from 'react-icons/fa'
-import { Course, Segment } from '@prisma/client'
+import type { Course, Segment } from '@prisma/client'
 import { trpc } from '../../utils/trpc'
 
 export type ModalData = {

@@ -1,20 +1,20 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { useMultiStepForm } from '../../../hooks/useMultiStepForm'
 import GeneralInfoForm from './GeneralInfoForm'
 import RequirementsForm from './RequirementsForm'
-import {
+import type {
   CreateDegreeFormData,
   FullCourse,
   CreatePartialCourse,
 } from '../../../types'
-import { School } from '@prisma/client'
+import type { School } from '@prisma/client'
 import { trpc } from '../../../utils/trpc'
 import {
   DegreeModel,
   PartialCourseModel,
   SubjectRequirementModel,
 } from '../../../../prisma/zod'
-import { z } from 'zod'
+import type { z } from 'zod'
 import { isCourseType } from '../../../utils/courseUtils'
 import { FaSpinner } from 'react-icons/fa'
 

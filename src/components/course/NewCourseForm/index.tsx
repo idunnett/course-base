@@ -1,13 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import CourseSegmentsForm from './CourseSegmentsForm'
 import CourseInfoForm from './CourseInfoForm'
 import { useMultiStepForm } from '../../../hooks/useMultiStepForm'
 import { getTerm } from '../../../utils/termUtils'
 import SegmentPieChart from '../../diagrams/SegmentPieChart'
 import { useRouter } from 'next/router'
-import { CreateCourseFormData } from '../../../types'
+import type { CreateCourseFormData } from '../../../types'
 import { trpc } from '../../../utils/trpc'
-import { School } from '@prisma/client'
+import type { School } from '@prisma/client'
 
 const INITIAL_DATA: CreateCourseFormData = {
   name: '',

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
 export function useMultiStepForm(steps: ReactNode[] = []) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)

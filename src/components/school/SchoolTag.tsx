@@ -1,5 +1,5 @@
 import type { School } from '@prisma/client'
-import { type FC } from 'react'
+import type { FC } from 'react'
 import { BiBuildings } from 'react-icons/bi'
 
 interface Props {

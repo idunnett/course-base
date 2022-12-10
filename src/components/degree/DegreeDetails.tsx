@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, type FC } from 'react'
+import type { Dispatch, SetStateAction, FC } from 'react'
 import { HiClock } from 'react-icons/hi'
 import type { FullCourse, FullDegree } from '../../types'
 import { isCourseType } from '../../utils/courseUtils'

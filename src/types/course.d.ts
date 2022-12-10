@@ -1,4 +1,4 @@
-import type { Course, School, Segment, PartialCourse } from '@prisma/client'
+import type { Course, School, Segment } from '@prisma/client'
 
 type FullCourse = Course & {
   segments: Segment[]

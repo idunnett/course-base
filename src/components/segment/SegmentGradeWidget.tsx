@@ -1,7 +1,13 @@
-import { Segment, Task } from '@prisma/client'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import type { Segment, Task } from '@prisma/client'
+import {
+  type Dispatch,
+  type FC,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import Widget from '../common/Widget'
-import { ModalData } from '../task/TaskModal'
+import type { ModalData } from '../task/TaskModal'
 
 interface Props {
   segment: Segment

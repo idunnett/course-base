@@ -1,16 +1,16 @@
-import { FC, useMemo } from "react";
-import CountUp from "react-countup";
-import { motion } from "framer-motion";
-import { getTotalCurrentGrade } from "../../utils/diagramUtils";
-import { Course, Segment, Task } from "@prisma/client";
+import { type FC, useMemo } from 'react'
+import CountUp from 'react-countup'
+import { motion } from 'framer-motion'
+import { getTotalCurrentGrade } from '../../utils/diagramUtils'
+import type { Course, Segment, Task } from '@prisma/client'
 
 interface Props {
-  course: Course & { segments: Segment[] };
-  tasks: Task[];
+  course: Course & { segments: Segment[] }
+  tasks: Task[]
 }
 
 const TotalGradeBar: FC<Props> = ({ course, tasks }) => {
-  const grade = useMemo(() => getTotalCurrentGrade(course, tasks), [tasks]);
+  const grade = useMemo(() => getTotalCurrentGrade(course, tasks), [tasks])
   return (
     <div className="relative mt-1 rounded-md bg-gray-400 bg-opacity-20 p-[1px] text-sm text-white">
       <motion.div
@@ -38,7 +38,7 @@ const TotalGradeBar: FC<Props> = ({ course, tasks }) => {
         />
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default TotalGradeBar;
+export default TotalGradeBar

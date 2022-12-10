@@ -1,12 +1,12 @@
-import { Segment, Task } from "@prisma/client";
-import { FC, useState } from "react";
-import styles from "./SegmentBar.module.css";
+import type { Segment, Task } from '@prisma/client'
+import { type FC, useState } from 'react'
+import styles from './SegmentBar.module.css'
 
 interface Props {
-  segment: Segment;
-  courseColor: string;
-  tasks: Task[];
-  heightScaleFactor: number;
+  segment: Segment
+  courseColor: string
+  tasks: Task[]
+  heightScaleFactor: number
 }
 
 const SegmentBar: FC<Props> = ({
@@ -15,25 +15,25 @@ const SegmentBar: FC<Props> = ({
   tasks,
   heightScaleFactor,
 }) => {
-  const [tooltipStyles, setTooltipStyles] = useState("right-full origin-right");
-  const segmentElementMaxHeight = (1 / segment.quantity) * 100;
+  const [tooltipStyles, setTooltipStyles] = useState('right-full origin-right')
+  const segmentElementMaxHeight = (1 / segment.quantity) * 100
   return (
     <div
       className="flex w-full flex-col-reverse justify-start rounded-md bg-gray-400 bg-opacity-20"
       style={{
         // + '40' adds an opacity of 0.25
         // backgroundColor: courseColor + '40',
-        height: segment.value * heightScaleFactor + "%",
+        height: segment.value * heightScaleFactor + '%',
       }}
     >
       {[...Array(segment.quantity)].map((_, i) => {
-        const task = tasks[i];
+        const task = tasks[i]
         if (task?.grade) {
-          const segmentHeight = (task.grade / 100) * segmentElementMaxHeight;
+          const segmentHeight = (task.grade / 100) * segmentElementMaxHeight
           return (
             <div
               className={`relative w-full hover:z-10 ${styles.scaleUp}
-                ${task.grade > 0 && "min-h-[0.5rem] p-[1px]"}
+                ${task.grade > 0 && 'min-h-[0.5rem] p-[1px]'}
               `}
               key={segment.name + i}
               style={{
@@ -44,8 +44,8 @@ const SegmentBar: FC<Props> = ({
                 className={`group relative z-0 h-full w-full origin-bottom rounded-md`}
                 onMouseEnter={(e) => {
                   if (e.clientX < window.innerWidth / 2) {
-                    setTooltipStyles("left-full origin-left");
-                  } else setTooltipStyles("right-full origin-right");
+                    setTooltipStyles('left-full origin-left')
+                  } else setTooltipStyles('right-full origin-right')
                 }}
                 style={{
                   backgroundColor: courseColor,
@@ -54,7 +54,7 @@ const SegmentBar: FC<Props> = ({
               >
                 <span
                   className={
-                    "tooltip top-1/2 mx-2 -translate-y-1/2 " + tooltipStyles
+                    'tooltip top-1/2 mx-2 -translate-y-1/2 ' + tooltipStyles
                   }
                 >
                   {task.title
@@ -63,7 +63,7 @@ const SegmentBar: FC<Props> = ({
                 </span>
               </div>
             </div>
-          );
+          )
         }
         return (
           <div
@@ -82,10 +82,10 @@ const SegmentBar: FC<Props> = ({
               // }}
             ></div>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default SegmentBar;
+export default SegmentBar

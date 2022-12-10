@@ -1,4 +1,10 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import {
+  type Dispatch,
+  type FC,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import {
   DragDropContext,
   Droppable,
@@ -6,8 +12,8 @@ import {
   DropResult,
 } from 'react-beautiful-dnd'
 import Widget from '../common/Widget'
-import { Course, Segment, Task } from '@prisma/client'
-import { ModalData } from '../task/TaskModal'
+import type { Course, Segment, Task } from '@prisma/client'
+import type { ModalData } from '../task/TaskModal'
 import { trpc } from '../../utils/trpc'
 import { useStrictDroppable } from '../../hooks/useStrictDroppable'
 import { FaSpinner } from 'react-icons/fa'
@@ -99,7 +105,7 @@ const SegmentGradesListWidget: FC<Props> = ({
         <DragDropContext onDragEnd={onDragEnd}>
           {enabled ? (
             <Droppable droppableId={segment.id} direction="horizontal">
-              {(provided, snapshot) => (
+              {(provided) => (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}

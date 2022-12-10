@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
 import { HiClock } from 'react-icons/hi'
 import _ from 'lodash'
 import useDebounce from '../../../../hooks/useDebounce'
-import {
+import type {
   FullCourse,
   CreatePartialCourse,
   CreateDegreeFormData,

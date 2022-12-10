@@ -1,7 +1,7 @@
-import { Degree, School } from '@prisma/client'
-import { ButtonHTMLAttributes, FC } from 'react'
+import type { Degree, School } from '@prisma/client'
+import type { ButtonHTMLAttributes, FC } from 'react'
 import { BiBuildings } from 'react-icons/bi'
-import { HiClock, HiUsers } from 'react-icons/hi'
+import { HiClock } from 'react-icons/hi'
 import Members from '../common/Members'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {

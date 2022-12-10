@@ -1,4 +1,4 @@
-import { Course } from '@prisma/client'
+import type { Course } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { CourseModel, SegmentModel } from '../../../../prisma/zod'

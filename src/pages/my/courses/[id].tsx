@@ -4,7 +4,7 @@ import SegmentGradesListWidget from '../../../components/segment/SegmentGradesLi
 import GradesBarGraph from '../../../components/diagrams/GradesBarGraph'
 import TotalGradeBar from '../../../components/diagrams/TotalGradeBar'
 import SegmentGradeWidget from '../../../components/segment/SegmentGradeWidget'
-import TaskModal, { ModalData } from '../../../components/task/TaskModal'
+import TaskModal, { type ModalData } from '../../../components/task/TaskModal'
 import ScatterChart from '../../../components/diagrams/ScatterChart'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'

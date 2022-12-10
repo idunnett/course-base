@@ -1,5 +1,5 @@
-import { School } from '@prisma/client'
-import { CreateDegreeFormData } from '../../../types'
+import type { School } from '@prisma/client'
+import type { CreateDegreeFormData } from '../../../types'
 import InputSegment from '../../common/InputSegment'
 import Widget from '../../common/Widget'
 import SchoolAutoComplete from '../../school/SchoolAutoComplete'

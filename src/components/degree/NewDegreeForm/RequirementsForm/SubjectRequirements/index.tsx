@@ -1,7 +1,7 @@
-import { FC, useState } from 'react'
+import { type FC, useState } from 'react'
 import _ from 'lodash'
 import { FiX } from 'react-icons/fi'
-import {
+import type {
   CreateDegreeFormData,
   CreateSubjectRequirement,
 } from '../../../../../types'

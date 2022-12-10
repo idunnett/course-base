@@ -1,5 +1,4 @@
 import { BiBuildings } from 'react-icons/bi'
-import { FaSpinner } from 'react-icons/fa'
 import CourseButton from '../../../components/course/CourseButton'
 import Widget from '../../../components/common/Widget'
 import { useRouter } from 'next/router'

@@ -1,6 +1,5 @@
-import { School } from '@prisma/client'
-import { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
-import { HiUsers } from 'react-icons/hi'
+import type { School } from '@prisma/client'
+import type { ButtonHTMLAttributes, FC } from 'react'
 import Members from '../common/Members'
 import SchoolTag from './SchoolTag'
 

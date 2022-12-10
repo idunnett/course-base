@@ -1,5 +1,5 @@
-import { Course, Segment, Task } from '@prisma/client'
-import { FC, useMemo } from 'react'
+import type { Course, Segment, Task } from '@prisma/client'
+import { type FC, useMemo } from 'react'
 import Xarrow from 'react-xarrows'
 import styles from './ScatterChart.module.css'
 

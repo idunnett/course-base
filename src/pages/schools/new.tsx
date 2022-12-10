@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
-import { FormEvent, useRef, useState } from 'react'
+import { type FormEvent, useRef, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 import { schoolAtom } from '../../atoms'
 import ColorPicker from '../../components/common/ColorPicker'
