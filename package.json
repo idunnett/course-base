@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "next build",
-    "build:prod": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
