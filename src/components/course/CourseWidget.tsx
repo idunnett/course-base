@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import { AiOutlineBarChart, AiOutlineDotChart } from 'react-icons/ai'
 import Widget from '../common/Widget'
-import type { Course, Segment, Task } from '@prisma/client'
+import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
 import GradesBarGraph from '../diagrams/GradesBarGraph'
 import TotalGradeBar from '../diagrams/TotalGradeBar'
 import ScatterChart from '../diagrams/ScatterChart'
 
 interface Props {
-  course: Course & { segments: Segment[] }
+  course: Course & { info: CourseInfo; segments: Segment[] }
   tasks: Task[]
 }
 
@@ -32,10 +32,10 @@ const CourseWidget: FC<Props> = ({ course, tasks }) => {
           <h1
             className="group flex items-center text-2xl font-semibold"
             style={{
-              color: course.color,
+              color: course.info.color,
             }}
           >
-            {course.name}
+            {course.info.name}
             <MdKeyboardArrowRight className="opacity-0 transition-all duration-200 ease-linear group-hover:opacity-100" />
           </h1>
         </Link>

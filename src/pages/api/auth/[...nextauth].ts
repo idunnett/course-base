@@ -19,9 +19,12 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub
         const user = await prisma.user.findUnique({
           where: { id: session.user.id },
-          select: { schoolId: true },
+          select: { schoolId: true, degreeId: true },
         })
-        if (user) session.user.schoolId = user.schoolId || ''
+        if (user) {
+          session.user.schoolId = user.schoolId || ''
+          session.user.degreeId = user.degreeId || ''
+        }
       }
       return session
     },

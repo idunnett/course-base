@@ -44,14 +44,25 @@ export const schoolRouter = router({
         include: {
           _count: {
             select: {
-              courses: true,
+              courseInfos: true,
               degrees: true,
             },
           },
-          courses: {
+          courseInfos: {
             take: 5,
-            include: { segments: true },
-            orderBy: { memberCount: 'desc' },
+            include: {
+              courses: {
+                take: 1,
+                orderBy: {
+                  members: 'desc',
+                },
+              },
+            },
+            orderBy: {
+              courses: {
+                _count: 'desc',
+              },
+            },
           },
           degrees: {
             take: 5,

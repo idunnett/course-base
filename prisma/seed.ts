@@ -4,7 +4,7 @@ async function main() {
   const school = await prisma.school.upsert({
     where: { id: 'dalhousieUniversity' },
     update: {
-      courses: {
+      courseInfos: {
         createMany: {
           data: [
             {
@@ -13,9 +13,6 @@ async function main() {
               color: '#13B8A6',
               credits: 1,
               degreeYear: 1,
-              instructor: 'Dr. Smith',
-              year: 2022,
-              term: 'F',
             },
             {
               name: 'Organic Chemistry',
@@ -23,9 +20,6 @@ async function main() {
               color: '#6466F1',
               credits: 1,
               degreeYear: 2,
-              instructor: 'Dr. Watt',
-              year: 2022,
-              term: 'W',
             },
           ],
           skipDuplicates: true,
@@ -38,7 +32,7 @@ async function main() {
       name: 'Dalhousie University',
       shortName: 'DAL',
       id: 'dalhousieUniversity',
-      courses: {
+      courseInfos: {
         createMany: {
           data: [
             {
@@ -47,9 +41,6 @@ async function main() {
               color: '#13B8A6',
               credits: 3.5,
               degreeYear: 1,
-              instructor: 'Dr. Smith',
-              year: 2022,
-              term: 'F',
             },
             {
               name: 'Organic Chemistry',
@@ -57,21 +48,38 @@ async function main() {
               color: '#6466F1',
               credits: 3.5,
               degreeYear: 2,
-              instructor: 'Dr. Watt',
-              year: 2022,
-              term: 'W',
             },
           ],
           skipDuplicates: true,
         },
       },
     },
-    include: { courses: { select: { id: true } } },
+    include: { courseInfos: { select: { id: true } } },
   })
 
-  const courseIds = school.courses.map((c) => c.id)
+  const infoIds = school.courseInfos.map((c) => c.id)
 
-  for (const courseId of courseIds) {
+  let courseIds = []
+
+  for (const infoId of infoIds) {
+    const { id: courseId } = await prisma.course.upsert({
+      where: {
+        id: infoId + 'details',
+      },
+      create: {
+        id: infoId + 'details',
+        infoId,
+        instructor: 'Dr. Isaac Dunnett',
+        year: 2020,
+      },
+      update: {
+        id: infoId + 'details',
+        infoId,
+        instructor: 'Dr. Isaac Dunnett',
+        year: 2020,
+      },
+    })
+    courseIds.push(courseId)
     await prisma.segment.createMany({
       data: [
         {
@@ -169,6 +177,8 @@ async function main() {
     create: {
       email: 'isaacdunnett@gmail.com',
       name: 'Isaac Dunnett',
+      image:
+        'https://lh3.googleusercontent.com/a/AEdFTp60T49QM25_Q1aTbYAliIRT3QxcsxE18u6aTSQbwQ=s96-c',
       courseIds,
       schoolId: school.id,
       degreeId: newDegreeId,

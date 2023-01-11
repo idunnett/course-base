@@ -2,6 +2,35 @@ import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const userRouter = router({
+  me: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUniqueOrThrow({
+      where: { id: ctx.session.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+        schoolId: true,
+        accounts: { select: { provider: true } },
+        darkMode: true,
+        degreeId: true,
+      },
+    })
+    const school = await ctx.prisma.school.findUnique({
+      where: { id: user.schoolId },
+      select: { shortName: true, color: true, secondaryColor: true, id: true },
+    })
+    const degreeName = await ctx.prisma.degree.findUnique({
+      where: { id: user.degreeId },
+      select: { name: true },
+    })
+    return {
+      ...user,
+      school,
+      degreeName: degreeName?.name,
+    }
+  }),
   findById: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -15,8 +44,8 @@ export const userRouter = router({
           image: true,
           schoolId: true,
           accounts: { select: { provider: true } },
-          courseIds: true,
           darkMode: true,
+          degreeId: true,
         },
       })
     }),
@@ -30,11 +59,4 @@ export const userRouter = router({
         },
       })
     }),
-  myCourseIds: protectedProcedure.query(async ({ ctx }) => {
-    const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
-      where: { id: ctx.session.user.id },
-      select: { courseIds: true },
-    })
-    return courseIds
-  }),
 })

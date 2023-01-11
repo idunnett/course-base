@@ -20,32 +20,32 @@ const CourseDetails: FC<Props> = ({ course }) => {
           <h2 className="flex items-center gap-1 text-3xl font-bold text-slate-700 dark:text-white">
             <MdInsertChart
               style={{
-                color: course.color,
+                color: course.info.color,
               }}
             />
-            {course.code}
+            {course.info.code}
           </h2>
           <p className="text-3xl font-medium text-slate-500 dark:text-neutral-400">
-            : {course.name}
+            : {course.info.name}
           </p>
         </div>
         <div className="flex gap-4">
           <p className="text-md flex items-center gap-1 whitespace-nowrap font-normal text-slate-500 dark:text-neutral-400">
             <HiUsers />
             <span>
-              {course.memberCount} member
-              {course.memberCount !== 1 && 's'}
+              {course.members} member
+              {course.members !== 1 && 's'}
             </span>
           </p>
           <div
             className="text-md flex items-center gap-1 rounded-md px-1 font-normal text-slate-500  dark:text-neutral-300"
             style={{
-              color: course.school.secondaryColor,
-              backgroundColor: course.school.color,
+              color: course.info.school.secondaryColor,
+              backgroundColor: course.info.school.color,
             }}
           >
             <BiBuildings />
-            {course.school.name}
+            {course.info.school.name}
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@ const CourseDetails: FC<Props> = ({ course }) => {
         segments={course.segments.map((seg) => {
           const dataEntry = {
             ...seg,
-            color: course.color ?? '#64748b',
+            color: course.info.color ?? '#64748b',
             title: seg.name,
           }
           return dataEntry

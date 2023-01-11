@@ -7,6 +7,7 @@ module.exports = {
       animation: {
         'bounce-right': 'bounce-right 1s infinite',
         'bounce-left': 'bounce-left 1s infinite',
+        'skeleton-loading': 'skeleton-loading 1s linear infinite alternate',
       },
       scale: {
         101: '1.01',
@@ -22,7 +23,7 @@ module.exports = {
             'animation-timing-function': 'cubic-bezier(0,0,0.2,1)',
           },
           '50%': {
-            transform: 'translateX(50%)',
+            transform: 'translateX(30%)',
             'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
           },
         },
@@ -32,8 +33,16 @@ module.exports = {
             'animation-timing-function': 'cubic-bezier(0,0,0.2,1)',
           },
           '50%': {
-            transform: 'translateX(-50%)',
+            transform: 'translateX(-30%)',
             'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
+          },
+        },
+        'skeleton-loading': {
+          '0%': {
+            opacity: '20%',
+          },
+          '100%': {
+            opacity: '5%',
           },
         },
       },

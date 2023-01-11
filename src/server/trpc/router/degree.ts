@@ -100,11 +100,16 @@ export const degreeRouter = router({
         },
         include: {
           segments: true,
-          school: true,
+          info: {
+            include: {
+              school: true,
+            },
+          },
         },
       })
+      const { requiredCourseIds, schoolId, ...degreeWithoutIds } = degree
       return {
-        ...degree,
+        ...degreeWithoutIds,
         requiredCourses,
       }
     }),

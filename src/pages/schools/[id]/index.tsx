@@ -59,15 +59,15 @@ const School = () => {
             <h2 className="flex items-end gap-2 text-lg font-semibold text-slate-500 dark:text-neutral-200">
               Courses{' '}
               <span className="text-sm font-normal text-slate-400 dark:text-neutral-400">
-                {school._count.courses} total
+                {school._count.courseInfos} total
               </span>
             </h2>
-            {school.courses
-              ? school.courses.map((course) => (
+            {school.courseInfos
+              ? school.courseInfos.map((courseInfo) => (
                   <CourseButton
-                    key={course.id}
-                    course={{ ...course, school: school }}
-                    onClick={() => router.push(`/courses/${course.id}`)}
+                    key={courseInfo.id}
+                    course={{ info: courseInfo, school: school }}
+                    onClick={() => router.push(`/courses/${courseInfo.id}`)}
                     showSchool={false}
                   />
                 ))

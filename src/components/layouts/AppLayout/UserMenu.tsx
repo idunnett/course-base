@@ -59,6 +59,27 @@ const UserMenu = () => {
         >
           Profile
         </Link>
+        <Link
+          href="/degrees"
+          onClick={() => setOpen(false)}
+          className="link text-slate-500 dark:text-neutral-200"
+        >
+          Degrees
+        </Link>
+        <Link
+          href="/courses"
+          onClick={() => setOpen(false)}
+          className="link text-slate-500 dark:text-neutral-200"
+        >
+          Courses
+        </Link>
+        <Link
+          href="/schools"
+          onClick={() => setOpen(false)}
+          className="link text-slate-500 dark:text-neutral-200"
+        >
+          Schools
+        </Link>
         <button
           onClick={() => {
             localStorage.clear()

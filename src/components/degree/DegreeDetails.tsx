@@ -3,7 +3,7 @@ import { HiClock } from 'react-icons/hi'
 import type { FullCourse, FullDegree } from '../../types'
 import { isCourseType } from '../../utils/courseUtils'
 import Members from '../common/Members'
-import CourseButton from '../course/CourseButton'
+import CourseDegreeButton from '../course/CourseDegreeButton'
 import SchoolTag from '../school/SchoolTag'
 import SubjectRequirementButton from './NewDegreeForm/RequirementsForm/SubjectRequirements/SubjectRequirementButton'
 
@@ -15,6 +15,9 @@ interface Props {
 const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
   return (
     <div className="flex flex-col gap-2">
+      <h1 className="text-2xl font-semibold text-slate-600 dark:text-neutral-100">
+        {degree.name}
+      </h1>
       <div className="flex items-center justify-between">
         <div className="flex gap-3 text-sm font-light text-slate-500 dark:text-neutral-400">
           <div className="flex items-center gap-0.5">
@@ -40,39 +43,34 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
           <div className="flex flex-col gap-1">
             {degree.requiredCourses.map(
               (requiredCourse, index) =>
-                requiredCourse.degreeYear === year + 1 && (
+                requiredCourse.info.degreeYear === year + 1 && (
+                  <div key={requiredCourse.id} className="flex items-center">
+                    <CourseDegreeButton
+                      course={requiredCourse}
+                      onClick={() => setCourseModalData(requiredCourse)}
+                    />
+                  </div>
+                )
+            )}
+            {degree.partialCourses.map(
+              (partialCourse, index) =>
+                partialCourse.degreeYear === year + 1 && (
                   <div
-                    key={
-                      isCourseType(requiredCourse)
-                        ? requiredCourse.id
-                        : requiredCourse.name + index
-                    }
-                    className="flex items-center"
+                    key={partialCourse.code + partialCourse.name + index}
+                    className="list-button flex items-center justify-between gap-1"
                   >
-                    {isCourseType(requiredCourse) ? (
-                      <CourseButton
-                        course={requiredCourse}
-                        onClick={() => setCourseModalData(requiredCourse)}
-                      />
-                    ) : (
-                      <div
-                        key={requiredCourse.code + requiredCourse.name + index}
-                        className="list-button flex flex-col items-start"
-                      >
-                        <div className="flex items-center">
-                          <h2 className="flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white">
-                            {requiredCourse.code}
-                          </h2>
-                          <p className="text-md text-base font-medium text-slate-500 dark:text-neutral-400">
-                            : {requiredCourse.name}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-0.5 text-sm font-light text-slate-600 dark:text-neutral-400">
-                          <HiClock />
-                          <span>{requiredCourse.credits}</span>
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex items-center">
+                      <h2 className="flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white">
+                        {partialCourse.code}
+                      </h2>
+                      <p className="text-md text-base font-medium text-slate-500 dark:text-neutral-400">
+                        : {partialCourse.name}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-0.5 text-sm font-light">
+                      <HiClock />
+                      <span>{partialCourse.credits}</span>
+                    </div>
                   </div>
                 )
             )}

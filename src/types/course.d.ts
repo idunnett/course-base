@@ -1,8 +1,17 @@
-import type { Course, School, Segment } from '@prisma/client'
+import type { Course, CourseInfo, School, Segment } from '@prisma/client'
+
+type FullCourseWithVariations = {
+  school: School
+  info: CourseInfo & {
+    courses: Course[]
+  }
+}
 
 type FullCourse = Course & {
   segments: Segment[]
-  school: School
+  info: Omit<CourseInfo, 'schoolId'> & {
+    school: School
+  }
 }
 
 type CreateCourseFormData = {

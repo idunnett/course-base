@@ -3,7 +3,6 @@ import { useAtomValue } from 'jotai'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Suspense, useEffect, useState } from 'react'
-import { schoolAtom } from '../../atoms'
 import Form from '../../components/common/Form'
 import InputSegment from '../../components/common/InputSegment'
 import LoadingOrError from '../../components/common/LoadingOrError'
@@ -22,7 +21,6 @@ const CourseDetails = dynamic(
 )
 
 const Degrees = () => {
-  const initialSchool = useAtomValue(schoolAtom)
   const [school, setSchool] = useState<School | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [activeDegreeId, setActiveDegreeId] = useState<string | null>(null)
@@ -53,10 +51,6 @@ const Degrees = () => {
     enabled: !!activeDegreeId,
     refetchOnWindowFocus: false,
   })
-
-  useEffect(() => {
-    if (initialSchool) setSchool(initialSchool)
-  }, [])
 
   return (
     <div className="flex w-full flex-col gap-4 p-4 pt-16">
@@ -101,10 +95,7 @@ const Degrees = () => {
         <LoadingOrError error={error?.message} />
       )}
       {activeDegreeId && (
-        <Modal
-          title={activeDegree?.name}
-          handleClose={() => setActiveDegreeId(null)}
-        >
+        <Modal handleClose={() => setActiveDegreeId(null)}>
           {!isLoading && activeDegree ? (
             <Suspense fallback={<LoadingOrError />}>
               <DegreeDetails

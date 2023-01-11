@@ -25,14 +25,14 @@ datasource db {
 }
 
 model School {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   name           String
   shortName      String
   color          String
   secondaryColor String
-  memberCount    Int      @default(1)
+  memberCount    Int          @default(1)
   degrees        Degree[]
-  courses        Course[]
+  courseInfos    CourseInfo[]
 }
 
 model Degree {
@@ -69,20 +69,28 @@ model PartialCourse {
   degreeId   String?
 }
 
+model CourseInfo {
+  id         String   @id @default(cuid())
+  code       String
+  name       String
+  color      String
+  degreeYear Int
+  credits    Float
+  schoolId   String
+  school     School   @relation(fields: [schoolId], references: [id])
+  courses    Course[]
+}
+
 model Course {
-  id          String    @id @default(cuid())
-  name        String
-  color       String
-  segments    Segment[]
-  year        Int
-  degreeYear  Int
-  term        Term      @default(F)
-  instructor  String
-  memberCount Int       @default(1)
-  credits     Float
-  code        String
-  schoolId    String
-  school      School    @relation(fields: [schoolId], references: [id])
+  id         String     @id @default(cuid())
+  segments   Segment[]
+  year       Int
+  term       Term       @default(F)
+  instructor String
+  members    Int        @default(1)
+  createdAt  DateTime   @default(now())
+  infoId     String
+  info       CourseInfo @relation(fields: [infoId], references: [id])
 }
 
 model Segment {
@@ -90,8 +98,8 @@ model Segment {
   name     String
   value    Int
   quantity Int
-  courseId String
   course   Course @relation(fields: [courseId], references: [id])
+  courseId String
 }
 
 enum Term {
@@ -154,13 +162,6 @@ model User {
   sessions      Session[]
   darkMode      Boolean   @default(false)
 }
-
-// model Settings {
-//   id       String  @id @default(cuid())
-//   userId   String  @unique
-//   user     User    @relation(fields: [userId], references: [id])
-//   darkMode Boolean @default(false)
-// }
 
 model VerificationToken {
   identifier String

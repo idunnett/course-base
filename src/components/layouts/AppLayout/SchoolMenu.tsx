@@ -1,36 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { HiChevronDown } from 'react-icons/hi'
 import Link from 'next/link'
-import { trpc } from '../../../utils/trpc'
-import { useSession } from 'next-auth/react'
-import { useAtom } from 'jotai'
-import { schoolAtom } from '../../../atoms'
 import type { School } from '@prisma/client'
 import { FaSpinner } from 'react-icons/fa'
 
-const SchoolMenu = () => {
-  const { data: session } = useSession()
+interface Props {
+  school?: Omit<School, 'name' | 'memberCount'> | null
+  isFetching?: boolean
+}
+
+const SchoolMenu: FC<Props> = ({ school, isFetching }) => {
   const [open, setOpen] = useState(false)
-  const [schoolInitial, setSchool] = useAtom(schoolAtom)
-  const [school, setSchoolVal] = useState<School | null>(null)
   const schoolButtonRef = useRef<HTMLDivElement>(null)
 
-  const { isFetching } = trpc.school.getMySchool.useQuery(undefined, {
-    retry: false,
-    refetchOnWindowFocus: false,
-    enabled: !!session?.user?.schoolId,
-    onSuccess: (data) => {
-      setSchoolVal(data)
-      setSchool(data)
-    },
-    onError: (err) => {
-      console.log(err)
-    },
-  })
-
   useEffect(() => {
-    // To avoid hydration issues
-    setSchoolVal(schoolInitial)
     document.addEventListener('click', handleClick)
     return () => {
       document.removeEventListener('click', handleClick)
@@ -46,7 +29,7 @@ const SchoolMenu = () => {
     return (
       <div className="relative" ref={schoolButtonRef}>
         <button
-          className="primary-btn flex items-center gap-1 font-bold"
+          className="primary-btn flex h-8 items-center gap-1 font-bold"
           onClick={() => setOpen(!open)}
           style={{
             backgroundColor: school?.color,
@@ -55,7 +38,7 @@ const SchoolMenu = () => {
         >
           {!!school ? (
             <>
-              {school.shortName ?? school.name ?? 'My school'}{' '}
+              {school.shortName ?? 'My school'}{' '}
               <HiChevronDown
                 className={
                   'h-4 w-4 transition-transform duration-100 ease-linear ' +
@@ -64,7 +47,7 @@ const SchoolMenu = () => {
               />
             </>
           ) : (
-            <FaSpinner className="animate-spin" />
+            <FaSpinner className="h-4 w-20 animate-spin" />
           )}
         </button>
         {!!school && (

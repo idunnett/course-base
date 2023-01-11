@@ -4,7 +4,7 @@ import { BiBuildings } from 'react-icons/bi'
 import { FiMoon, FiSun } from 'react-icons/fi'
 import { useAtom } from 'jotai'
 import Form from '../common/Form'
-import { darkModeAtom, schoolAtom } from '../../atoms'
+import { darkModeAtom } from '../../atoms'
 import SchoolButton from '../school/SchoolButton'
 import { useRouter } from 'next/router'
 import { trpc } from '../../utils/trpc'
@@ -17,7 +17,6 @@ const ProfileForm = () => {
   const router = useRouter()
   const { id } = router.query
   const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-  const [school, setSchool] = useAtom(schoolAtom)
 
   const {
     data: user,
@@ -30,13 +29,13 @@ const ProfileForm = () => {
       setDarkMode(data.darkMode)
     },
   })
-  trpc.school.findById.useQuery(user?.schoolId as string, {
-    enabled: !!user?.schoolId,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setSchool(data)
-    },
-  })
+  const { data: school } = trpc.school.findById.useQuery(
+    user?.schoolId as string,
+    {
+      enabled: !!user?.schoolId,
+      refetchOnWindowFocus: false,
+    }
+  )
   const { mutate: changeDarkMode, isLoading: isChangingDarkMode } =
     trpc.user.setDarkMode.useMutation({
       onError: (error) => {
@@ -64,7 +63,7 @@ const ProfileForm = () => {
   if (!isLoading && user)
     return (
       <Form title="Profile" className="w-11/12 sm:w-4/5 md:w-3/5 lg:w-2/5">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 text-slate-500 dark:text-white">
           {user.image ? (
             <Image
               src={user.image}
@@ -74,9 +73,9 @@ const ProfileForm = () => {
               className="rounded-full"
             />
           ) : (
-            <FaUserGraduate className="h-5 w-5 text-inherit" />
+            <FaUserGraduate className="h-5 w-5 text-slate-500 dark:text-neutral-400" />
           )}
-          <h2 className="text-3xl font-medium text-slate-500 dark:text-white">
+          <h2 className="text-3xl font-medium text-slate-600 dark:text-white">
             {user.name}
           </h2>
         </div>
@@ -84,7 +83,7 @@ const ProfileForm = () => {
           <div className="flex h-auto flex-col-reverse gap-1">
             <p
               id="email"
-              className="h-full w-full rounded-xl bg-transparent py-3 text-2xl text-black dark:text-white"
+              className="h-full w-full rounded-xl bg-transparent py-3 text-2xl text-slate-600 dark:text-white"
             >
               {user?.email}
             </p>

@@ -1,24 +1,20 @@
 import * as z from "zod"
 import { Term } from "@prisma/client"
-import { CompleteSegment, RelatedSegmentModel, CompleteSchool, RelatedSchoolModel } from "./index"
+import { CompleteSegment, RelatedSegmentModel, CompleteCourseInfo, RelatedCourseInfoModel } from "./index"
 
 export const CourseModel = z.object({
   id: z.string(),
-  name: z.string(),
-  color: z.string(),
   year: z.number().int(),
-  degreeYear: z.number().int(),
   term: z.nativeEnum(Term),
   instructor: z.string(),
-  memberCount: z.number().int(),
-  credits: z.number(),
-  code: z.string(),
-  schoolId: z.string(),
+  members: z.number().int(),
+  createdAt: z.date(),
+  infoId: z.string(),
 })
 
 export interface CompleteCourse extends z.infer<typeof CourseModel> {
   segments: CompleteSegment[]
-  school: CompleteSchool
+  info: CompleteCourseInfo
 }
 
 /**
@@ -28,5 +24,5 @@ export interface CompleteCourse extends z.infer<typeof CourseModel> {
  */
 export const RelatedCourseModel: z.ZodSchema<CompleteCourse> = z.lazy(() => CourseModel.extend({
   segments: RelatedSegmentModel.array(),
-  school: RelatedSchoolModel,
+  info: RelatedCourseInfoModel,
 }))

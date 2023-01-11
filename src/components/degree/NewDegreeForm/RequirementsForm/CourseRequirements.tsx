@@ -16,6 +16,7 @@ import Widget from '../../../common/Widget'
 import CourseButton from '../../../course/CourseButton'
 import CourseDetails from '../../../course/CourseDetails'
 import { isCourseType } from '../../../../utils/courseUtils'
+import CourseDegreeButton from '../../../course/CourseDegreeButton'
 
 interface Props {
   degreeYears: string
@@ -88,7 +89,7 @@ const CourseRequirements: FC<Props> = ({
                         <FiX className="h-5 w-5" />
                       </button>
                       {isCourseType(requiredCourse) ? (
-                        <CourseButton
+                        <CourseDegreeButton
                           course={requiredCourse}
                           onClick={() => setModalData(requiredCourse)}
                         />

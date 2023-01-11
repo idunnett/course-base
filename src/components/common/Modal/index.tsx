@@ -42,7 +42,7 @@ const Modal: FC<Props> = ({ children, title, handleClose }) => {
         exit="exit"
       >
         {title && (
-          <h1 className="text-slate-500 dark:text-neutral-200">{title}</h1>
+          <h1 className="text-slate-600 dark:text-neutral-100">{title}</h1>
         )}
         {children}
       </motion.div>

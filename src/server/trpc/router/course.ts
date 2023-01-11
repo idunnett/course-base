@@ -5,6 +5,18 @@ import { CourseModel, SegmentModel } from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const courseRouter = router({
+  myCourseIds: protectedProcedure.query(async ({ ctx }) => {
+    return (
+      await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+        select: {
+          courseIds: true,
+        },
+      })
+    )?.courseIds
+  }),
   getMyCourses: protectedProcedure.query(async ({ ctx }) => {
     const courseIds = (
       await ctx.prisma.user.findUnique({
@@ -22,6 +34,7 @@ export const courseRouter = router({
         id: { in: courseIds },
       },
       include: {
+        info: true,
         segments: true,
       },
     })
@@ -41,6 +54,7 @@ export const courseRouter = router({
       return await ctx.prisma.course.findUniqueOrThrow({
         where: { id: input },
         include: {
+          info: true,
           segments: true,
         },
       })
@@ -67,7 +81,7 @@ export const courseRouter = router({
       const course: Course = await ctx.prisma.course.update({
         where: { id: input },
         data: {
-          memberCount: {
+          members: {
             increment: 1,
           },
         },
@@ -92,7 +106,7 @@ export const courseRouter = router({
     )
     .query(async ({ input, ctx }) => {
       const { limit, searchVal, cursor } = input
-      const items = await ctx.prisma.course.findMany({
+      const items = await ctx.prisma.courseInfo.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
           OR: [
@@ -112,10 +126,11 @@ export const courseRouter = router({
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          memberCount: 'desc',
+          courses: {
+            _count: 'desc',
+          },
         },
         include: {
-          segments: true,
           school: true,
         },
       })
@@ -168,7 +183,12 @@ export const courseRouter = router({
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.course.findUniqueOrThrow({
         where: { id: input },
-        include: { segments: true, school: true },
+        include: {
+          segments: true,
+          info: {
+            include: { school: true },
+          },
+        },
       })
     }),
 })
