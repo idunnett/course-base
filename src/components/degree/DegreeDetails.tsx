@@ -1,7 +1,6 @@
 import type { Dispatch, SetStateAction, FC } from 'react'
 import { HiClock } from 'react-icons/hi'
-import type { FullCourse, FullDegree } from '../../types'
-import { isFullCourseType } from '../../utils/courseUtils'
+import type { FullCourseInfo, FullDegree } from '../../types'
 import Members from '../common/Members'
 import CourseDegreeButton from '../course/CourseDegreeButton'
 import SchoolTag from '../school/SchoolTag'
@@ -9,7 +8,7 @@ import SubjectRequirementButton from './NewDegreeForm/RequirementsForm/SubjectRe
 
 interface Props {
   degree: FullDegree
-  setCourseModalData: Dispatch<SetStateAction<FullCourse | null>>
+  setCourseModalData: Dispatch<SetStateAction<FullCourseInfo | null>>
 }
 
 const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {

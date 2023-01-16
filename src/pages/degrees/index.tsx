@@ -1,5 +1,4 @@
 import type { School } from '@prisma/client'
-import { useAtomValue } from 'jotai'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Suspense, useEffect, useState } from 'react'
@@ -10,7 +9,7 @@ import Modal from '../../components/common/Modal'
 import DegreeButton from '../../components/degree/DegreeButton'
 import SchoolAutoComplete from '../../components/school/SchoolAutoComplete'
 import useDebounce from '../../hooks/useDebounce'
-import type { FullCourse } from '../../types'
+import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
 const DegreeDetails = dynamic(
@@ -24,7 +23,7 @@ const Degrees = () => {
   const [school, setSchool] = useState<School | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [activeDegreeId, setActiveDegreeId] = useState<string | null>(null)
-  const [courseModalData, setCourseModalData] = useState<FullCourse | null>(
+  const [courseModalData, setCourseModalData] = useState<FullCourseInfo | null>(
     null
   )
   const debouncedNameInput = useDebounce(nameInput, 500)
@@ -111,7 +110,7 @@ const Degrees = () => {
       {courseModalData && (
         <Modal handleClose={() => setCourseModalData(null)}>
           <Suspense fallback={<LoadingOrError />}>
-            <CourseDetails course={courseModalData} />
+            <CourseDetails courseInfo={courseModalData} />
           </Suspense>
         </Modal>
       )}

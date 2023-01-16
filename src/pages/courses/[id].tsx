@@ -8,7 +8,6 @@ import { trpc } from '../../utils/trpc'
 
 const CourseView = () => {
   const { id } = useRouter().query
-  const [activeCourse, setActiveCourse] = useState<FullCourse>()
 
   const { data: myCourseIds } = trpc.course.myCourseIds.useQuery(undefined, {
     retry: false,
@@ -23,20 +22,12 @@ const CourseView = () => {
     retry: false,
     refetchOnWindowFocus: false,
     enabled: !!id,
-    onSuccess: (data) => {
-      const firstCourse = data.courses[0]
-      if (firstCourse) {
-        const { courses, schoolId, ...info } = data
-        const c = { info, ...firstCourse }
-        setActiveCourse(c)
-      }
-    },
   })
 
-  if (!isLoading && courseInfo && activeCourse)
+  if (!isLoading && courseInfo)
     return (
       <div className="flex w-full items-center justify-center gap-6 pt-16">
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <h2 className="text-lg text-slate-500 dark:text-neutral-400">
             Course Variations
           </h2>
@@ -53,10 +44,10 @@ const CourseView = () => {
               {getTermName(course.term)} {course.year}
             </button>
           ))}
-        </div>
+        </div> */}
         <div className="flex flex-col items-center justify-center gap-6">
-          <CourseDetails course={activeCourse} />
-          {myCourseIds && (
+          <CourseDetails courseInfo={courseInfo} />
+          {/* {myCourseIds && (
             <div className="flex flex-col items-center gap-2">
               <button
                 disabled={myCourseIds.includes(activeCourse.id)}
@@ -71,7 +62,7 @@ const CourseView = () => {
                 You are already in this course.
               </p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     )

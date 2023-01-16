@@ -1,11 +1,9 @@
 import { useState } from 'react'
-import { IoIosArrowBack } from 'react-icons/io'
 import { PieChart } from 'react-minimal-pie-chart'
 import Widget from '../../components/common/Widget'
 import CourseDetails from '../../components/course/CourseDetails'
 import CourseSearchForm from '../../components/course/CourseSearchForm'
-import type { FullCourse, FullCourseInfo } from '../../types'
-import getTermName from '../../utils/termUtils'
+import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
 const CourseSearch = () => {
@@ -32,7 +30,7 @@ const CourseSearch = () => {
   )
 
   return (
-    <div className="relative flex h-full w-full gap-2 p-4 pt-16">
+    <div className="relative flex h-full w-full gap-2 px-4 pt-12">
       <div className="w-7/12">
         <CourseSearchForm
           selectedCourse={selectedCourse}
@@ -40,11 +38,13 @@ const CourseSearch = () => {
         />
       </div>
       {selectedCourse && selectedCourse.courses.length > 0 ? (
-        <Widget className="w-5/12">
-          <div className="flex flex-col gap-4">
-            <CourseDetails courseInfo={selectedCourse} />
-          </div>
-        </Widget>
+        <div className="relative w-5/12 overflow-y-auto scrollbar-hide">
+          <Widget className="my-4 w-full">
+            <div className="flex flex-col gap-4">
+              <CourseDetails courseInfo={selectedCourse} />
+            </div>
+          </Widget>
+        </div>
       ) : (
         <Widget className="relative flex h-full w-5/12 animate-pulse flex-col items-center pt-40">
           <PieChart

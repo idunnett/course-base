@@ -1,18 +1,18 @@
 .container {
-  @apply flex flex-col-reverse gap-1 h-auto my-1 w-full overflow-visible;
+  @apply my-1 flex h-auto w-full flex-col-reverse gap-1 overflow-visible;
 }
 
 .input {
-  @apply placeholder:text-gray-400 text-xl rounded-full px-5 py-2.5 w-full h-full outline-none focus:brightness-100 focus:shadow-inner-lg transition-all duration-200 ease-linear max-h-14;
+  @apply h-full max-h-14 w-full rounded-xl px-5 py-2.5 text-xl outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 focus:shadow-inner-lg focus:brightness-100;
 }
 
 .label {
-  @apply h-6 transition-all duration-200 ease-linear whitespace-nowrap;
+  @apply h-6 whitespace-nowrap transition-all duration-200 ease-linear;
   transition: opacity 500ms 50ms;
 }
 
-.input[type=number]::-webkit-inner-spin-button,
-.input[type=number]::-webkit-outer-spin-button {
+.input[type='number']::-webkit-inner-spin-button,
+.input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
