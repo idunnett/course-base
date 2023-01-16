@@ -15,10 +15,7 @@ const Form: FC<Props> = ({
   className,
 }) => {
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={`${styles.form} bg-white dark:bg-zinc-700 ${className}`}
-    >
+    <form onSubmit={handleSubmit} className={`${styles.form} ${className}`}>
       {title && (
         <h1 className="text-slate-500 dark:text-neutral-200">{title}</h1>
       )}

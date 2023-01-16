@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction, FC } from 'react'
 import { HiClock } from 'react-icons/hi'
 import type { FullCourse, FullDegree } from '../../types'
-import { isCourseType } from '../../utils/courseUtils'
+import { isFullCourseType } from '../../utils/courseUtils'
 import Members from '../common/Members'
 import CourseDegreeButton from '../course/CourseDegreeButton'
 import SchoolTag from '../school/SchoolTag'

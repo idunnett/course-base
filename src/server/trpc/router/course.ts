@@ -1,7 +1,11 @@
 import type { Course } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { CourseModel, SegmentModel } from '../../../../prisma/zod'
+import {
+  CourseInfoModel,
+  CourseModel,
+  SegmentModel,
+} from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const courseRouter = router({
@@ -96,66 +100,27 @@ export const courseRouter = router({
       })
       return course
     }),
-  search: protectedProcedure
-    .input(
-      z.object({
-        searchVal: z.string().optional(),
-        limit: z.number().min(1).max(100).default(6),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const { limit, searchVal, cursor } = input
-      const items = await ctx.prisma.courseInfo.findMany({
-        take: limit + 1, // get an extra item at the end which we'll use as next cursor
-        where: {
-          OR: [
-            {
-              name: {
-                startsWith: searchVal,
-                mode: 'insensitive',
-              },
-            },
-            {
-              code: {
-                startsWith: searchVal,
-                mode: 'insensitive',
-              },
-            },
-          ],
-        },
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          courses: {
-            _count: 'desc',
-          },
-        },
-        include: {
-          school: true,
-        },
-      })
-      let nextCursor: typeof cursor | undefined = undefined
-      if (items.length > limit) {
-        const nextItem = items.pop()
-        nextCursor = nextItem!.id
-      }
-      return {
-        items,
-        nextCursor,
-      }
-    }),
   create: protectedProcedure
     .input(
       z.object({
-        course: CourseModel.omit({ id: true, memberCount: true }),
+        courseInfo: CourseInfoModel.omit({ id: true, courses: true }),
+        course: CourseModel.omit({
+          id: true,
+          members: true,
+          createdAt: true,
+          infoId: true,
+        }),
         segments: SegmentModel.omit({ id: true, courseId: true }).array(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { course, segments } = input
+      const { courseInfo, course, segments } = input
+      const { id: infoId } = await ctx.prisma.courseInfo.create({
+        data: courseInfo,
+      })
       const courseId = (
         await ctx.prisma.course.create({
-          data: course,
+          data: { infoId, ...course },
           select: {
             id: true,
           },

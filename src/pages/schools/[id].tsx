@@ -1,10 +1,10 @@
 import { BiBuildings } from 'react-icons/bi'
-import CourseButton from '../../../components/course/CourseButton'
-import Widget from '../../../components/common/Widget'
+import CourseButton from '../../components/course/CourseButton'
+import Widget from '../../components/common/Widget'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { trpc } from '../../../utils/trpc'
-import LoadingOrError from '../../../components/common/LoadingOrError'
+import { trpc } from '../../utils/trpc'
+import LoadingOrError from '../../components/common/LoadingOrError'
 import { HiUsers } from 'react-icons/hi'
 
 const School = () => {
@@ -51,7 +51,7 @@ const School = () => {
                 {school._count.degrees} total
               </span>
             </h2>
-            <Link href={`/schools/${id}/degrees/new`} className="primary-btn">
+            <Link href="/degrees/new" className="primary-btn">
               New
             </Link>
           </Widget>
@@ -81,7 +81,7 @@ const School = () => {
                     }}
                   />
                 ))}
-            <Link href={`/schools/${id}/courses/new`} className="primary-btn">
+            <Link href="/courses/new" className="primary-btn">
               New
             </Link>
           </Widget>

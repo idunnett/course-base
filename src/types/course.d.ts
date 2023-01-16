@@ -33,3 +33,14 @@ type CreatePartialCourse = {
   credits: string
   degreeYear: number
 }
+
+type CourseInfoWithSchool = CourseInfo & {
+  school: School
+}
+
+type FullCourseInfo = CourseInfo & {
+  courses: (Course & {
+    segments: Segment[]
+  })[]
+  school: School
+}

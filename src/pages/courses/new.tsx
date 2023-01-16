@@ -1,16 +1,18 @@
 import type { School } from '@prisma/client'
 import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
-import { schoolAtom } from '../../atoms'
+import { userSchoolAtom } from '../../atoms'
 import NewCourseForm from '../../components/course/NewCourseForm'
 
 const CourseCreate = () => {
-  const currentSchool = useAtomValue(schoolAtom)
+  const userSchool = useAtomValue(userSchoolAtom)
+  console.log(userSchool)
   const [school, setSchool] = useState<School | null>(null)
 
   useEffect(() => {
+    if (!userSchool) return
     // To avoid hydration issues
-    setSchool(currentSchool)
+    setSchool(userSchool)
   }, [])
 
   return <NewCourseForm school={school} />

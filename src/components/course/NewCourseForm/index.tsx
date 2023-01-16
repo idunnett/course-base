@@ -62,15 +62,20 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
     if (!data.school) return alert('Please assign a school.')
 
     const { segments, ...courseData } = data
-    const course = {
-      ...courseData,
+    const courseInfo = {
+      code: courseData.code,
+      name: courseData.name,
+      color: courseData.color,
+      degreeYear: Number(courseData.degreeYear),
+      credits: Number(courseData.credits),
       schoolId: data.school.id,
-      year: Number(data.year),
-      term: getTerm(data.term),
-      degreeYear: Number(data.degreeYear),
-      credits: Number(data.credits),
     }
-    createCourse({ course, segments })
+    const course = {
+      year: Number(courseData.year),
+      term: getTerm(courseData.term),
+      instructor: courseData.instructor,
+    }
+    createCourse({ courseInfo, course, segments })
   }
 
   return (

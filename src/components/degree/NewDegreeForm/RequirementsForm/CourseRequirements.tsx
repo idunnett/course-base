@@ -15,7 +15,7 @@ import Modal from '../../../common/Modal'
 import Widget from '../../../common/Widget'
 import CourseButton from '../../../course/CourseButton'
 import CourseDetails from '../../../course/CourseDetails'
-import { isCourseType } from '../../../../utils/courseUtils'
+import { isFullCourseType } from '../../../../utils/courseUtils'
 import CourseDegreeButton from '../../../course/CourseDegreeButton'
 
 interface Props {
@@ -67,7 +67,7 @@ const CourseRequirements: FC<Props> = ({
                   requiredCourse.degreeYear === year + 1 && (
                     <div
                       key={
-                        isCourseType(requiredCourse)
+                        isFullCourseType(requiredCourse)
                           ? requiredCourse.id
                           : requiredCourse.name + index
                       }
@@ -88,7 +88,7 @@ const CourseRequirements: FC<Props> = ({
                       >
                         <FiX className="h-5 w-5" />
                       </button>
-                      {isCourseType(requiredCourse) ? (
+                      {isFullCourseType(requiredCourse) ? (
                         <CourseDegreeButton
                           course={requiredCourse}
                           onClick={() => setModalData(requiredCourse)}
@@ -145,7 +145,7 @@ const CourseRequirements: FC<Props> = ({
                             ({ id, degreeYear, code, name }) =>
                               !requiredCourses
                                 .map((rc) =>
-                                  isCourseType(rc) ? rc.id : undefined
+                                  isFullCourseType(rc) ? rc.id : undefined
                                 )
                                 .includes(id) &&
                               degreeYear === year + 1 &&
@@ -200,7 +200,7 @@ const CourseRequirements: FC<Props> = ({
                             ({ id, degreeYear, code, name }) =>
                               !requiredCourses
                                 .map((rc) =>
-                                  isCourseType(rc) ? rc.id : undefined
+                                  isFullCourseType(rc) ? rc.id : undefined
                                 )
                                 .includes(id) &&
                               degreeYear === year + 1 &&

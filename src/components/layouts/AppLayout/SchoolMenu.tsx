@@ -65,14 +65,14 @@ const SchoolMenu: FC<Props> = ({ school, isFetching }) => {
               View school
             </Link>
             <Link
-              href={`/schools/${school.id}/degrees/new`}
+              href="/degrees/new"
               onClick={() => setOpen(false)}
               className="link text-slate-500 dark:text-neutral-200"
             >
               Add degree
             </Link>
             <Link
-              href={`/schools/${school.id}/courses/new`}
+              href="/courses/new"
               onClick={() => setOpen(false)}
               className="link text-slate-500 dark:text-neutral-200"
             >

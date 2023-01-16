@@ -15,7 +15,7 @@ import {
   SubjectRequirementModel,
 } from '../../../../prisma/zod'
 import type { z } from 'zod'
-import { isCourseType } from '../../../utils/courseUtils'
+import { isFullCourseType } from '../../../utils/courseUtils'
 import { FaSpinner } from 'react-icons/fa'
 
 const INITIAL_DATA: CreateDegreeFormData = {
@@ -68,7 +68,7 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
     const partialCoursesData: CreatePartialCourse[] = []
 
     data.requiredCourses.forEach((c) => {
-      if (isCourseType(c)) fullCourses.push(c)
+      if (isFullCourseType(c)) fullCourses.push(c)
       else partialCoursesData.push(c)
     })
 

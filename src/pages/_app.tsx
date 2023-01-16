@@ -47,7 +47,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <PageLoading />
-        <main className="min-h-screen w-full bg-gray-100 dark:bg-zinc-800">
+        <main className="relative h-screen w-full bg-gray-100 dark:bg-zinc-800">
           <Component {...pageProps} />
         </main>
       </Layout>

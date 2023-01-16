@@ -1,8 +1,8 @@
-import type { PartialCourse } from '@prisma/client'
+import type { CourseInfo, PartialCourse } from '@prisma/client'
 import type { FullCourse } from '../types'
 
-export function isCourseType(
-  obj: FullCourse | PartialCourse
+export function isFullCourseType(
+  obj: FullCourse | PartialCourse | CourseInfo
 ): obj is FullCourse {
-  return !!(obj as FullCourse).id
+  return !!(obj as FullCourse).info
 }

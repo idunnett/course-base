@@ -13,11 +13,11 @@ import Form from '../../common/Form'
 import useDebounce from '../../../hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
-import type { FullCourse } from '../../../types'
+import type { FullCourseInfo } from '../../../types'
 
 interface Props {
-  selectedCourse: FullCourse | null
-  setSelectedCourse: Dispatch<SetStateAction<FullCourse | null>>
+  selectedCourse: FullCourseInfo | null
+  setSelectedCourse: Dispatch<SetStateAction<FullCourseInfo | null>>
 }
 
 const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
@@ -28,17 +28,16 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
 
   const { mutate: joinCourse, isLoading: isJoining } =
     trpc.course.join.useMutation({
-      onSuccess: (data) =>
-        router.push(`/app/schools/${data.schoolId}/courses/${data.id}`),
+      onSuccess: (data) => router.push(`/courses/${data.id}`),
       onError: (error) => alert(error.message),
     })
 
-  const { data: courses, isFetching } = trpc.course.search.useQuery(
+  const { data: courses, isFetching } = trpc.courseInfo.search.useQuery(
     {
       searchVal: debouncedCourseInput,
     },
     {
-      queryKey: ['course.search', debouncedCourseInput],
+      queryKey: ['courseInfo.search', debouncedCourseInput],
       keepPreviousData: true,
       refetchOnWindowFocus: false,
     }

@@ -16,7 +16,7 @@ const SegmentList: FC<Props> = ({
     <div className="flex h-full items-start justify-center pt-8">
       <div className="h-full w-full overflow-y-auto px-8 py-4">
         <div className="flex h-auto flex-wrap justify-center gap-4">
-          {selectedCourse.segments.map((segment, index) => (
+          {selectedCourse.segments?.map((segment, index) => (
             <div
               key={segment.name}
               className={`flex h-min max-w-min cursor-pointer gap-1 whitespace-nowrap rounded-md px-4 py-2 shadow-sm transition-all duration-200 ease-linear ${
