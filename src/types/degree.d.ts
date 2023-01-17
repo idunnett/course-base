@@ -5,10 +5,10 @@ import type {
   SubjectRequirement,
 } from '@prisma/client'
 import type { subjects } from '../constants'
-import type { FullCourse } from './course'
+import type { FullCourse, FullCourseInfo } from './course'
 
 type FullDegree = Omit<Degree, 'requiredCourseIds' | 'schoolId'> & {
-  requiredCourses: FullCourse[]
+  requiredCourses: FullCourseInfo[]
   partialCourses: PartialCourse[]
   subjectRequirements: SubjectRequirement[]
   school: School

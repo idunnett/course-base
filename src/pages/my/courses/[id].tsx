@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { FaSpinner } from 'react-icons/fa'
 import SegmentGradesListWidget from '../../../components/segment/SegmentGradesListWidget'
 import GradesBarGraph from '../../../components/diagrams/GradesBarGraph'
 import TotalGradeBar from '../../../components/diagrams/TotalGradeBar'
@@ -8,6 +7,7 @@ import TaskModal, { type ModalData } from '../../../components/task/TaskModal'
 import ScatterChart from '../../../components/diagrams/ScatterChart'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
+import { RiLoader5Line } from 'react-icons/ri'
 
 const Course = () => {
   const { id } = useRouter().query
@@ -88,7 +88,7 @@ const Course = () => {
 
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <FaSpinner className="animate-spin dark:text-white" />
+      <RiLoader5Line className="animate-spin dark:text-white" />
     </div>
   )
 }

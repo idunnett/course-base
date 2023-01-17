@@ -1,16 +1,16 @@
 .container {
-  @apply relative flex flex-col-reverse gap-1 h-auto my-1;
+  @apply relative flex h-auto flex-col-reverse gap-1;
 }
 
 .suggestions {
-  @apply absolute top-full left-0 w-full rounded-md z-10;
+  @apply absolute top-full left-0 z-10 w-full rounded-md;
 }
 
 .input {
-  @apply placeholder:text-gray-400 text-xl rounded-full px-4 py-3 w-full h-full outline-none focus:brightness-100 focus:shadow-inner-lg transition-all duration-200 ease-linear max-h-14;
+  @apply h-full max-h-14 w-full rounded-xl px-4 py-2.5 text-lg outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 focus:shadow-inner-lg focus:brightness-100;
 }
 
 .label {
-  @apply h-6 transition-all duration-200 ease-linear;
+  @apply h-6 whitespace-nowrap transition-all duration-200 ease-linear;
   transition: opacity 500ms 50ms;
 }

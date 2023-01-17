@@ -8,6 +8,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { useAtom } from 'jotai'
 import { userAtom } from '../../../atoms'
 import type { School, User } from '@prisma/client'
+import PageLoading from '../PageLoading'
 
 interface Props {
   children: ReactNode
@@ -57,17 +58,22 @@ const AppLayout: FC<Props> = ({ children }) => {
         {isFetching ? (
           <div className="skeleton-loading-text mr-2 w-24 bg-slate-500" />
         ) : (
-          <Link href="/my/degree" className="secondary-btn text-slate-600">
+          <Link
+            href="/my/degree"
+            className="secondary-btn font-normal text-slate-500"
+          >
             {user?.degreeName || 'My Degree'}
           </Link>
         )}
-        <span className="text-slate-400 dark:text-neutral-400">@</span>
         <div className="ml-3 flex items-center gap-4">
           <SchoolMenu school={user?.school} isFetching={isFetching} />
           <UserMenu />
         </div>
       </NavHeader>
-      <div className="relative h-full w-full">{children}</div>
+      <div className="relative h-full w-full">
+        <PageLoading />
+        {children}
+      </div>
     </div>
   )
 }

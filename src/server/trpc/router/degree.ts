@@ -92,19 +92,19 @@ export const degreeRouter = router({
           school: true,
         },
       })
-      const requiredCourses = await ctx.prisma.course.findMany({
+      const requiredCourses = await ctx.prisma.courseInfo.findMany({
         where: {
           id: {
             in: degree.requiredCourseIds,
           },
         },
         include: {
-          segments: true,
-          info: {
+          courses: {
             include: {
-              school: true,
+              segments: true,
             },
           },
+          school: true,
         },
       })
       const { requiredCourseIds, schoolId, ...degreeWithoutIds } = degree

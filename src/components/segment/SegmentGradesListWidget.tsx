@@ -16,7 +16,7 @@ import type { Course, Segment, Task } from '@prisma/client'
 import type { ModalData } from '../task/TaskModal'
 import { trpc } from '../../utils/trpc'
 import { useStrictDroppable } from '../../hooks/useStrictDroppable'
-import { FaSpinner } from 'react-icons/fa'
+import { RiLoader5Line } from 'react-icons/ri'
 
 interface Props {
   segment: Segment
@@ -159,7 +159,7 @@ const SegmentGradesListWidget: FC<Props> = ({
             </Droppable>
           ) : (
             <div className="flex h-10 w-full items-center justify-center">
-              <FaSpinner className="animate-spin text-slate-500 dark:text-white" />
+              <RiLoader5Line className="animate-spin text-slate-500 dark:text-white" />
             </div>
           )}
         </DragDropContext>

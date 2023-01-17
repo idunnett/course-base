@@ -1,6 +1,6 @@
 import type { School } from '@prisma/client'
 import type { FC } from 'react'
-import { BiBuildings } from 'react-icons/bi'
+import { RiBuilding2Line } from 'react-icons/ri'
 
 interface Props {
   school: School
@@ -16,7 +16,7 @@ const SchoolTag: FC<Props> = ({ school, className }) => {
         color: school.secondaryColor,
       }}
     >
-      <BiBuildings />
+      <RiBuilding2Line />
       <span>{school.name}</span>
     </div>
   )

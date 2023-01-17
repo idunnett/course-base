@@ -3,11 +3,10 @@ import { MdInsertChart } from 'react-icons/md'
 import SegmentList from './SegmentList'
 import SegmentPieChart from '../../diagrams/SegmentPieChart'
 import type { FullCourse, FullCourseInfo } from '../../../types'
-import { HiClock, HiUsers } from 'react-icons/hi'
-import { BiBuildings } from 'react-icons/bi'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import getTermName from '../../../utils/termUtils'
 import Members from '../../common/Members'
+import { RiBuilding2Line, RiTimeLine, RiUser6Line } from 'react-icons/ri'
 
 interface Props {
   courseInfo: FullCourseInfo
@@ -53,7 +52,7 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
             backgroundColor: courseInfo.school.color,
           }}
         >
-          <BiBuildings />
+          <RiBuilding2Line />
           {courseInfo.school.name}
         </div>
         {activeCourseDetails ? (
@@ -72,13 +71,14 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
                 {getTermName(activeCourseDetails.term)}{' '}
                 {activeCourseDetails.year}
               </p>
-              <p className="text-md whitespace-nowrap font-normal text-slate-500 dark:text-neutral-400">
+              <p className="text-md flex items-center gap-1 whitespace-nowrap font-normal text-slate-500 dark:text-neutral-400">
+                <RiUser6Line className="translate-y-[1px]" />{' '}
                 {activeCourseDetails.instructor}
               </p>
               <div className="flex gap-4 text-slate-500 dark:text-neutral-400">
                 <Members number={activeCourseDetails.members} />
                 <div className="flex items-center gap-0.5">
-                  <HiClock />
+                  <RiTimeLine />
                   <span>{courseInfo.credits} credits</span>
                 </div>
               </div>
@@ -115,10 +115,24 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
               {courseInfo.courses.map((course, index) => (
                 <button
                   key={course.id}
-                  className="list-button flex w-full items-center justify-between text-base font-normal"
+                  className="list-button flex w-full items-center justify-between pr-3 text-base font-normal"
                   onClick={() => setActiveCourseDetailsIndex(index)}
                 >
-                  {getTermName(course.term)} {course.year}
+                  <div className="flex flex-col items-start gap-1">
+                    <div className="flex gap-3">
+                      <span className="font-medium">
+                        {getTermName(course.term)} {course.year}
+                      </span>
+                      <Members
+                        number={course.members}
+                        className="font-medium"
+                      />
+                    </div>
+                    <span className="flex items-center gap-1 px-0 text-sm font-normal">
+                      <RiUser6Line className="translate-y-[1px]" />{' '}
+                      {course.instructor}
+                    </span>
+                  </div>
                   <IoIosArrowForward />
                 </button>
               ))}

@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { HiUsers } from 'react-icons/hi'
+import { RiGroupLine } from 'react-icons/ri'
 
 interface Props {
   number: number
@@ -12,7 +12,7 @@ const Members: FC<Props> = ({ number, className, showText = true }) => {
     <p
       className={`flex items-center gap-1 whitespace-nowrap text-slate-500 dark:text-neutral-400 ${className}`}
     >
-      <HiUsers />
+      <RiGroupLine />
       {showText ? (
         <span>
           {number} member

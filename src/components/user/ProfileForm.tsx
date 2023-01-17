@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { FaSpinner, FaUserGraduate } from 'react-icons/fa'
-import { BiBuildings } from 'react-icons/bi'
+import { FaUserGraduate } from 'react-icons/fa'
 import { FiMoon, FiSun } from 'react-icons/fi'
 import { useAtom } from 'jotai'
 import Form from '../common/Form'
@@ -11,6 +10,7 @@ import { trpc } from '../../utils/trpc'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import LoadingOrError from '../common/LoadingOrError'
+import { RiLoader5Line, RiBuilding2Line } from 'react-icons/ri'
 
 const ProfileForm = () => {
   const session = useSession()
@@ -108,14 +108,14 @@ const ProfileForm = () => {
                 }`}
             />
           ) : (
-            <FaSpinner className="h-full animate-spin py-3 text-slate-400 dark:text-neutral-200" />
+            <RiLoader5Line className="h-full animate-spin py-3 text-slate-400 dark:text-neutral-200" />
           )}
           <div className="flex items-center justify-between">
             <label
               htmlFor="school"
               className="flex h-5 items-center gap-2 text-slate-500 dark:text-neutral-400"
             >
-              <BiBuildings />
+              <RiBuilding2Line />
               School
             </label>
           </div>
@@ -150,7 +150,7 @@ const ProfileForm = () => {
               <FiMoon className="absolute right-0 top-1/2 mx-3 -translate-y-1/2 text-white" />
               {isChangingDarkMode && (
                 <div className="absolute top-1/2 left-full ml-3 -translate-y-1/2">
-                  <FaSpinner className="animate-spin text-xs dark:text-white" />
+                  <RiLoader5Line className="animate-spin text-xs dark:text-white" />
                 </div>
               )}
             </label>

@@ -1,7 +1,6 @@
 import type { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
-import { BiBuildings } from 'react-icons/bi'
-import { HiClock, HiUsers } from 'react-icons/hi'
 import { MdInsertChart } from 'react-icons/md'
+import { RiBuilding2Line, RiGroupLine, RiTimeLine } from 'react-icons/ri'
 import type { CourseInfoWithSchool, FullCourse } from '../../types'
 import { isFullCourseType } from '../../utils/courseUtils'
 import getTermName from '../../utils/termUtils'
@@ -51,14 +50,14 @@ const CourseButton: FC<Props> = ({
       <div className="flex w-full justify-between">
         <div className="flex gap-3 whitespace-nowrap text-sm font-light text-slate-600 dark:text-neutral-400">
           <div className="flex items-center gap-0.5">
-            <HiClock />
+            <RiTimeLine />
             <span>
               {isFullCourseType(course) ? course.info.credits : course.credits}
             </span>
           </div>
           {isFullCourseType(course) && (
             <div className="flex items-center gap-0.5">
-              <HiUsers />
+              <RiGroupLine />
               <span>{course.members}</span>
             </div>
           )}
@@ -75,7 +74,7 @@ const CourseButton: FC<Props> = ({
                 : course.school.color,
             }}
           >
-            <BiBuildings />
+            <RiBuilding2Line />
             {isFullCourseType(course)
               ? course.info.school.name
               : course.school.name}

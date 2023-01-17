@@ -16,7 +16,7 @@ import {
 } from '../../../../prisma/zod'
 import type { z } from 'zod'
 import { isFullCourseType } from '../../../utils/courseUtils'
-import { FaSpinner } from 'react-icons/fa'
+import { RiLoader5Line } from 'react-icons/ri'
 
 const INITIAL_DATA: CreateDegreeFormData = {
   name: '',
@@ -119,7 +119,7 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
           )}
           <button type="submit" className="primary-btn">
             {isLoading ? (
-              <FaSpinner className="animate-spin" />
+              <RiLoader5Line className="animate-spin" />
             ) : isLastStep ? (
               'Submit'
             ) : (

@@ -1,11 +1,11 @@
-import { BiBuildings } from 'react-icons/bi'
 import CourseButton from '../../components/course/CourseButton'
 import Widget from '../../components/common/Widget'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { trpc } from '../../utils/trpc'
 import LoadingOrError from '../../components/common/LoadingOrError'
-import { HiUsers } from 'react-icons/hi'
+import DegreeButton from '../../components/degree/DegreeButton'
+import { RiBuilding2Line, RiGroupLine } from 'react-icons/ri'
 
 const School = () => {
   const router = useRouter()
@@ -32,11 +32,11 @@ const School = () => {
               backgroundColor: school.color,
             }}
           >
-            <BiBuildings fontSize={48} />
+            <RiBuilding2Line fontSize={48} />
             {school.name}
           </h1>
           <p className="flex items-center gap-1 whitespace-nowrap text-lg font-normal text-slate-500 dark:text-neutral-400">
-            <HiUsers />
+            <RiGroupLine />
             <span>
               {school.memberCount} member
               {school.memberCount !== 1 && 's'}
@@ -51,6 +51,25 @@ const School = () => {
                 {school._count.degrees} total
               </span>
             </h2>
+            {school.degrees
+              ? school.degrees.map((degree) => (
+                  <DegreeButton
+                    key={degree.id}
+                    degree={{ ...degree, school }}
+                    onClick={() => router.push(`/degrees/${degree.id}`)}
+                    showSchool={false}
+                  />
+                ))
+              : [...Array(Number(5))].map((_, index) => (
+                  <div
+                    key={index}
+                    className="list-button h-[68px] animate-pulse"
+                    style={{
+                      animationDelay: `${index / 5}s`,
+                      animationDuration: '1s',
+                    }}
+                  />
+                ))}
             <Link href="/degrees/new" className="primary-btn">
               New
             </Link>
@@ -66,7 +85,7 @@ const School = () => {
               ? school.courseInfos.map((courseInfo) => (
                   <CourseButton
                     key={courseInfo.id}
-                    course={{ info: courseInfo, school: school }}
+                    course={{ ...courseInfo, school }}
                     onClick={() => router.push(`/courses/${courseInfo.id}`)}
                     showSchool={false}
                   />

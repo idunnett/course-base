@@ -1,11 +1,4 @@
-import {
-  type Dispatch,
-  type FC,
-  type SetStateAction,
-  useEffect,
-  useState,
-} from 'react'
-import { FaSpinner } from 'react-icons/fa'
+import { type Dispatch, type FC, type SetStateAction, useState } from 'react'
 import CourseList from './CourseList'
 import Link from 'next/link'
 import InputSegment from '../../common/InputSegment'
@@ -14,6 +7,7 @@ import useDebounce from '../../../hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
 import type { FullCourseInfo } from '../../../types'
+import { RiLoader5Line } from 'react-icons/ri'
 
 interface Props {
   selectedCourse: FullCourseInfo | null
@@ -40,16 +34,12 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
       queryKey: ['courseInfo.search', debouncedCourseInput],
       keepPreviousData: true,
       refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data.items && data.items[0]) setSelectedCourse(data.items[0])
+        else setSelectedCourse(null)
+      },
     }
   )
-
-  useEffect(() => {
-    if (courses?.items && courses.items[0]) {
-      setSelectedCourse(courses.items[0])
-    } else {
-      setSelectedCourse(null)
-    }
-  }, [courses])
 
   const handleSubmit = () => {
     if (!selectedCourse) return alert('Please select a course to join')
@@ -72,7 +62,7 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
         />
         <div className="flex items-center justify-between">
           {isFetching && (
-            <FaSpinner className="ml-2 animate-spin dark:text-neutral-200" />
+            <RiLoader5Line className="ml-2 animate-spin dark:text-neutral-200" />
           )}
           <div className="flex w-full justify-end">
             <Link href="/courses/new" className="secondary-btn">
@@ -84,7 +74,11 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
                 onClick={handleSubmit}
                 className="primary-btn"
               >
-                {isJoining ? <FaSpinner className="animate-spin" /> : 'Join'}
+                {isJoining ? (
+                  <RiLoader5Line className="animate-spin" />
+                ) : (
+                  'Join'
+                )}
               </button>
             )}
           </div>

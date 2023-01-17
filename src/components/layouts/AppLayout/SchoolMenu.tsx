@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { HiChevronDown } from 'react-icons/hi'
 import Link from 'next/link'
 import type { School } from '@prisma/client'
-import { FaSpinner } from 'react-icons/fa'
+import { RiLoader5Line } from 'react-icons/ri'
 
 interface Props {
   school?: Omit<School, 'name' | 'memberCount'> | null
@@ -29,7 +29,9 @@ const SchoolMenu: FC<Props> = ({ school, isFetching }) => {
     return (
       <div className="relative" ref={schoolButtonRef}>
         <button
-          className="primary-btn flex h-8 items-center gap-1 font-bold"
+          className={`primary-btn flex h-7 items-center gap-1 px-2.5 text-sm font-bold shadow-none hover:shadow-md ${
+            open && 'shadow-md'
+          }`}
           onClick={() => setOpen(!open)}
           style={{
             backgroundColor: school?.color,
@@ -47,13 +49,13 @@ const SchoolMenu: FC<Props> = ({ school, isFetching }) => {
               />
             </>
           ) : (
-            <FaSpinner className="h-4 w-20 animate-spin" />
+            <RiLoader5Line className="h-4 w-20 animate-spin" />
           )}
         </button>
         {!!school && (
           <div
             className={
-              'absolute top-full right-0 z-50 mt-2.5 flex w-40 origin-top flex-col items-start overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-xl transition-all duration-75 ease-linear dark:border-neutral-700 dark:bg-zinc-800 ' +
+              'absolute top-full right-0 z-50 mt-1.5 flex w-40 origin-top flex-col items-start overflow-hidden rounded-lg border border-gray-50 bg-white shadow-lg transition-all duration-75 ease-linear dark:border-neutral-700 dark:bg-zinc-800 ' +
               (open ? 'scale-100' : 'scale-0')
             }
           >

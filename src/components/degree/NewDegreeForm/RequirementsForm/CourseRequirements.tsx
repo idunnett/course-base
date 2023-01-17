@@ -1,6 +1,5 @@
 import { type FC, useEffect, useState } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
-import { HiClock } from 'react-icons/hi'
 import _ from 'lodash'
 import useDebounce from '../../../../hooks/useDebounce'
 import type {
@@ -17,6 +16,7 @@ import CourseButton from '../../../course/CourseButton'
 import CourseDetails from '../../../course/CourseDetails'
 import { isFullCourseType } from '../../../../utils/courseUtils'
 import CourseDegreeButton from '../../../course/CourseDegreeButton'
+import { RiTimeLine } from 'react-icons/ri'
 
 interface Props {
   degreeYears: string
@@ -109,7 +109,7 @@ const CourseRequirements: FC<Props> = ({
                             </p>
                           </div>
                           <div className="flex items-center gap-0.5 text-sm font-light text-slate-600 dark:text-neutral-400">
-                            <HiClock />
+                            <RiTimeLine />
                             <span>{requiredCourse.credits}</span>
                           </div>
                         </div>

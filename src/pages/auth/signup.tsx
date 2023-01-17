@@ -2,8 +2,8 @@ import type { GetServerSidePropsContext } from 'next'
 import { getSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
-import { FaSpinner } from 'react-icons/fa'
 import { IoIosArrowBack } from 'react-icons/io'
+import { RiLoader5Line } from 'react-icons/ri'
 import InputSegment from '../../components/common/InputSegment'
 import Widget from '../../components/common/Widget'
 import OauthButtons from '../../components/OauthButtons'
@@ -97,7 +97,7 @@ const SignUp = () => {
                 : 'cursor-not-allowed'
             }`}
           >
-            {isLoading ? <FaSpinner className="animate-spin" /> : 'Go'}
+            {isLoading ? <RiLoader5Line className="animate-spin" /> : 'Go'}
           </button>
         </form>
       </Widget>

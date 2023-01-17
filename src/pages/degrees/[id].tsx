@@ -1,14 +1,15 @@
-import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { Suspense, useState } from 'react'
 import LoadingOrError from '../../components/common/LoadingOrError'
 import Modal from '../../components/common/Modal'
+import Widget from '../../components/common/Widget'
 import CourseDetails from '../../components/course/CourseDetails'
 import DegreeDetails from '../../components/degree/DegreeDetails'
 import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
-const degree = () => {
-  const { data: session } = useSession()
+const DegreeView = () => {
+  const { id } = useRouter().query
   const [courseModalData, setCourseModalData] = useState<FullCourseInfo | null>(
     null
   )
@@ -17,19 +18,21 @@ const degree = () => {
     data: degree,
     isLoading,
     error,
-  } = trpc.degree.findById.useQuery(session?.user?.degreeId as string, {
-    enabled: !!session?.user?.degreeId,
-    refetchOnWindowFocus: false,
+  } = trpc.degree.findById.useQuery(id as string, {
     retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!id,
   })
 
   if (!isLoading && degree) {
     return (
       <div className="p-4 pt-16">
-        <DegreeDetails
-          degree={degree}
-          setCourseModalData={setCourseModalData}
-        />
+        <Widget>
+          <DegreeDetails
+            degree={degree}
+            setCourseModalData={setCourseModalData}
+          />
+        </Widget>
         {courseModalData && (
           <Modal handleClose={() => setCourseModalData(null)}>
             <Suspense fallback={<LoadingOrError />}>
@@ -47,4 +50,4 @@ const degree = () => {
   )
 }
 
-export default degree
+export default DegreeView

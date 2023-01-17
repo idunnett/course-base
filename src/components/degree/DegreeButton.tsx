@@ -1,16 +1,16 @@
 import type { Degree, School } from '@prisma/client'
 import type { ButtonHTMLAttributes, FC } from 'react'
-import { BiBuildings } from 'react-icons/bi'
-import { HiClock } from 'react-icons/hi'
+import { RiBuilding2Line, RiTimeLine } from 'react-icons/ri'
 import Members from '../common/Members'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   degree: Degree & {
     school: School
   }
+  showSchool: boolean
 }
 
-const DegreeButton: FC<Props> = ({ degree, ...props }) => {
+const DegreeButton: FC<Props> = ({ degree, showSchool = true, ...props }) => {
   return (
     <button
       key={degree.id}
@@ -34,7 +34,7 @@ const DegreeButton: FC<Props> = ({ degree, ...props }) => {
       <div className="flex w-full justify-between">
         <div className="flex gap-3 whitespace-nowrap text-sm font-light text-slate-500 dark:text-neutral-400">
           <div className="flex items-center gap-0.5">
-            <HiClock />
+            <RiTimeLine />
             <span>{degree.credits}</span>
           </div>
           <Members
@@ -43,16 +43,18 @@ const DegreeButton: FC<Props> = ({ degree, ...props }) => {
             className="!gap-0.5"
           />
         </div>
-        <div
-          className="flex items-center gap-1 rounded-md px-1 text-sm font-normal text-slate-500  dark:text-neutral-300"
-          style={{
-            color: degree.school?.secondaryColor,
-            backgroundColor: degree.school?.color,
-          }}
-        >
-          <BiBuildings />
-          {degree.school?.name}
-        </div>
+        {showSchool && (
+          <div
+            className="flex items-center gap-1 rounded-md px-1 text-sm font-normal text-slate-500  dark:text-neutral-300"
+            style={{
+              color: degree.school?.secondaryColor,
+              backgroundColor: degree.school?.color,
+            }}
+          >
+            <RiBuilding2Line />
+            {degree.school?.name}
+          </div>
+        )}
       </div>
     </button>
   )

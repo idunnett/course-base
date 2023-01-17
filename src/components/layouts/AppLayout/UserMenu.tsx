@@ -48,7 +48,7 @@ const UserMenu = () => {
       </button>
       <div
         className={
-          'absolute top-full right-0 z-50 mt-2.5 flex w-40 origin-top flex-col items-start overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-xl transition-all duration-75 ease-linear dark:border-neutral-700 dark:bg-zinc-800 ' +
+          'absolute top-full right-0 z-50 mt-1.5 flex w-40 origin-top flex-col items-start overflow-hidden rounded-lg border border-gray-50 bg-white shadow-lg transition-all duration-75 ease-linear dark:border-neutral-700 dark:bg-zinc-800 ' +
           (open ? 'scale-100' : 'scale-0')
         }
       >
@@ -58,27 +58,6 @@ const UserMenu = () => {
           className="link text-slate-500 dark:text-neutral-200"
         >
           Profile
-        </Link>
-        <Link
-          href="/degrees"
-          onClick={() => setOpen(false)}
-          className="link text-slate-500 dark:text-neutral-200"
-        >
-          Degrees
-        </Link>
-        <Link
-          href="/courses"
-          onClick={() => setOpen(false)}
-          className="link text-slate-500 dark:text-neutral-200"
-        >
-          Courses
-        </Link>
-        <Link
-          href="/schools"
-          onClick={() => setOpen(false)}
-          className="link text-slate-500 dark:text-neutral-200"
-        >
-          Schools
         </Link>
         <button
           onClick={() => {

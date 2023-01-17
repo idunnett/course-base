@@ -56,7 +56,7 @@ const Degrees = () => {
       <Form
         title="Search Degrees"
         handleSubmit={(e) => e.preventDefault()}
-        className="!gap-1 !pb-3 !pt-4"
+        className="!gap-1 !p-0"
       >
         <div className="flex items-end gap-4">
           <InputSegment

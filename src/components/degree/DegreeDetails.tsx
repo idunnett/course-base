@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction, FC } from 'react'
-import { HiClock } from 'react-icons/hi'
+import { RiTimeLine } from 'react-icons/ri'
 import type { FullCourseInfo, FullDegree } from '../../types'
 import Members from '../common/Members'
 import CourseDegreeButton from '../course/CourseDegreeButton'
@@ -20,7 +20,7 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
       <div className="flex items-center justify-between">
         <div className="flex gap-3 text-sm font-light text-slate-500 dark:text-neutral-400">
           <div className="flex items-center gap-0.5">
-            <HiClock />
+            <RiTimeLine />
             <span>{degree.credits} credits</span>
           </div>
           <Members number={degree.memberCount} />
@@ -42,10 +42,10 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
           <div className="flex flex-col gap-1">
             {degree.requiredCourses.map(
               (requiredCourse, index) =>
-                requiredCourse.info.degreeYear === year + 1 && (
+                requiredCourse.degreeYear === year + 1 && (
                   <div key={requiredCourse.id} className="flex items-center">
                     <CourseDegreeButton
-                      course={requiredCourse}
+                      courseInfo={requiredCourse}
                       onClick={() => setCourseModalData(requiredCourse)}
                     />
                   </div>
@@ -67,7 +67,7 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
                       </p>
                     </div>
                     <div className="flex items-center gap-0.5 text-sm font-light">
-                      <HiClock />
+                      <RiTimeLine />
                       <span>{partialCourse.credits}</span>
                     </div>
                   </div>

@@ -1,26 +1,24 @@
 import type { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
-import { BiBuildings } from 'react-icons/bi'
-import { HiClock, HiUsers } from 'react-icons/hi'
 import { MdInsertChart } from 'react-icons/md'
-import type { FullCourse } from '../../types'
-import getTermName from '../../utils/termUtils'
+import { RiBuilding2Line, RiTimeLine } from 'react-icons/ri'
+import type { FullCourseInfo } from '../../types'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  course: FullCourse
+  courseInfo: FullCourseInfo
   onClick?: MouseEventHandler
   className?: string
   showSchool?: boolean
 }
 
-const CourseDegreeButton: FC<Props> = ({
-  course,
+const courseInfoDegreeButton: FC<Props> = ({
+  courseInfo,
   className,
   showSchool = true,
   ...props
 }) => {
   return (
     <button
-      key={course.id}
+      key={courseInfo.id}
       type="button"
       className={`list-button flex-col justify-between ${className}`}
       {...props}
@@ -30,13 +28,13 @@ const CourseDegreeButton: FC<Props> = ({
           <h2 className="flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white">
             <MdInsertChart
               style={{
-                color: course.info.color,
+                color: courseInfo.color,
               }}
             />
-            {course.info.code}
+            {courseInfo.code}
           </h2>
           <p className="text-md text-base font-medium text-slate-500 dark:text-neutral-400">
-            : {course.info.name}
+            : {courseInfo.name}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -44,17 +42,17 @@ const CourseDegreeButton: FC<Props> = ({
             <div
               className="flex items-center gap-1 rounded-md px-1 text-sm font-normal text-slate-500  dark:text-neutral-300"
               style={{
-                color: course.info.school?.secondaryColor,
-                backgroundColor: course.info.school?.color,
+                color: courseInfo.school.secondaryColor,
+                backgroundColor: courseInfo.school.color,
               }}
             >
-              <BiBuildings />
-              {course.info.school?.name}
+              <RiBuilding2Line />
+              {courseInfo.school.name}
             </div>
           )}
           <div className="flex items-center gap-0.5 text-sm font-light">
-            <HiClock />
-            <span>{course.info.credits}</span>
+            <RiTimeLine />
+            <span>{courseInfo.credits}</span>
           </div>
         </div>
       </div>
@@ -62,4 +60,4 @@ const CourseDegreeButton: FC<Props> = ({
   )
 }
 
-export default CourseDegreeButton
+export default courseInfoDegreeButton

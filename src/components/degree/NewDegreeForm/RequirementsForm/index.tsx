@@ -1,5 +1,5 @@
 import { type FC, useEffect, useState } from 'react'
-import { HiClock } from 'react-icons/hi'
+import { RiTimeLine } from 'react-icons/ri'
 import type {
   CreateDegreeFormData,
   FullCourse,
@@ -55,7 +55,7 @@ const RequirementsForm: FC<Props> = ({
       <div className="flex justify-between text-slate-500 dark:text-neutral-200">
         <h2 className="text-xl font-semibold">Course Requirements</h2>
         <div className="flex items-center gap-2 text-lg">
-          <HiClock />
+          <RiTimeLine />
           <p>
             <span
               className={`${
