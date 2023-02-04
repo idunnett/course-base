@@ -119,7 +119,7 @@ const CourseInfoForm: FC<Props> = ({
           </label>
           <select
             id="term-select"
-            className={`peer h-full max-h-14 w-full flex-grow rounded-xl bg-white px-4 py-3 text-2xl text-black outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 focus:shadow-inner-lg focus:brightness-100 dark:bg-zinc-600 dark:text-white ${
+            className={`peer h-full max-h-14 w-full flex-grow rounded-xl bg-white px-4 py-3 text-lg text-black outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 focus:shadow-inner-lg focus:brightness-100 dark:bg-zinc-600 dark:text-white ${
               term ? 'shadow-inner-lg brightness-100' : 'brightness-95'
             }`}
             value={term}

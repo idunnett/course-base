@@ -38,7 +38,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
 
   const { mutate: createCourse } = trpc.course.create.useMutation({
     onSuccess: (res) => {
-      router.push(`/courses/${res}`)
+      router.push(`/my/courses/${res}`)
     },
     onError: (error) => {
       alert(error.message)

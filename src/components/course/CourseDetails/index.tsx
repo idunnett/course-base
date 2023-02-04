@@ -38,7 +38,7 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
               color: courseInfo.color,
             }}
           />
-          <h2 className="text-2xl font-bold text-slate-700 dark:text-white">
+          <h2 className="text-xl font-bold text-slate-700 dark:text-white">
             {courseInfo.code}
             <span className="font-medium text-slate-500 dark:text-neutral-400">
               : {courseInfo.name}

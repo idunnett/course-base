@@ -1,10 +1,13 @@
-import type { Course, Segment, Task } from '@prisma/client'
+import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
 import { type FC, useMemo } from 'react'
 import Xarrow from 'react-xarrows'
 import styles from './ScatterChart.module.css'
 
 interface Props {
-  course: Course & { segments: Segment[] }
+  course: Course & {
+    info: CourseInfo
+    segments: Segment[]
+  }
   tasks: Task[]
 }
 
@@ -72,7 +75,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
                 className={`group absolute z-10 flex h-3 w-3 scale-0 cursor-pointer items-center justify-center rounded-full hover:z-20 ${styles.inflate}`}
                 style={{
                   bottom: `${task.percentage}%`,
-                  backgroundColor: course.color,
+                  backgroundColor: course.info.color,
                   animationDelay: `${index * 15}ms`,
                 }}
               >

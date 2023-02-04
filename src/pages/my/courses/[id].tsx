@@ -53,7 +53,8 @@ const Course = () => {
                   segment={segment}
                   setModalData={setModalData}
                   tasks={tasks}
-                  course={course}
+                  courseId={course.id}
+                  courseColor={course.info.color}
                   refetchTasks={refetchTasks}
                 />
               ) : (

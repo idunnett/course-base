@@ -12,7 +12,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd'
 import Widget from '../common/Widget'
-import type { Course, Segment, Task } from '@prisma/client'
+import type { Segment, Task } from '@prisma/client'
 import type { ModalData } from '../task/TaskModal'
 import { trpc } from '../../utils/trpc'
 import { useStrictDroppable } from '../../hooks/useStrictDroppable'
@@ -22,7 +22,8 @@ interface Props {
   segment: Segment
   setModalData: Dispatch<SetStateAction<ModalData | null>>
   tasks: Task[]
-  course: Course
+  courseId: string
+  courseColor: string
   refetchTasks: () => Promise<any>
 }
 
@@ -30,7 +31,8 @@ const SegmentGradesListWidget: FC<Props> = ({
   segment,
   setModalData,
   tasks,
-  course,
+  courseId,
+  courseColor,
   refetchTasks,
 }) => {
   const [segmentTasks, setSegmentTasks] = useState<Task[]>([])
@@ -81,7 +83,7 @@ const SegmentGradesListWidget: FC<Props> = ({
     reorderTasks({
       source: source.index,
       destination: destination.index,
-      courseId: course.id,
+      courseId,
       segmentId: segment.id,
     })
   }
@@ -92,7 +94,7 @@ const SegmentGradesListWidget: FC<Props> = ({
         <h2
           className="truncate text-lg font-semibold"
           style={{
-            color: course.color,
+            color: courseColor,
           }}
         >
           {segment.name}

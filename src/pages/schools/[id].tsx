@@ -26,13 +26,13 @@ const School = () => {
       <div className="flex h-full flex-col gap-4 p-4 pt-16">
         <div className="flex items-end gap-2">
           <h1
-            className="flex items-center gap-1 rounded-md p-2 pl-1 text-4xl font-bold text-slate-500 dark:text-neutral-400"
+            className="flex items-center gap-1 rounded-md p-2 pl-1 text-3xl font-semibold text-slate-500 dark:text-neutral-400"
             style={{
               color: school.secondaryColor,
               backgroundColor: school.color,
             }}
           >
-            <RiBuilding2Line fontSize={48} />
+            <RiBuilding2Line fontSize={36} />
             {school.name}
           </h1>
           <p className="flex items-center gap-1 whitespace-nowrap text-lg font-normal text-slate-500 dark:text-neutral-400">
