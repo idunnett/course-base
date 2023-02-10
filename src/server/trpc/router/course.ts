@@ -1,67 +1,43 @@
-import type { Course } from '@prisma/client'
+import { Course, Term } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import {
-  CourseInfoModel,
-  CourseModel,
-  SegmentModel,
-} from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const courseRouter = router({
-  myCourseIds: protectedProcedure.query(async ({ ctx }) => {
-    return (
-      await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
-        select: {
-          courseIds: true,
-        },
-      })
-    )?.courseIds
-  }),
   getMyCourses: protectedProcedure.query(async ({ ctx }) => {
-    const courseIds = (
-      await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
-        select: {
-          courseIds: true,
-        },
-      })
-    )?.courseIds
-    if (!courseIds) return []
-    return await ctx.prisma.course.findMany({
+    const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
       where: {
-        id: { in: courseIds },
+        userId: ctx.session.user.id,
       },
-      include: {
-        info: true,
-        segments: true,
+      select: {
+        course: {
+          include: {
+            info: true,
+            segments: true,
+          },
+        },
       },
     })
+    const courses = usersOnCourses.map(({ course }) => course)
+    return courses
   }),
   getMyCourse: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: ctx.session.user.id },
-        select: { courseIds: true },
-      })
-      if (!courseIds.includes(input))
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'You are not in this course.',
-        })
-      return await ctx.prisma.course.findUniqueOrThrow({
-        where: { id: input },
-        include: {
-          info: true,
-          segments: true,
+      const { course } = await ctx.prisma.usersOnCourses.findUniqueOrThrow({
+        where: {
+          userId_courseId: { userId: ctx.session.user.id, courseId: input },
+        },
+        select: {
+          course: {
+            include: {
+              info: true,
+              segments: true,
+            },
+          },
         },
       })
+      return course
     }),
   join: protectedProcedure
     .input(z.string())
@@ -103,42 +79,53 @@ export const courseRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        courseInfo: CourseInfoModel.omit({ id: true, courses: true }),
-        course: CourseModel.omit({
-          id: true,
-          members: true,
-          createdAt: true,
-          infoId: true,
-        }),
-        segments: SegmentModel.omit({ id: true, courseId: true }).array(),
+        code: z.string(),
+        name: z.string(),
+        color: z.string(),
+        degreeYear: z.number().int(),
+        credits: z.number().min(1),
+        schoolId: z.string(),
+        course: z
+          .object({
+            segments: z
+              .array(
+                z
+                  .object({
+                    name: z.string(),
+                    value: z.number().int(),
+                    quantity: z.number().int(),
+                  })
+                  .required()
+              )
+              .min(1),
+            year: z.number().int(),
+            term: z.nativeEnum(Term),
+            instructor: z.string(),
+          })
+          .required(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { courseInfo, course, segments } = input
+      const { course: fullCourse, ...courseInfo } = input
+      const { segments, ...course } = fullCourse
       const { id: infoId } = await ctx.prisma.courseInfo.create({
         data: courseInfo,
       })
-      const courseId = (
-        await ctx.prisma.course.create({
-          data: { infoId, ...course },
-          select: {
-            id: true,
-          },
-        })
-      ).id
+      const { id: courseId } = await ctx.prisma.course.create({
+        data: { infoId, ...course },
+        select: {
+          id: true,
+        },
+      })
       segments.forEach(async (segment) => {
         await ctx.prisma.segment.create({
           data: { ...segment, courseId },
         })
       })
-      await ctx.prisma.user.update({
-        where: {
-          id: ctx.session.user.id,
-        },
+      await ctx.prisma.usersOnCourses.create({
         data: {
-          courseIds: {
-            push: courseId,
-          },
+          userId: ctx.session.user.id,
+          courseId,
         },
       })
       return courseId

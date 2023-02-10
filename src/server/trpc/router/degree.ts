@@ -1,18 +1,16 @@
 import { z } from 'zod'
-import {
-  DegreeModel,
-  PartialCourseModel,
-  SubjectRequirementModel,
-} from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const degreeRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        degree: DegreeModel.omit({ id: true, memberCount: true }),
-        subjectRequirements: SubjectRequirementModel.omit({ id: true }).array(),
-        partialCourses: PartialCourseModel.omit({ id: true }).array(),
+        // degree: DegreeModel.omit({ id: true, memberCount: true }),
+        degree: z.object({}),
+        // subjectRequirements: RequirementModel.omit({ id: true }).array(),
+        subjectRequirements: z.array(z.object({})),
+        // partialCourses: PartialCourseModel.omit({ id: true }).array(),
+        partialCourses: z.array(z.object({})),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -24,7 +22,7 @@ export const degreeRouter = router({
       })
 
       subjectRequirements.forEach((s) => (s.degreeId = newDegreeId))
-      await ctx.prisma.subjectRequirement.createMany({
+      await ctx.prisma.requirement.createMany({
         data: subjectRequirements,
       })
 
@@ -59,7 +57,7 @@ export const degreeRouter = router({
         where: {
           name: {
             startsWith: searchVal,
-            mode: 'insensitive',
+            // mode: 'insensitive',
           },
           schoolId,
         },
@@ -90,27 +88,22 @@ export const degreeRouter = router({
           partialCourses: true,
           subjectRequirements: true,
           school: true,
-        },
-      })
-      const requiredCourses = await ctx.prisma.courseInfo.findMany({
-        where: {
-          id: {
-            in: degree.requiredCourseIds,
-          },
-        },
-        include: {
-          courses: {
+          courseInfos: {
             include: {
-              segments: true,
+              courseInfo: {
+                include: {
+                  courses: {
+                    include: {
+                      segments: true,
+                    },
+                  },
+                  school: true,
+                },
+              },
             },
           },
-          school: true,
         },
       })
-      const { requiredCourseIds, schoolId, ...degreeWithoutIds } = degree
-      return {
-        ...degreeWithoutIds,
-        requiredCourses,
-      }
+      return degree
     }),
 })

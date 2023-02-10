@@ -5,7 +5,7 @@ import type { School } from '@prisma/client'
 import { RiLoader5Line } from 'react-icons/ri'
 
 interface Props {
-  school?: Omit<School, 'name' | 'memberCount'> | null
+  school?: School | null
   isFetching?: boolean
 }
 

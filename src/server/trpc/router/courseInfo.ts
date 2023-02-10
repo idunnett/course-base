@@ -49,13 +49,11 @@ export const courseInfoRouter = router({
             {
               name: {
                 startsWith: searchVal,
-                mode: 'insensitive',
               },
             },
             {
               code: {
                 startsWith: searchVal,
-                mode: 'insensitive',
               },
             },
           ],

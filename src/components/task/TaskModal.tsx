@@ -8,7 +8,7 @@ import {
 import Modal from '../common/Modal'
 import InputSegment from '../common/InputSegment'
 import useDebounce from '../../hooks/useDebounce'
-import type { Course, Segment } from '@prisma/client'
+import type { Course, CourseInfo, Segment } from '@prisma/client'
 import { trpc } from '../../utils/trpc'
 import { RiLoader5Line } from 'react-icons/ri'
 
@@ -26,7 +26,10 @@ export type ModalDataTask = {
 }
 
 interface Props {
-  course: Course
+  course: Course & {
+    info: CourseInfo
+    segments: Segment[]
+  }
   modalData: ModalData
   setModalData: Dispatch<SetStateAction<ModalData | null>>
   isFetchingTasks: boolean
@@ -136,7 +139,7 @@ const TaskModal: FC<Props> = ({
             <span
               className="font-bold"
               style={{
-                color: course.color,
+                color: course.info.color,
               }}
             >
               {modalData.segment.name}
@@ -149,7 +152,7 @@ const TaskModal: FC<Props> = ({
             <span
               className="font-bold"
               style={{
-                color: course.color,
+                color: course.info.color,
               }}
             >
               {modalData?.segment.name}

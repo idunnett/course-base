@@ -1,14 +1,13 @@
 import Link from 'next/link'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect } from 'react'
 import NavHeader from '../../common/NavHeader'
 import UserMenu from './UserMenu'
 import SchoolMenu from './SchoolMenu'
 import { trpc } from '../../../utils/trpc'
 import { signOut, useSession } from 'next-auth/react'
-import { useAtom } from 'jotai'
-import { userAtom } from '../../../atoms'
-import type { School, User } from '@prisma/client'
 import PageLoading from '../PageLoading'
+import { useAtom } from 'jotai'
+import { userSchoolAtom } from '../../../atoms'
 
 interface Props {
   children: ReactNode
@@ -16,35 +15,22 @@ interface Props {
 
 const AppLayout: FC<Props> = ({ children }) => {
   const { data: session } = useSession()
-  const [userAtomState, setUserAtomState] = useAtom(userAtom)
-  const [user, setUser] = useState<
-    | (Omit<User, 'password' | 'courseIds'> & {
-        school?: Omit<School, 'name' | 'memberCount'> | null
-        degreeName?: string
-      })
-    | null
-  >(null)
+  const [userSchool, setUserSchool] = useAtom(userSchoolAtom)
 
-  const { isFetching } = trpc.user.me.useQuery(undefined, {
+  const { data: user, isFetching } = trpc.user.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: !!session?.user?.id && !userAtomState,
+    enabled: !!session?.user?.id,
     onSuccess: (data) => {
-      setUser(data)
-      setUserAtomState(data)
+      setUserSchool(data.school)
     },
     onError: () => {
-      setUser(null)
-      setUserAtomState(null)
+      setUserSchool(null)
       signOut()
     },
   })
 
   useEffect(() => {
-    // to avoid hydration mismatch
-    if (userAtomState) {
-      setUser(userAtomState)
-    }
     // Whenever the user explicitly chooses dark mode
     if (localStorage.darkMode && JSON.parse(localStorage.darkMode)) {
       document.documentElement.classList.add('dark')
@@ -66,7 +52,7 @@ const AppLayout: FC<Props> = ({ children }) => {
           </Link>
         )}
         <div className="ml-3 flex items-center gap-4">
-          <SchoolMenu school={user?.school} isFetching={isFetching} />
+          <SchoolMenu school={userSchool} isFetching={isFetching} />
           <UserMenu />
         </div>
       </NavHeader>

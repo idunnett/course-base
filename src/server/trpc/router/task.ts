@@ -1,16 +1,23 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { TaskModel } from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const taskRouter = router({
   getMyTasks: protectedProcedure.query(async ({ ctx }) => {
-    const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
+    const { courses } = await ctx.prisma.user.findUniqueOrThrow({
       where: { id: ctx.session.user.id },
-      select: { courseIds: true },
+      select: {
+        courses: {
+          select: {
+            courseId: true,
+          },
+        },
+      },
     })
+    const courseIds = courses.map((course) => course.courseId)
     return await ctx.prisma.task.findMany({
       where: {
+        userId: ctx.session.user.id,
         courseId: {
           in: courseIds,
         },
@@ -20,36 +27,40 @@ export const taskRouter = router({
   getMyCourseTasks: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: ctx.session.user.id },
-        select: { courseIds: true },
-      })
-      if (!courseIds.includes(input))
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'You are not in this course.',
-        })
       return await ctx.prisma.task.findMany({
-        where: { courseId: input, userId: ctx.session.user.id },
+        where: {
+          userId: ctx.session.user.id,
+          courseId: input,
+        },
       })
     }),
   add: protectedProcedure
-    .input(TaskModel.omit({ id: true, userId: true, createdAt: true }))
+    // .input(TaskModel.omit({ id: true, userId: true, createdAt: true }))
+    .input(
+      z.object({
+        title: z.string().nullable(),
+        grade: z.number().min(0).max(100),
+        segmentId: z.string(),
+        courseId: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: ctx.session.user.id },
-        select: { courseIds: true },
+      const { courseId, segmentId } = input
+      await ctx.prisma.usersOnCourses.findUniqueOrThrow({
+        where: { userId_courseId: { userId: ctx.session.user.id, courseId } },
       })
-      if (!courseIds.includes(input.courseId))
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'You are not in this course.',
-        })
       const { segments } = await ctx.prisma.course.findUniqueOrThrow({
-        where: { id: input.courseId },
-        select: { segments: true },
+        where: { id: courseId },
+        select: {
+          segments: {
+            take: 1,
+            where: {
+              id: segmentId,
+            },
+          },
+        },
       })
-      const segment = segments.find((s) => s.id === input.segmentId)
+      const segment = segments[0]
       if (!segment)
         throw new TRPCError({
           code: 'NOT_FOUND',
@@ -58,8 +69,8 @@ export const taskRouter = router({
       const tasks = await ctx.prisma.task.findMany({
         where: {
           userId: ctx.session.user.id,
-          courseId: input.courseId,
-          segmentId: input.segmentId,
+          courseId,
+          segmentId,
         },
       })
       if (tasks.length >= segment.quantity)
@@ -73,36 +84,45 @@ export const taskRouter = router({
           ...input,
           userId: ctx.session.user.id,
           index,
-          createdAt: new Date(),
         },
       })
       return newTask
     }),
   edit: protectedProcedure
-    .input(TaskModel.omit({ userId: true, createdAt: true }))
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().nullable(),
+        grade: z.number().min(0).max(100),
+        segmentId: z.string(),
+        courseId: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: ctx.session.user.id },
-        select: { courseIds: true },
+      const { id, courseId, segmentId, grade, title } = input
+      await ctx.prisma.usersOnCourses.findUniqueOrThrow({
+        where: { userId_courseId: { userId: ctx.session.user.id, courseId } },
       })
-      if (!courseIds.includes(input.courseId))
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'You are not in this course.',
-        })
       const { segments } = await ctx.prisma.course.findUniqueOrThrow({
-        where: { id: input.courseId },
-        select: { segments: true },
+        where: { id: courseId },
+        select: {
+          segments: {
+            take: 1,
+            where: {
+              id: segmentId,
+            },
+          },
+        },
       })
-      const segment = segments.find((s) => s.id === input.segmentId)
+      const segment = segments[0]
       if (!segment)
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: `Segment ${input.title} does not exist on course`,
         })
-      const { grade, title } = input
+
       const updatedTask = await ctx.prisma.task.update({
-        where: { id: input.id },
+        where: { id },
         data: { grade, title },
       })
       return updatedTask

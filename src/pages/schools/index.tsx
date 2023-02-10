@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from 'react'
 import Form from '../../components/common/Form'
-import { useAtom } from 'jotai'
-import { userAtom } from '../../atoms'
+import { useSetAtom } from 'jotai'
+import { userSchoolAtom } from '../../atoms'
 import SchoolAutoComplete from '../../components/school/SchoolAutoComplete'
 import { useRouter } from 'next/router'
 import type { School } from '@prisma/client'
@@ -12,17 +12,12 @@ import { RiLoader5Line } from 'react-icons/ri'
 const SchoolSearch = () => {
   const router = useRouter()
   const [school, setSchool] = useState<School | null>(null)
-  const [user, setUser] = useAtom(userAtom)
+  const setUserSchool = useSetAtom(userSchoolAtom)
 
   const { mutate: joinSchool, isLoading: isJoining } =
     trpc.school.join.useMutation({
       onSuccess: (data) => {
-        if (user)
-          setUser({
-            ...user,
-            schoolId: data.id,
-            school: data,
-          })
+        setUserSchool(data)
         router.replace(`/schools/${data.id}`)
       },
       onError: (error) => alert(error.message),

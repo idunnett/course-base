@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { SchoolModel } from '../../../../prisma/zod'
 
 import { router, protectedProcedure } from '../trpc'
 
@@ -78,7 +77,14 @@ export const schoolRouter = router({
       return school
     }),
   create: protectedProcedure
-    .input(SchoolModel.omit({ id: true, memberCount: true }))
+    .input(
+      z.object({
+        name: z.string(),
+        shortName: z.string(),
+        color: z.string(),
+        secondaryColor: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       const newSchool = await ctx.prisma.school.create({
         data: input,
@@ -140,7 +146,6 @@ export const schoolRouter = router({
         where: {
           name: {
             startsWith: searchVal,
-            mode: 'insensitive',
           },
         },
         cursor: cursor ? { id: cursor } : undefined,
