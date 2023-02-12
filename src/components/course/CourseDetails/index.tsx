@@ -76,7 +76,7 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
                 {activeCourseDetails.instructor}
               </p>
               <div className="flex gap-4 text-slate-500 dark:text-neutral-400">
-                <Members number={activeCourseDetails.members} />
+                <Members number={activeCourseDetails._count.users} />
                 <div className="flex items-center gap-0.5">
                   <RiTimeLine />
                   <span>{courseInfo.credits} credits</span>
@@ -124,7 +124,7 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
                         {getTermName(course.term)} {course.year}
                       </span>
                       <Members
-                        number={course.members}
+                        number={course._count.users}
                         className="font-medium"
                       />
                     </div>

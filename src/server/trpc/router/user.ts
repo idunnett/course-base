@@ -20,14 +20,14 @@ export const userRouter = router({
     const school = await ctx.prisma.school.findUnique({
       where: { id: user.schoolId },
     })
-    const degreeName = await ctx.prisma.degree.findUnique({
+    const degree = await ctx.prisma.degree.findUnique({
       where: { id: user.degreeId },
       select: { name: true },
     })
     return {
       ...user,
       school,
-      degreeName: degreeName?.name,
+      degreeName: degree?.name,
     }
   }),
   findById: protectedProcedure

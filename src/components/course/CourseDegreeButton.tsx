@@ -1,10 +1,12 @@
+import type { CourseInfo, School } from '@prisma/client'
 import type { ButtonHTMLAttributes, FC, MouseEventHandler } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import { RiBuilding2Line, RiTimeLine } from 'react-icons/ri'
-import type { FullCourseInfo } from '../../types'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  courseInfo: FullCourseInfo
+  courseInfo: CourseInfo & {
+    school: School
+  }
   onClick?: MouseEventHandler
   className?: string
   showSchool?: boolean

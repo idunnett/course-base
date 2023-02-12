@@ -23,7 +23,7 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
             <RiTimeLine />
             <span>{degree.credits} credits</span>
           </div>
-          <Members number={degree.memberCount} />
+          <Members number={degree._count.users} />
           <p>For Admissions in {degree.admissionYear}</p>
         </div>
         <SchoolTag
@@ -40,13 +40,13 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
             Year {year + 1} required courses
           </h3>
           <div className="flex flex-col gap-1">
-            {degree.requiredCourses.map(
-              (requiredCourse, index) =>
-                requiredCourse.degreeYear === year + 1 && (
-                  <div key={requiredCourse.id} className="flex items-center">
+            {degree.courseInfos.map(
+              ({ courseInfo }) =>
+                courseInfo.degreeYear === year + 1 && (
+                  <div key={courseInfo.id} className="flex items-center">
                     <CourseDegreeButton
-                      courseInfo={requiredCourse}
-                      onClick={() => setCourseModalData(requiredCourse)}
+                      courseInfo={courseInfo}
+                      onClick={() => setCourseModalData(courseInfo)}
                     />
                   </div>
                 )

@@ -12,6 +12,7 @@ type FullCourse = Course & {
   info: Omit<CourseInfo, 'schoolId'> & {
     school: School
   }
+  _count: { users: number }
 }
 
 type CreateCourseFormData = {
@@ -41,6 +42,7 @@ type CourseInfoWithSchool = CourseInfo & {
 type FullCourseInfo = CourseInfo & {
   courses: (Course & {
     segments: Segment[]
+    _count: { users: number }
   })[]
   school: School
 }

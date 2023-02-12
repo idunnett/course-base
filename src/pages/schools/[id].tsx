@@ -38,8 +38,8 @@ const School = () => {
           <p className="flex items-center gap-1 whitespace-nowrap text-lg font-normal text-slate-500 dark:text-neutral-400">
             <RiGroupLine />
             <span>
-              {school.memberCount} member
-              {school.memberCount !== 1 && 's'}
+              {school._count.users} member
+              {school._count.users !== 1 && 's'}
             </span>
           </p>
         </div>

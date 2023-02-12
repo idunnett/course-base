@@ -4,7 +4,11 @@ import { RiTimeLine } from 'react-icons/ri'
 import type { CreateSubjectRequirement } from '../../../../../types'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  subjectRequirement: CreateSubjectRequirement | SubjectRequirement
+  subjectRequirement:
+    | CreateSubjectRequirement
+    | (SubjectRequirement & {
+        subject: string[]
+      })
 }
 
 const SubjectRequirementButton: FC<Props> = ({

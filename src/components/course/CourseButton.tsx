@@ -58,7 +58,7 @@ const CourseButton: FC<Props> = ({
           {isFullCourseType(course) && (
             <div className="flex items-center gap-0.5">
               <RiGroupLine />
-              <span>{course.members}</span>
+              <span>{course._count.users}</span>
             </div>
           )}
         </div>

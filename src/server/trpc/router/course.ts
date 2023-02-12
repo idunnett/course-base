@@ -1,9 +1,20 @@
-import { Course, Term } from '@prisma/client'
+import { Term } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const courseRouter = router({
+  myCourseIds: protectedProcedure.query(async ({ ctx }) => {
+    const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      select: {
+        courseId: true,
+      },
+    })
+    return usersOnCourses.map(({ courseId }) => courseId)
+  }),
   getMyCourses: protectedProcedure.query(async ({ ctx }) => {
     const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
       where: {
@@ -42,39 +53,26 @@ export const courseRouter = router({
   join: protectedProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      const courseIds =
-        (
-          await ctx.prisma.user.findUnique({
-            where: {
-              id: ctx.session.user.id,
-            },
-            select: {
-              courseIds: true,
-            },
-          })
-        )?.courseIds ?? []
-      if (courseIds.includes(input))
+      const userOnCourse = await ctx.prisma.usersOnCourses.findUnique({
+        where: {
+          userId_courseId: { userId: ctx.session.user.id, courseId: input },
+        },
+      })
+      if (userOnCourse)
         throw new TRPCError({
           code: 'CONFLICT',
           message: 'You are already in this course',
         })
-      const course: Course = await ctx.prisma.course.update({
+      return await ctx.prisma.course.update({
         where: { id: input },
         data: {
-          members: {
-            increment: 1,
+          users: {
+            connect: {
+              userId_courseId: { userId: ctx.session.user.id, courseId: input },
+            },
           },
         },
       })
-      await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
-        data: {
-          courseIds: {
-            push: input,
-          },
-        },
-      })
-      return course
     }),
   create: protectedProcedure
     .input(

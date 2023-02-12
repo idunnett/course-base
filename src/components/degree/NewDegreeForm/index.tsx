@@ -3,20 +3,15 @@ import { useMultiStepForm } from '../../../hooks/useMultiStepForm'
 import GeneralInfoForm from './GeneralInfoForm'
 import RequirementsForm from './RequirementsForm'
 import type {
+  CourseInfoWithSchool,
   CreateDegreeFormData,
-  FullCourse,
   CreatePartialCourse,
 } from '../../../types'
 import type { School } from '@prisma/client'
 import { trpc } from '../../../utils/trpc'
-import {
-  DegreeModel,
-  PartialCourseModel,
-  SubjectRequirementModel,
-} from '../../../../prisma/zod'
-import type { z } from 'zod'
-import { isFullCourseType } from '../../../utils/courseUtils'
+import { isCourseInfoType } from '../../../utils/courseUtils'
 import { RiLoader5Line } from 'react-icons/ri'
+import { useRouter } from 'next/router'
 
 const INITIAL_DATA: CreateDegreeFormData = {
   name: '',
@@ -24,11 +19,12 @@ const INITIAL_DATA: CreateDegreeFormData = {
   degreeYears: '4',
   credits: '',
   admissionYear: '',
-  requiredCourses: [],
+  courseInfos: [],
   subjectRequirements: [],
 }
 
 const NewDegreeForm = ({ school }: { school: School | null }) => {
+  const router = useRouter()
   useEffect(() => {
     updateFields({ school })
   }, [school])
@@ -40,10 +36,9 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
       <RequirementsForm {...data} updateFields={updateFields} key={2} />,
     ])
 
-  const { mutate, isLoading } = trpc.degree.create.useMutation({
+  const { mutate: createDegree, isLoading } = trpc.degree.create.useMutation({
     onSuccess: (res) => {
-      console.log(res)
-      // router.push(`/degrees/${res}`)
+      router.push(`/degrees/${res}`)
     },
     onError: (error) => {
       alert(error.message)
@@ -58,49 +53,34 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
     e.preventDefault()
     if (!isLastStep) return next()
 
-    const CreateDegree = DegreeModel.omit({ id: true, memberCount: true })
-    const CreateSubjectRequirements = SubjectRequirementModel.omit({
-      id: true,
-    }).array()
-    const CreatePartialCourses = PartialCourseModel.omit({ id: true }).array()
+    const courseInfos: CourseInfoWithSchool[] = []
+    const partialCourses: CreatePartialCourse[] = []
 
-    const fullCourses: FullCourse[] = []
-    const partialCoursesData: CreatePartialCourse[] = []
-
-    data.requiredCourses.forEach((c) => {
-      if (isFullCourseType(c)) fullCourses.push(c)
-      else partialCoursesData.push(c)
+    data.courseInfos.forEach((c) => {
+      if (isCourseInfoType(c)) courseInfos.push(c)
+      else partialCourses.push(c)
     })
 
     if (!data.school?.id) return alert('School must not be empty')
 
-    const degree: z.infer<typeof CreateDegree> = {
+    const subjectRequirements = data.subjectRequirements.map((s) => ({
+      ...s,
+      year: Number(s.year),
+      credits: parseFloat(s.credits),
+    }))
+
+    createDegree({
       name: data.name,
+      schoolId: data.school.id,
+      credits: parseFloat(data.credits),
       admissionYear: Number(data.admissionYear),
       years: Number(data.degreeYears),
-      credits: parseFloat(data.credits),
-      requiredCourseIds: fullCourses.map((fc) => fc.id),
-      schoolId: data.school.id,
-    }
-
-    const subjectRequirements: z.infer<typeof CreateSubjectRequirements> =
-      data.subjectRequirements.map((s) => ({
-        ...s,
-        year: Number(s.year),
-        credits: parseFloat(s.credits),
-      }))
-
-    const partialCourses: z.infer<typeof CreatePartialCourses> =
-      partialCoursesData.map((ps) => ({
-        ...ps,
-        degreeYear: Number(ps.degreeYear),
-        credits: parseFloat(ps.credits),
-      }))
-
-    mutate({
-      degree,
+      courseInfoIds: courseInfos.map((c) => c.id),
+      partialCourses: partialCourses.map((c) => ({
+        ...c,
+        credits: parseFloat(c.credits),
+      })),
       subjectRequirements,
-      partialCourses,
     })
   }
 

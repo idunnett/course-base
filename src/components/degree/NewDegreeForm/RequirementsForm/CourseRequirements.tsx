@@ -3,9 +3,9 @@ import { FiCheck, FiX } from 'react-icons/fi'
 import _ from 'lodash'
 import useDebounce from '../../../../hooks/useDebounce'
 import type {
-  FullCourse,
   CreatePartialCourse,
   CreateDegreeFormData,
+  CourseInfoWithSchool,
 } from '../../../../types'
 import { trpc } from '../../../../utils/trpc'
 import AutoComplete from '../../../common/AutoComplete'
@@ -14,19 +14,20 @@ import Modal from '../../../common/Modal'
 import Widget from '../../../common/Widget'
 import CourseButton from '../../../course/CourseButton'
 import CourseDetails from '../../../course/CourseDetails'
-import { isFullCourseType } from '../../../../utils/courseUtils'
+import { isCourseInfoType } from '../../../../utils/courseUtils'
 import CourseDegreeButton from '../../../course/CourseDegreeButton'
 import { RiTimeLine } from 'react-icons/ri'
+import CourseModal from '../../../course/CourseModal'
 
 interface Props {
   degreeYears: string
-  requiredCourses: Array<FullCourse | CreatePartialCourse>
+  courseInfos: Array<CourseInfoWithSchool | CreatePartialCourse>
   updateFields: (fields: Partial<CreateDegreeFormData>) => void
 }
 
 const CourseRequirements: FC<Props> = ({
   degreeYears,
-  requiredCourses,
+  courseInfos,
   updateFields,
 }) => {
   const [searchVal, setSearchVal] = useState('')
@@ -34,14 +35,14 @@ const CourseRequirements: FC<Props> = ({
   const [nameInput, setNameInput] = useState('')
   const [creditsInput, setCreditsInput] = useState('1')
   const [showAddCourseInput, setShowAddCourseInput] = useState<number>(-1)
-  const [modalData, setModalData] = useState<FullCourse | null>(null)
+  const [modalData, setModalData] = useState<CourseInfoWithSchool | null>(null)
 
   const debouncedSearchVal = useDebounce(searchVal, 750)
 
-  const { data, isError, isFetching } = trpc.course.search.useQuery(
+  const { data, isError, isFetching } = trpc.courseInfo.search.useQuery(
     { searchVal: debouncedSearchVal },
     {
-      queryKey: ['course.search', debouncedSearchVal],
+      queryKey: ['courseInfo.search', debouncedSearchVal],
       enabled: !!debouncedSearchVal,
       refetchOnWindowFocus: false,
     }
@@ -52,7 +53,7 @@ const CourseRequirements: FC<Props> = ({
     setCodeInput('')
     setNameInput('')
     setCreditsInput('1')
-  }, [requiredCourses])
+  }, [courseInfos])
   return (
     <>
       {[...Array(Number(degreeYears))].map((_item, year) => (
@@ -62,14 +63,14 @@ const CourseRequirements: FC<Props> = ({
           </h3>
           <Widget className="relative flex flex-col gap-1">
             <div className="flex flex-col gap-1">
-              {requiredCourses.map(
-                (requiredCourse, index) =>
-                  requiredCourse.degreeYear === year + 1 && (
+              {courseInfos.map(
+                (courseInfo, index) =>
+                  courseInfo.degreeYear === year + 1 && (
                     <div
                       key={
-                        isFullCourseType(requiredCourse)
-                          ? requiredCourse.id
-                          : requiredCourse.name + index
+                        isCourseInfoType(courseInfo)
+                          ? courseInfo.id
+                          : courseInfo.name + index
                       }
                       className="flex items-center"
                     >
@@ -79,38 +80,36 @@ const CourseRequirements: FC<Props> = ({
                         onClick={() => {
                           setCodeInput('')
                           const updatedRequiredCourses =
-                            _.cloneDeep(requiredCourses)
+                            _.cloneDeep(courseInfos)
                           updatedRequiredCourses.splice(index, 1)
                           updateFields({
-                            requiredCourses: updatedRequiredCourses,
+                            courseInfos: updatedRequiredCourses,
                           })
                         }}
                       >
                         <FiX className="h-5 w-5" />
                       </button>
-                      {isFullCourseType(requiredCourse) ? (
+                      {isCourseInfoType(courseInfo) ? (
                         <CourseDegreeButton
-                          course={requiredCourse}
-                          onClick={() => setModalData(requiredCourse)}
+                          courseInfo={courseInfo}
+                          onClick={() => setModalData(courseInfo)}
                         />
                       ) : (
                         <div
-                          key={
-                            requiredCourse.code + requiredCourse.name + index
-                          }
+                          key={courseInfo.code + courseInfo.name + index}
                           className="list-button flex flex-col items-start"
                         >
                           <div className="flex items-center">
                             <h2 className="flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white">
-                              {requiredCourse.code}
+                              {courseInfo.code}
                             </h2>
                             <p className="text-md text-base font-medium text-slate-500 dark:text-neutral-400">
-                              : {requiredCourse.name}
+                              : {courseInfo.name}
                             </p>
                           </div>
                           <div className="flex items-center gap-0.5 text-sm font-light text-slate-600 dark:text-neutral-400">
                             <RiTimeLine />
-                            <span>{requiredCourse.credits}</span>
+                            <span>{courseInfo.credits}</span>
                           </div>
                         </div>
                       )}
@@ -143,9 +142,9 @@ const CourseRequirements: FC<Props> = ({
                       !!searchVal && !!data?.items
                         ? data.items.filter(
                             ({ id, degreeYear, code, name }) =>
-                              !requiredCourses
+                              !courseInfos
                                 .map((rc) =>
-                                  isFullCourseType(rc) ? rc.id : undefined
+                                  isCourseInfoType(rc) ? rc.id : undefined
                                 )
                                 .includes(id) &&
                               degreeYear === year + 1 &&
@@ -161,10 +160,9 @@ const CourseRequirements: FC<Props> = ({
                     isLoading={isFetching}
                     isError={isError}
                     onSuggestionItemSelect={(item) => {
-                      const updatedRequiredCourses =
-                        _.cloneDeep(requiredCourses)
+                      const updatedRequiredCourses = _.cloneDeep(courseInfos)
                       updatedRequiredCourses.push(item)
-                      updateFields({ requiredCourses: updatedRequiredCourses })
+                      updateFields({ courseInfos: updatedRequiredCourses })
                       setShowAddCourseInput(-1)
                     }}
                     onEsc={() => {
@@ -198,9 +196,9 @@ const CourseRequirements: FC<Props> = ({
                       !!searchVal && !!data?.items
                         ? data.items.filter(
                             ({ id, degreeYear, code, name }) =>
-                              !requiredCourses
+                              !courseInfos
                                 .map((rc) =>
-                                  isFullCourseType(rc) ? rc.id : undefined
+                                  isCourseInfoType(rc) ? rc.id : undefined
                                 )
                                 .includes(id) &&
                               degreeYear === year + 1 &&
@@ -216,10 +214,9 @@ const CourseRequirements: FC<Props> = ({
                     isLoading={isFetching}
                     isError={isError}
                     onSuggestionItemSelect={(item) => {
-                      const updatedRequiredCourses =
-                        _.cloneDeep(requiredCourses)
+                      const updatedRequiredCourses = _.cloneDeep(courseInfos)
                       updatedRequiredCourses.push(item)
-                      updateFields({ requiredCourses: updatedRequiredCourses })
+                      updateFields({ courseInfos: updatedRequiredCourses })
                       setShowAddCourseInput(-1)
                     }}
                     onEsc={() => {
@@ -258,14 +255,14 @@ const CourseRequirements: FC<Props> = ({
                   className="secondary-btn"
                   onClick={() => {
                     if (!codeInput) return
-                    const updatedRequiredCourses = [...requiredCourses]
+                    const updatedRequiredCourses = [...courseInfos]
                     updatedRequiredCourses.push({
                       code: codeInput,
                       name: nameInput,
                       credits: creditsInput,
                       degreeYear: year + 1,
                     })
-                    updateFields({ requiredCourses: updatedRequiredCourses })
+                    updateFields({ courseInfos: updatedRequiredCourses })
                     setShowAddCourseInput(-1)
                     setCodeInput('')
                   }}
@@ -291,9 +288,10 @@ const CourseRequirements: FC<Props> = ({
         </div>
       ))}
       {modalData && (
-        <Modal handleClose={() => setModalData(null)}>
-          <CourseDetails course={modalData} />
-        </Modal>
+        <CourseModal
+          courseInfo={modalData}
+          handleClose={() => setModalData(null)}
+        />
       )}
     </>
   )

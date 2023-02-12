@@ -5,9 +5,12 @@ import Members from '../common/Members'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   degree: Degree & {
-    school: School
+    school: SchoolWithUserCount
+    _count: {
+      users: number
+    }
   }
-  showSchool: boolean
+  showSchool?: boolean
 }
 
 const DegreeButton: FC<Props> = ({ degree, showSchool = true, ...props }) => {
@@ -38,7 +41,7 @@ const DegreeButton: FC<Props> = ({ degree, showSchool = true, ...props }) => {
             <span>{degree.credits}</span>
           </div>
           <Members
-            number={degree.memberCount}
+            number={degree._count.users}
             showText={false}
             className="!gap-0.5"
           />

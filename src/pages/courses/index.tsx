@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { useState, useEffect } from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
 import Widget from '../../components/common/Widget'
@@ -14,6 +15,7 @@ const CourseSearch = () => {
   const { refetch, isFetching } = trpc.courseInfo.variations.useQuery(
     selectedCourse?.id as string,
     {
+      queryKey: ['courseInfo.variations', '1'],
       enabled: !!selectedCourse?.id,
       refetchOnWindowFocus: false,
       retry: false,
@@ -29,8 +31,11 @@ const CourseSearch = () => {
   )
 
   useEffect(() => {
-    if (selectedCourse && !selectedCourse.courses.length && !isFetching)
-      refetch()
+    if (selectedCourse && !selectedCourse.courses.length && !isFetching) {
+      refetch({
+        queryKey: ['courseInfo.variations', '1'],
+      })
+    }
   }, [selectedCourse])
 
   return (

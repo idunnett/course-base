@@ -44,12 +44,23 @@ const AppLayout: FC<Props> = ({ children }) => {
         {isFetching ? (
           <div className="skeleton-loading-text mr-2 w-24 bg-slate-500" />
         ) : (
-          <Link
-            href="/my/degree"
-            className="secondary-btn font-normal text-slate-500"
-          >
-            {user?.degreeName || 'My Degree'}
-          </Link>
+          <>
+            {user?.degreeName ? (
+              <Link
+                href="/my/degree"
+                className="secondary-btn font-normal text-slate-500"
+              >
+                {user.degreeName}
+              </Link>
+            ) : (
+              <Link
+                href="/degrees"
+                className="secondary-btn text-sm font-normal text-slate-500"
+              >
+                Add my degree
+              </Link>
+            )}
+          </>
         )}
         <div className="ml-3 flex items-center gap-4">
           <SchoolMenu school={userSchool} isFetching={isFetching} />

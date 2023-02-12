@@ -1,8 +1,9 @@
+import type { CourseInfo } from '@prisma/client'
 import { type FC, useEffect, useState } from 'react'
 import { RiTimeLine } from 'react-icons/ri'
 import type {
+  CourseInfoWithSchool,
   CreateDegreeFormData,
-  FullCourse,
   CreatePartialCourse,
   CreateSubjectRequirement,
 } from '../../../../types'
@@ -13,7 +14,7 @@ interface Props {
   name: string
   degreeYears: string
   credits: string
-  requiredCourses: Array<FullCourse | CreatePartialCourse>
+  courseInfos: Array<CourseInfoWithSchool | CreatePartialCourse>
   subjectRequirements: Array<CreateSubjectRequirement>
   updateFields: (fields: Partial<CreateDegreeFormData>) => void
 }
@@ -22,12 +23,12 @@ const RequirementsForm: FC<Props> = ({
   name,
   degreeYears,
   credits,
-  requiredCourses,
+  courseInfos,
   subjectRequirements,
   updateFields,
 }) => {
   const [currentTotalCredits, setCurrentTotalCredits] = useState(
-    requiredCourses
+    courseInfos
       .map((c) =>
         typeof c.credits === 'string' ? parseFloat(c.credits) : c.credits
       )
@@ -36,7 +37,7 @@ const RequirementsForm: FC<Props> = ({
 
   useEffect(() => {
     setCurrentTotalCredits(
-      requiredCourses
+      courseInfos
         .map((c) =>
           typeof c.credits === 'string' ? parseFloat(c.credits) : c.credits
         )
@@ -45,7 +46,7 @@ const RequirementsForm: FC<Props> = ({
           .map((s) => parseFloat(s.credits))
           .reduce((a, b) => a + b, 0)
     )
-  }, [requiredCourses, subjectRequirements])
+  }, [courseInfos, subjectRequirements])
 
   return (
     <div className="flex flex-col gap-2">
@@ -70,7 +71,7 @@ const RequirementsForm: FC<Props> = ({
       </div>
       <CourseRequirements
         degreeYears={degreeYears}
-        requiredCourses={requiredCourses}
+        courseInfos={courseInfos}
         updateFields={updateFields}
       />
       <SubjectRequirements

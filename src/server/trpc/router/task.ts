@@ -138,10 +138,11 @@ export const taskRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { courseId, segmentId, source, destination } = input
-      const { courseIds } = await ctx.prisma.user.findUniqueOrThrow({
+      const { courses } = await ctx.prisma.user.findUniqueOrThrow({
         where: { id: ctx.session.user.id },
-        select: { courseIds: true },
+        select: { courses: { select: { courseId: true } } },
       })
+      const courseIds = courses.map((course) => course.courseId)
       if (!courseIds.includes(courseId))
         throw new TRPCError({
           code: 'CONFLICT',

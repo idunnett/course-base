@@ -1,7 +1,7 @@
 import type { School } from '@prisma/client'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useState } from 'react'
 import Form from '../../components/common/Form'
 import InputSegment from '../../components/common/InputSegment'
 import LoadingOrError from '../../components/common/LoadingOrError'

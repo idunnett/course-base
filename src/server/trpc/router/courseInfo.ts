@@ -11,6 +11,11 @@ export const courseInfoRouter = router({
           courses: {
             include: {
               segments: true,
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
             },
           },
           school: true,
@@ -26,6 +31,11 @@ export const courseInfoRouter = router({
           courses: {
             include: {
               segments: true,
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
             },
           },
         },
