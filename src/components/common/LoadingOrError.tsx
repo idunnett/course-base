@@ -1,4 +1,4 @@
-import { FaSpinner } from 'react-icons/fa'
+import { RiLoader5Line } from 'react-icons/ri'
 
 function LoadingOrError({ error }: { error?: string }) {
   return (
@@ -6,7 +6,7 @@ function LoadingOrError({ error }: { error?: string }) {
       {error ? (
         <p className="dark:text-white">{error}</p>
       ) : (
-        <FaSpinner className="animate-spin dark:text-white" />
+        <RiLoader5Line className="animate-spin dark:text-white" />
       )}
     </div>
   )

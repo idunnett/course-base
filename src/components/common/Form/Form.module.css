@@ -1,5 +1,5 @@
 .form{
-    @apply shadow-sm h-auto p-6 rounded-2xl flex flex-col gap-3;
+    @apply h-auto p-6 flex flex-col gap-3;
 }
 
 .form h1{

@@ -7,7 +7,7 @@ import AutoComplete from '../common/AutoComplete'
 import SchoolButton from './SchoolButton'
 
 interface Props {
-  school: School | null
+  school: SchoolWithUserCount | null
   animate?: boolean
   className?: string
   onSelect: (school: School) => void

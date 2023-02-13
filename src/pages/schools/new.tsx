@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import { type FormEvent, useRef, useState } from 'react'
-import { FaSpinner } from 'react-icons/fa'
-import { schoolAtom } from '../../atoms'
+import { RiLoader5Line } from 'react-icons/ri'
+import { userSchoolAtom } from '../../atoms'
 import ColorPicker from '../../components/common/ColorPicker'
 import Form from '../../components/common/Form'
 import InputSegment from '../../components/common/InputSegment'
@@ -12,14 +12,14 @@ const SchoolCreate = () => {
   const router = useRouter()
   const nameRef = useRef<HTMLInputElement>(null)
   const shortNameRef = useRef<HTMLInputElement>(null)
+  const setUserSchool = useSetAtom(userSchoolAtom)
 
-  const setSchoolAtom = useSetAtom(schoolAtom)
   const [primaryColor, setPrimaryColor] = useState('')
   const [secondaryColor, setSecondaryColor] = useState('')
 
   const { mutate: createSchool, isLoading } = trpc.school.create.useMutation({
     onSuccess: (data) => {
-      setSchoolAtom(data)
+      setUserSchool(data)
       router.replace(`/schools/${data.id}`)
     },
     onError: (error) => {
@@ -86,7 +86,7 @@ const SchoolCreate = () => {
           disabled={isLoading}
         >
           {isLoading ? (
-            <FaSpinner className="h-7 animate-spin dark:text-neutral-200" />
+            <RiLoader5Line className="h-7 animate-spin dark:text-neutral-200" />
           ) : (
             'Create and join'
           )}

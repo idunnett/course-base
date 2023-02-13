@@ -1,10 +1,14 @@
 import type { SubjectRequirement } from '@prisma/client'
 import type { ButtonHTMLAttributes, FC } from 'react'
-import { HiClock } from 'react-icons/hi'
+import { RiTimeLine } from 'react-icons/ri'
 import type { CreateSubjectRequirement } from '../../../../../types'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  subjectRequirement: CreateSubjectRequirement | SubjectRequirement
+  subjectRequirement:
+    | CreateSubjectRequirement
+    | (SubjectRequirement & {
+        subject: string[]
+      })
 }
 
 const SubjectRequirementButton: FC<Props> = ({
@@ -42,7 +46,7 @@ const SubjectRequirementButton: FC<Props> = ({
         {subjectRequirement.orHigher && '(+)'}
       </span>
       <div className="flex items-center gap-0.5 whitespace-nowrap text-sm font-light text-slate-600 dark:text-neutral-400">
-        <HiClock />
+        <RiTimeLine />
         <span>{subjectRequirement.credits}</span>
       </div>
     </button>

@@ -5,84 +5,122 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator zod {
-  provider              = "zod-prisma"
-  output                = "./zod"
-  relationModel         = true
-  modelCase             = "PascalCase"
-  modelSuffix           = "Model"
-  useDecimalJs          = true
-  prismaJsonNullability = true
-}
-
 datasource db {
-  provider = "postgresql"
+  provider          = "mysql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
 }
 
 model School {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   name           String
   shortName      String
   color          String
   secondaryColor String
-  memberCount    Int      @default(1)
+  users          User[]
   degrees        Degree[]
-  courses        Course[]
+  courseInfos    CourseInfo[]
 }
 
 model Degree {
-  id                  String               @id @default(cuid())
+  id                  String                 @id @default(cuid())
   name                String
   schoolId            String
-  school              School               @relation(fields: [schoolId], references: [id])
   credits             Float
   admissionYear       Int
   years               Int
-  memberCount         Int                  @default(1)
-  requiredCourseIds   String[]
+  school              School                 @relation(fields: [schoolId], references: [id])
+  users               User[]
+  courseInfos         DegreesOnCourseInfos[]
   partialCourses      PartialCourse[]
   subjectRequirements SubjectRequirement[]
+
+  @@index([schoolId])
+}
+
+model CourseInfo {
+  id         String                 @id @default(cuid())
+  code       String
+  name       String
+  color      String
+  degreeYear Int
+  credits    Float
+  schoolId   String
+  school     School                 @relation(fields: [schoolId], references: [id])
+  courses    Course[]
+  degrees    DegreesOnCourseInfos[]
+
+  @@index([schoolId])
+}
+
+model DegreesOnCourseInfos {
+  degree       Degree     @relation(fields: [degreeId], references: [id])
+  degreeId     String
+  courseInfo   CourseInfo @relation(fields: [courseInfoId], references: [id])
+  courseInfoId String
+
+  @@id([degreeId, courseInfoId])
+  @@index([degreeId])
+  @@index([courseInfoId])
+}
+
+model Course {
+  id         String           @id @default(cuid())
+  segments   Segment[]
+  year       Int
+  term       Term             @default(F)
+  instructor String
+  createdAt  DateTime         @default(now())
+  infoId     String
+  info       CourseInfo       @relation(fields: [infoId], references: [id])
+  users      UsersOnCourses[]
+
+  @@index([infoId])
 }
 
 model SubjectRequirement {
-  id       String   @id @default(cuid())
-  subject  String[]
+  id       String                          @id @default(cuid())
   year     Int
   credits  Float
-  orHigher Boolean  @default(false)
-  degree   Degree?  @relation(fields: [degreeId], references: [id])
-  degreeId String?
+  orHigher Boolean                         @default(false)
+  degreeId String
+  subject  SubjectsOnSubjectRequirements[]
+  degree   Degree                          @relation(fields: [degreeId], references: [id])
+
+  @@index([degreeId])
+}
+
+model Subject {
+  name         String                          @unique
+  requirements SubjectsOnSubjectRequirements[]
+}
+
+model SubjectsOnSubjectRequirements {
+  subject       Subject            @relation(fields: [subjectName], references: [name])
+  subjectName   String
+  requirement   SubjectRequirement @relation(fields: [requirementId], references: [id])
+  requirementId String
+
+  @@id([subjectName, requirementId])
+  @@index([subjectName])
+  @@index([requirementId])
 }
 
 model PartialCourse {
-  id         String  @id @default(cuid())
+  id         String @id @default(cuid())
   code       String
   name       String
   credits    Float
   degreeYear Int
-  degree     Degree? @relation(fields: [degreeId], references: [id])
-  degreeId   String?
-}
+  degreeId   String
+  degree     Degree @relation(fields: [degreeId], references: [id])
 
-model Course {
-  id          String    @id @default(cuid())
-  name        String
-  color       String
-  segments    Segment[]
-  year        Int
-  degreeYear  Int
-  term        Term      @default(F)
-  instructor  String
-  memberCount Int       @default(1)
-  credits     Float
-  code        String
-  schoolId    String
-  school      School    @relation(fields: [schoolId], references: [id])
+  @@index([degreeId])
 }
 
 model Segment {
@@ -90,8 +128,10 @@ model Segment {
   name     String
   value    Int
   quantity Int
-  courseId String
   course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  @@index([courseId])
 }
 
 enum Term {
@@ -110,6 +150,8 @@ model Task {
   userId    String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 // Necessary for Next auth
@@ -119,16 +161,17 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -137,30 +180,41 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?          @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  schoolId      String    @default("")
-  degreeId      String    @default("")
-  courseIds     String[]
+  schoolId      String           @default("")
+  degreeId      String           @default("")
+  school        School?          @relation(fields: [schoolId], references: [id])
+  darkMode      Boolean          @default(false)
+  degree        Degree?          @relation(fields: [degreeId], references: [id])
+  courses       UsersOnCourses[]
   tasks         Task[]
   accounts      Account[]
   sessions      Session[]
-  darkMode      Boolean   @default(false)
+
+  @@index([degreeId])
+  @@index([schoolId])
 }
 
-// model Settings {
-//   id       String  @id @default(cuid())
-//   userId   String  @unique
-//   user     User    @relation(fields: [userId], references: [id])
-//   darkMode Boolean @default(false)
-// }
+model UsersOnCourses {
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  @@id([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
 
 model VerificationToken {
   identifier String

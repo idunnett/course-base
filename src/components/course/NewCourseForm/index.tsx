@@ -38,7 +38,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
 
   const { mutate: createCourse } = trpc.course.create.useMutation({
     onSuccess: (res) => {
-      router.push(`/courses/${res}`)
+      router.push(`/my/courses/${res}`)
     },
     onError: (error) => {
       alert(error.message)
@@ -61,16 +61,21 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
 
     if (!data.school) return alert('Please assign a school.')
 
-    const { segments, ...courseData } = data
-    const course = {
-      ...courseData,
-      schoolId: data.school.id,
-      year: Number(data.year),
-      term: getTerm(data.term),
+    const { segments } = data
+    createCourse({
+      code: data.code,
+      name: data.name,
+      color: data.color,
       degreeYear: Number(data.degreeYear),
       credits: Number(data.credits),
-    }
-    createCourse({ course, segments })
+      schoolId: data.school.id,
+      course: {
+        year: Number(data.year),
+        term: getTerm(data.term),
+        instructor: data.instructor,
+        segments,
+      },
+    })
   }
 
   return (

@@ -4,7 +4,7 @@ import Members from '../common/Members'
 import SchoolTag from './SchoolTag'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  school: School
+  school: SchoolWithUserCount
   className?: string
 }
 
@@ -18,7 +18,7 @@ const SchoolButton: FC<Props> = ({ school, onClick, className, ...props }) => {
       {...props}
     >
       <SchoolTag school={school} />
-      <Members number={school.memberCount} />
+      <Members number={school._count.users} />
     </button>
   )
 }

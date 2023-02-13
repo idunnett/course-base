@@ -4,30 +4,33 @@
 
 @layer components {
   .primary-btn {
-    @apply text-white bg-slate-500 hover:bg-slate-600 font-medium px-3 py-1.5 rounded-lg whitespace-nowrap max-w-min select-none outline-none transition-all ease-linear duration-200 shadow-lg;
+    @apply max-w-min select-none whitespace-nowrap rounded-lg bg-slate-500 px-3 py-1.5 font-medium text-white shadow-lg outline-none transition-all duration-200 ease-linear hover:bg-slate-600;
   }
 
   .secondary-btn {
-    @apply dark:text-gray-300 dark:hover:text-gray-400 text-slate-500 hover:text-slate-600 px-2 py-1.5 whitespace-nowrap max-w-min select-none outline-none font-medium;
+    @apply max-w-min select-none whitespace-nowrap px-2 py-1.5 font-medium text-slate-500 outline-none hover:text-slate-600 dark:text-gray-300 dark:hover:text-gray-400;
   }
 
   .text-link {
-    @apply text-slate-500 whitespace-nowrap outline-none border-b border-transparent hover:border-slate-500;
+    @apply whitespace-nowrap border-b border-transparent text-slate-500 outline-none hover:border-slate-500;
   }
 
   .tooltip {
-    @apply absolute pointer-events-none whitespace-nowrap w-auto p-2 min-w-max rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 origin-right scale-0 z-10 group-hover:scale-100 select-none opacity-0 group-hover:opacity-100;
+    @apply pointer-events-none absolute z-10 w-auto min-w-max origin-right scale-0 select-none whitespace-nowrap rounded-md bg-gray-900 p-2 text-xs font-bold text-white opacity-0 shadow-md transition-all duration-100 group-hover:scale-100 group-hover:opacity-100;
   }
 
   .list-button {
-    @apply flex items-center w-full outline-none shadow-sm text-lg bg-opacity-5 text-slate-500 dark:text-neutral-200 hover:text-slate-600 dark:hover:text-white font-medium bg-slate-500 hover:bg-opacity-10 rounded-md p-2 whitespace-nowrap;
+    @apply flex w-full items-center whitespace-nowrap rounded-md bg-slate-500 bg-opacity-5 p-2 text-lg font-medium text-slate-500 shadow-sm outline-none hover:bg-opacity-10 hover:text-slate-600 dark:text-neutral-200 dark:hover:text-white;
   }
 
   .list-button.active {
-    @apply bg-opacity-20 text-slate-600 dark:text-white hover:bg-opacity-20;
+    @apply bg-opacity-20 text-slate-600 hover:bg-opacity-20 dark:text-white;
   }
 
   .link {
-    @apply py-1 px-4 w-full hover:bg-slate-500 hover:text-white text-left whitespace-nowrap;
+    @apply w-full whitespace-nowrap py-2 px-4 text-left text-sm hover:bg-gray-100;
+  }
+  .skeleton-loading-text {
+    @apply h-2 animate-skeleton-loading rounded-md bg-gray-300 dark:bg-gray-700;
   }
 }

@@ -42,8 +42,8 @@ const SegmentPieChart: FC<Props> = ({
       onMouseOver={(_, index) => setHoveredSegment && setHoveredSegment(index)}
       onMouseOut={() => setHoveredSegment && setHoveredSegment(null)}
       style={{
-        height: 250,
-        width: 250,
+        height: 200,
+        width: 200,
         overflow: 'visible',
       }}
       className="text-slate-500 dark:text-neutral-400"

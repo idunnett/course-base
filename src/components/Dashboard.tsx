@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { BiBuildings } from 'react-icons/bi'
+import { RiBuilding2Line } from 'react-icons/ri'
 import { SlNotebook } from 'react-icons/sl'
 import { trpc } from '../utils/trpc'
 import LoadingOrError from './common/LoadingOrError'
@@ -46,7 +46,7 @@ const Dashboard = () => {
               href="/schools"
               className="secondary-btn flex items-center gap-1"
             >
-              <BiBuildings />
+              <RiBuilding2Line />
               Schools
             </Link>
           )}

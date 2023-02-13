@@ -8,6 +8,7 @@ declare module 'next-auth' {
     user?: {
       id: string
       schoolId: string
+      degreeId: string
     } & DefaultSession['user']
   }
 }

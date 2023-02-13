@@ -1,11 +1,11 @@
 import type { Dispatch, FC, SetStateAction } from 'react'
-import type { FullCourse } from '../../../types'
+import type { FullCourseInfo } from '../../../types'
 import CourseButton from '../CourseButton'
 
 interface Props {
-  courses?: FullCourse[]
-  selectedCourse: FullCourse | null
-  setSelectedCourse: Dispatch<SetStateAction<FullCourse | null>>
+  courses?: FullCourseInfo[]
+  selectedCourse: FullCourseInfo | null
+  setSelectedCourse: Dispatch<SetStateAction<FullCourseInfo | null>>
 }
 
 const CourseList: FC<Props> = ({

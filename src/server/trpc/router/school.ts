@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { SchoolModel } from '../../../../prisma/zod'
 
 import { router, protectedProcedure } from '../trpc'
 
@@ -28,6 +27,13 @@ export const schoolRouter = router({
     .query(async ({ input, ctx }) => {
       const school = await ctx.prisma.school.findUnique({
         where: { id: input },
+        include: {
+          _count: {
+            select: {
+              users: true,
+            },
+          },
+        },
       })
       if (!school)
         throw new TRPCError({
@@ -44,18 +50,43 @@ export const schoolRouter = router({
         include: {
           _count: {
             select: {
-              courses: true,
+              courseInfos: true,
               degrees: true,
+              users: true,
             },
           },
-          courses: {
+          courseInfos: {
             take: 5,
-            include: { segments: true },
-            orderBy: { memberCount: 'desc' },
+            include: {
+              courses: {
+                take: 1,
+                orderBy: {
+                  users: {
+                    _count: 'desc',
+                  },
+                },
+              },
+            },
+            orderBy: {
+              courses: {
+                _count: 'desc',
+              },
+            },
           },
           degrees: {
             take: 5,
-            orderBy: { memberCount: 'desc' },
+            orderBy: {
+              users: {
+                _count: 'desc',
+              },
+            },
+            include: {
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
+            },
           },
         },
       })
@@ -67,52 +98,41 @@ export const schoolRouter = router({
       return school
     }),
   create: protectedProcedure
-    .input(SchoolModel.omit({ id: true, memberCount: true }))
+    .input(
+      z.object({
+        name: z.string(),
+        shortName: z.string(),
+        color: z.string(),
+        secondaryColor: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       const newSchool = await ctx.prisma.school.create({
-        data: input,
-      })
-      if (ctx.session.user.schoolId) {
-        // Decrease member count on user's previous school
-        await ctx.prisma.school.update({
-          where: { id: ctx.session.user.schoolId },
-          data: { memberCount: { decrement: 1 } },
-        })
-      }
-      await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
-        data: { schoolId: newSchool.id },
+        data: {
+          ...input,
+          users: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
       })
       return newSchool
     }),
   join: protectedProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      const school = await ctx.prisma.school.findUnique({
+      const school = await ctx.prisma.school.update({
         where: { id: input },
+        data: {
+          users: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
       })
-      if (!school)
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'School does not exist',
-        })
-      if (ctx.session.user.schoolId) {
-        if (ctx.session.user.schoolId === school.id) return school
-        // Decrease member count on user's previous school
-        await ctx.prisma.school.update({
-          where: { id: ctx.session.user.schoolId },
-          data: { memberCount: { decrement: 1 } },
-        })
-      }
-      const updatedSchool = await ctx.prisma.school.update({
-        where: { id: input },
-        data: { memberCount: { increment: 1 } },
-      })
-      await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
-        data: { schoolId: updatedSchool.id },
-      })
-      return updatedSchool
+      return school
     }),
   search: protectedProcedure
     .input(
@@ -129,12 +149,20 @@ export const schoolRouter = router({
         where: {
           name: {
             startsWith: searchVal,
-            mode: 'insensitive',
           },
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          memberCount: 'desc',
+          users: {
+            _count: 'desc',
+          },
+        },
+        include: {
+          _count: {
+            select: {
+              users: true,
+            },
+          },
         },
       })
       let nextCursor: typeof cursor | undefined = undefined

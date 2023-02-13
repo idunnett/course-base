@@ -1,5 +1,5 @@
 import { type FC, useEffect, useState } from 'react'
-import type { Course, Segment, Task } from '@prisma/client'
+import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
 import SegmentBar from './SegmentBar'
 import { getCourseSegmentTasks } from '../../../utils/diagramUtils'
 
@@ -15,7 +15,10 @@ function getBarHeightScaleFactor(segments: Segment[]) {
 }
 
 interface Props {
-  course: Course & { segments: Segment[] }
+  course: Course & {
+    info: CourseInfo
+    segments: Segment[]
+  }
   tasks: Task[]
 }
 
@@ -44,7 +47,7 @@ const GradesBarGraph: FC<Props> = ({ course, tasks }) => {
             </span>
             <SegmentBar
               segment={segment}
-              courseColor={course.color}
+              courseColor={course.info.color}
               tasks={segmentTasks}
               heightScaleFactor={barHeightScaleFactor}
             />

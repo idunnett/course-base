@@ -1,16 +1,33 @@
 import type {
+  CourseInfo,
   Degree,
   PartialCourse,
   School,
   SubjectRequirement,
 } from '@prisma/client'
 import type { subjects } from '../constants'
+import type {
+  CourseInfoWithSchool,
+  CreatePartialCourse,
+  FullCourse,
+  FullCourseInfo,
+} from './course'
 
 type FullDegree = Degree & {
-  requiredCourses: FullCourse[]
-  partialCourses: PartialCourse[]
-  subjectRequirements: SubjectRequirement[]
+  _count: {
+    users: number
+  }
   school: School
+  courseInfos: {
+    courseInfo: CourseInfo & {
+      school: School
+      courses: (Course & {
+        segments: Segment[]
+      })[]
+    }
+  }[]
+  partialCourses: PartialCourse[]
+  subjectRequirements: FullSubjectRequirement[]
 }
 
 type CreateDegreeFormData = {
@@ -19,8 +36,12 @@ type CreateDegreeFormData = {
   credits: string
   admissionYear: string
   school: School | null
-  requiredCourses: Array<FullCourse | PartialCourse>
-  subjectRequirements: Array<PartialSubjectRequirement>
+  courseInfos: Array<CourseInfoWithSchool | CreatePartialCourse>
+  subjectRequirements: CreateSubjectRequirement[]
+}
+
+type FullSubjectRequirement = SubjectRequirement & {
+  subject: string[]
 }
 
 type CreateSubjectRequirement = {
@@ -30,4 +51,4 @@ type CreateSubjectRequirement = {
   orHigher: boolean = false
 }
 
-type Subject = typeof subjects[keyof typeof subjects]
+type Subject = (typeof subjects)[keyof typeof subjects]

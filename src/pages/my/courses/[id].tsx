@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { FaSpinner } from 'react-icons/fa'
 import SegmentGradesListWidget from '../../../components/segment/SegmentGradesListWidget'
 import GradesBarGraph from '../../../components/diagrams/GradesBarGraph'
 import TotalGradeBar from '../../../components/diagrams/TotalGradeBar'
@@ -8,6 +7,7 @@ import TaskModal, { type ModalData } from '../../../components/task/TaskModal'
 import ScatterChart from '../../../components/diagrams/ScatterChart'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
+import { RiLoader5Line } from 'react-icons/ri'
 
 const Course = () => {
   const { id } = useRouter().query
@@ -38,10 +38,10 @@ const Course = () => {
         <h1
           className="px-4 text-4xl font-bold"
           style={{
-            color: course.color,
+            color: course.info.color,
           }}
         >
-          {course.name}
+          {course.info.name}
         </h1>
         <div className="relative my-2 mx-4 flex flex-col gap-4 text-black dark:text-white">
           <TotalGradeBar course={course} tasks={tasks} />
@@ -53,7 +53,8 @@ const Course = () => {
                   segment={segment}
                   setModalData={setModalData}
                   tasks={tasks}
-                  course={course}
+                  courseId={course.id}
+                  courseColor={course.info.color}
                   refetchTasks={refetchTasks}
                 />
               ) : (
@@ -62,7 +63,7 @@ const Course = () => {
                   segment={segment}
                   setModalData={setModalData}
                   tasks={tasks}
-                  courseColor={course.color}
+                  courseColor={course.info.color}
                 />
               )
             )}
@@ -88,7 +89,7 @@ const Course = () => {
 
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <FaSpinner className="animate-spin dark:text-white" />
+      <RiLoader5Line className="animate-spin dark:text-white" />
     </div>
   )
 }

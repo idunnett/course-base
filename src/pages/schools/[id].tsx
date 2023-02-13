@@ -1,11 +1,11 @@
-import { BiBuildings } from 'react-icons/bi'
-import CourseButton from '../../../components/course/CourseButton'
-import Widget from '../../../components/common/Widget'
+import CourseButton from '../../components/course/CourseButton'
+import Widget from '../../components/common/Widget'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { trpc } from '../../../utils/trpc'
-import LoadingOrError from '../../../components/common/LoadingOrError'
-import { HiUsers } from 'react-icons/hi'
+import { trpc } from '../../utils/trpc'
+import LoadingOrError from '../../components/common/LoadingOrError'
+import DegreeButton from '../../components/degree/DegreeButton'
+import { RiBuilding2Line, RiGroupLine } from 'react-icons/ri'
 
 const School = () => {
   const router = useRouter()
@@ -26,20 +26,20 @@ const School = () => {
       <div className="flex h-full flex-col gap-4 p-4 pt-16">
         <div className="flex items-end gap-2">
           <h1
-            className="flex items-center gap-1 rounded-md p-2 pl-1 text-4xl font-bold text-slate-500 dark:text-neutral-400"
+            className="flex items-center gap-1 rounded-md p-2 pl-1 text-3xl font-semibold text-slate-500 dark:text-neutral-400"
             style={{
               color: school.secondaryColor,
               backgroundColor: school.color,
             }}
           >
-            <BiBuildings fontSize={48} />
+            <RiBuilding2Line fontSize={36} />
             {school.name}
           </h1>
           <p className="flex items-center gap-1 whitespace-nowrap text-lg font-normal text-slate-500 dark:text-neutral-400">
-            <HiUsers />
+            <RiGroupLine />
             <span>
-              {school.memberCount} member
-              {school.memberCount !== 1 && 's'}
+              {school._count.users} member
+              {school._count.users !== 1 && 's'}
             </span>
           </p>
         </div>
@@ -51,23 +51,12 @@ const School = () => {
                 {school._count.degrees} total
               </span>
             </h2>
-            <Link href={`/schools/${id}/degrees/new`} className="primary-btn">
-              New
-            </Link>
-          </Widget>
-          <Widget className="flex h-min w-full flex-col gap-2">
-            <h2 className="flex items-end gap-2 text-lg font-semibold text-slate-500 dark:text-neutral-200">
-              Courses{' '}
-              <span className="text-sm font-normal text-slate-400 dark:text-neutral-400">
-                {school._count.courses} total
-              </span>
-            </h2>
-            {school.courses
-              ? school.courses.map((course) => (
-                  <CourseButton
-                    key={course.id}
-                    course={{ ...course, school: school }}
-                    onClick={() => router.push(`/courses/${course.id}`)}
+            {school.degrees
+              ? school.degrees.map((degree) => (
+                  <DegreeButton
+                    key={degree.id}
+                    degree={{ ...degree, school }}
+                    onClick={() => router.push(`/degrees/${degree.id}`)}
                     showSchool={false}
                   />
                 ))
@@ -81,7 +70,37 @@ const School = () => {
                     }}
                   />
                 ))}
-            <Link href={`/schools/${id}/courses/new`} className="primary-btn">
+            <Link href="/degrees/new" className="primary-btn">
+              New
+            </Link>
+          </Widget>
+          <Widget className="flex h-min w-full flex-col gap-2">
+            <h2 className="flex items-end gap-2 text-lg font-semibold text-slate-500 dark:text-neutral-200">
+              Courses{' '}
+              <span className="text-sm font-normal text-slate-400 dark:text-neutral-400">
+                {school._count.courseInfos} total
+              </span>
+            </h2>
+            {school.courseInfos
+              ? school.courseInfos.map((courseInfo) => (
+                  <CourseButton
+                    key={courseInfo.id}
+                    course={{ ...courseInfo, school }}
+                    onClick={() => router.push(`/courses/${courseInfo.id}`)}
+                    showSchool={false}
+                  />
+                ))
+              : [...Array(Number(5))].map((_, index) => (
+                  <div
+                    key={index}
+                    className="list-button h-[68px] animate-pulse"
+                    style={{
+                      animationDelay: `${index / 5}s`,
+                      animationDuration: '1s',
+                    }}
+                  />
+                ))}
+            <Link href="/courses/new" className="primary-btn">
               New
             </Link>
           </Widget>

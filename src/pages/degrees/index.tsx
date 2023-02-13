@@ -1,9 +1,7 @@
 import type { School } from '@prisma/client'
-import { useAtomValue } from 'jotai'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Suspense, useEffect, useState } from 'react'
-import { schoolAtom } from '../../atoms'
+import { Suspense, useState } from 'react'
 import Form from '../../components/common/Form'
 import InputSegment from '../../components/common/InputSegment'
 import LoadingOrError from '../../components/common/LoadingOrError'
@@ -11,7 +9,7 @@ import Modal from '../../components/common/Modal'
 import DegreeButton from '../../components/degree/DegreeButton'
 import SchoolAutoComplete from '../../components/school/SchoolAutoComplete'
 import useDebounce from '../../hooks/useDebounce'
-import type { FullCourse } from '../../types'
+import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
 const DegreeDetails = dynamic(
@@ -22,11 +20,10 @@ const CourseDetails = dynamic(
 )
 
 const Degrees = () => {
-  const initialSchool = useAtomValue(schoolAtom)
   const [school, setSchool] = useState<School | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [activeDegreeId, setActiveDegreeId] = useState<string | null>(null)
-  const [courseModalData, setCourseModalData] = useState<FullCourse | null>(
+  const [courseModalData, setCourseModalData] = useState<FullCourseInfo | null>(
     null
   )
   const debouncedNameInput = useDebounce(nameInput, 500)
@@ -54,16 +51,12 @@ const Degrees = () => {
     refetchOnWindowFocus: false,
   })
 
-  useEffect(() => {
-    if (initialSchool) setSchool(initialSchool)
-  }, [])
-
   return (
     <div className="flex w-full flex-col gap-4 p-4 pt-16">
       <Form
         title="Search Degrees"
         handleSubmit={(e) => e.preventDefault()}
-        className="!gap-1 !pb-3 !pt-4"
+        className="!gap-1 !p-0"
       >
         <div className="flex items-end gap-4">
           <InputSegment
@@ -101,10 +94,7 @@ const Degrees = () => {
         <LoadingOrError error={error?.message} />
       )}
       {activeDegreeId && (
-        <Modal
-          title={activeDegree?.name}
-          handleClose={() => setActiveDegreeId(null)}
-        >
+        <Modal handleClose={() => setActiveDegreeId(null)}>
           {!isLoading && activeDegree ? (
             <Suspense fallback={<LoadingOrError />}>
               <DegreeDetails
@@ -120,7 +110,7 @@ const Degrees = () => {
       {courseModalData && (
         <Modal handleClose={() => setCourseModalData(null)}>
           <Suspense fallback={<LoadingOrError />}>
-            <CourseDetails course={courseModalData} />
+            <CourseDetails courseInfo={courseModalData} />
           </Suspense>
         </Modal>
       )}

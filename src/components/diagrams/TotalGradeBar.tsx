@@ -2,10 +2,13 @@ import { type FC, useMemo } from 'react'
 import CountUp from 'react-countup'
 import { motion } from 'framer-motion'
 import { getTotalCurrentGrade } from '../../utils/diagramUtils'
-import type { Course, Segment, Task } from '@prisma/client'
+import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
 
 interface Props {
-  course: Course & { segments: Segment[] }
+  course: Course & {
+    info: CourseInfo
+    segments: Segment[]
+  }
   tasks: Task[]
 }
 
@@ -25,7 +28,7 @@ const TotalGradeBar: FC<Props> = ({ course, tasks }) => {
           duration: grade / 100,
         }}
         style={{
-          backgroundColor: course.color,
+          backgroundColor: course.info.color,
         }}
       >
         <CountUp

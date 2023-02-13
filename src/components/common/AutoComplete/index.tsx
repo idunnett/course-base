@@ -11,7 +11,7 @@ import {
   type FC,
   type Ref,
 } from 'react'
-import { FaSpinner } from 'react-icons/fa'
+import { RiLoader5Line } from 'react-icons/ri'
 import styles from './AutoComplete.module.css'
 
 interface SuggestionComponentProps {
@@ -147,7 +147,7 @@ function AutoCompleteInner<T>(
               <div
                 className={`${styles.suggestions} flex items-center justify-center bg-gray-200 py-2 dark:bg-zinc-600`}
               >
-                <FaSpinner className="ml-2 animate-spin dark:text-neutral-200" />
+                <RiLoader5Line className="ml-2 animate-spin dark:text-neutral-200" />
               </div>
             ) : (
               <ul

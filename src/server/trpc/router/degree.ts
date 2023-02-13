@@ -1,47 +1,165 @@
+import type { Subject } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
+import _ from 'lodash'
 import { z } from 'zod'
-import {
-  DegreeModel,
-  PartialCourseModel,
-  SubjectRequirementModel,
-} from '../../../../prisma/zod'
 import { router, protectedProcedure } from '../trpc'
 
 export const degreeRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        degree: DegreeModel.omit({ id: true, memberCount: true }),
-        subjectRequirements: SubjectRequirementModel.omit({ id: true }).array(),
-        partialCourses: PartialCourseModel.omit({ id: true }).array(),
+        name: z.string(),
+        schoolId: z.string(),
+        credits: z.number(),
+        admissionYear: z.number(),
+        years: z.number(),
+        courseInfoIds: z.array(z.string()),
+        partialCourses: z.array(
+          z.object({
+            code: z.string(),
+            name: z.string(),
+            credits: z.number(),
+            degreeYear: z.number(),
+          })
+        ),
+        subjectRequirements: z.array(
+          z.object({
+            year: z.number(),
+            credits: z.number(),
+            orHigher: z.boolean(),
+            subject: z.array(z.string()),
+          })
+        ),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { degree, subjectRequirements, partialCourses } = input
+      const { subjectRequirements, partialCourses, courseInfoIds } = input
 
-      const { id: newDegreeId } = await ctx.prisma.degree.create({
-        data: degree,
+      const courseInfos = await ctx.prisma.courseInfo.findMany({
+        where: {
+          id: {
+            in: courseInfoIds,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      })
+      if (courseInfos.length !== courseInfoIds.length)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Course info not found',
+        })
+
+      const school = await ctx.prisma.school.findUnique({
+        where: {
+          id: input.schoolId,
+        },
+      })
+      if (!school)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'School not found',
+        })
+
+      const { id: degreeId } = await ctx.prisma.degree.create({
+        data: {
+          name: input.name,
+          credits: input.credits,
+          admissionYear: input.admissionYear,
+          years: input.years,
+          school: {
+            connect: {
+              id: input.schoolId,
+            },
+          },
+          partialCourses: {
+            createMany: {
+              data: partialCourses,
+            },
+          },
+        },
         select: { id: true },
       })
 
-      subjectRequirements.forEach((s) => (s.degreeId = newDegreeId))
-      await ctx.prisma.subjectRequirement.createMany({
-        data: subjectRequirements,
-      })
+      for (const courseInfoId of courseInfoIds) {
+        await ctx.prisma.courseInfo.update({
+          where: {
+            id: courseInfoId,
+          },
+          data: {
+            degrees: {
+              connectOrCreate: {
+                where: {
+                  degreeId_courseInfoId: {
+                    degreeId,
+                    courseInfoId,
+                  },
+                },
+                create: {
+                  degreeId,
+                },
+              },
+            },
+          },
+        })
+      }
 
-      partialCourses.forEach((pc) => (pc.degreeId = newDegreeId))
-      await ctx.prisma.partialCourse.createMany({
-        data: partialCourses,
-      })
+      for (const sr of subjectRequirements) {
+        const subjectRequirement = await ctx.prisma.subjectRequirement.create({
+          data: {
+            year: sr.year,
+            credits: sr.credits,
+            orHigher: sr.orHigher,
+            degreeId,
+          },
+        })
+        for (const subjectName of sr.subject) {
+          await ctx.prisma.subject.upsert({
+            where: {
+              name: subjectName,
+            },
+            create: {
+              name: subjectName,
+              requirements: {
+                create: {
+                  requirementId: subjectRequirement.id,
+                },
+              },
+            },
+            update: {
+              requirements: {
+                connectOrCreate: {
+                  where: {
+                    subjectName_requirementId: {
+                      subjectName,
+                      requirementId: subjectRequirement.id,
+                    },
+                  },
+                  create: {
+                    requirementId: subjectRequirement.id,
+                  },
+                },
+              },
+            },
+          })
+        }
+      }
 
       await ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id,
         },
         data: {
-          degreeId: newDegreeId,
+          degree: {
+            connect: {
+              id: degreeId,
+            },
+          },
         },
       })
-      return newDegreeId
+      return degreeId
     }),
   search: protectedProcedure
     .input(
@@ -59,19 +177,33 @@ export const degreeRouter = router({
         where: {
           name: {
             startsWith: searchVal,
-            mode: 'insensitive',
           },
           schoolId,
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          memberCount: 'desc',
+          users: {
+            _count: 'desc',
+          },
         },
         include: {
-          school: true,
+          _count: {
+            select: {
+              users: true,
+            },
+          },
+          school: {
+            include: {
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
+            },
+          },
         },
       })
-      let nextCursor: typeof cursor | undefined = undefined
+      let nextCursor: typeof cursor = undefined
       if (items.length > limit) {
         const nextItem = items.pop()
         nextCursor = nextItem!.id
@@ -88,24 +220,51 @@ export const degreeRouter = router({
         where: { id: input },
         include: {
           partialCourses: true,
-          subjectRequirements: true,
+          subjectRequirements: {
+            include: {
+              subject: {
+                select: {
+                  subjectName: true,
+                },
+              },
+            },
+          },
           school: true,
-        },
-      })
-      const requiredCourses = await ctx.prisma.course.findMany({
-        where: {
-          id: {
-            in: degree.requiredCourseIds,
+          courseInfos: {
+            select: {
+              courseInfo: {
+                include: {
+                  courses: {
+                    include: {
+                      segments: true,
+                      _count: {
+                        select: {
+                          users: true,
+                        },
+                      },
+                    },
+                  },
+                  school: true,
+                },
+              },
+            },
+          },
+          _count: {
+            select: {
+              users: true,
+            },
           },
         },
-        include: {
-          segments: true,
-          school: true,
-        },
+      })
+      const subjectRequirements = degree.subjectRequirements.map((sr) => {
+        return {
+          ...sr,
+          subject: sr.subject.map((s) => s.subjectName),
+        }
       })
       return {
         ...degree,
-        requiredCourses,
+        subjectRequirements,
       }
     }),
 })

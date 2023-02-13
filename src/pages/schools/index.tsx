@@ -1,23 +1,23 @@
 import { type FormEvent, useState } from 'react'
-import { FaSpinner } from 'react-icons/fa'
 import Form from '../../components/common/Form'
 import { useSetAtom } from 'jotai'
-import { schoolAtom } from '../../atoms'
+import { userSchoolAtom } from '../../atoms'
 import SchoolAutoComplete from '../../components/school/SchoolAutoComplete'
 import { useRouter } from 'next/router'
 import type { School } from '@prisma/client'
 import Link from 'next/link'
 import { trpc } from '../../utils/trpc'
+import { RiLoader5Line } from 'react-icons/ri'
 
 const SchoolSearch = () => {
   const router = useRouter()
   const [school, setSchool] = useState<School | null>(null)
-  const setSchoolAtom = useSetAtom(schoolAtom)
+  const setUserSchool = useSetAtom(userSchoolAtom)
 
   const { mutate: joinSchool, isLoading: isJoining } =
     trpc.school.join.useMutation({
       onSuccess: (data) => {
-        setSchoolAtom(data)
+        setUserSchool(data)
         router.replace(`/schools/${data.id}`)
       },
       onError: (error) => alert(error.message),
@@ -53,7 +53,7 @@ const SchoolSearch = () => {
             disabled={isJoining || !!!school}
           >
             {isJoining ? (
-              <FaSpinner className="h-7 animate-spin dark:text-neutral-200" />
+              <RiLoader5Line className="h-7 animate-spin dark:text-neutral-200" />
             ) : (
               'Join'
             )}
