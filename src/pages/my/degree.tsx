@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import { Suspense, useState } from 'react'
+import { FC, Suspense, useState } from 'react'
 import LoadingOrError from '../../components/common/LoadingOrError'
 import Modal from '../../components/common/Modal'
 import CourseDetails from '../../components/course/CourseDetails'
@@ -7,7 +7,7 @@ import DegreeDetails from '../../components/degree/DegreeDetails'
 import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
-const degree = () => {
+const Degree: FC = () => {
   const { data: session } = useSession()
   const [courseModalData, setCourseModalData] = useState<FullCourseInfo | null>(
     null
@@ -47,4 +47,4 @@ const degree = () => {
   )
 }
 
-export default degree
+export default Degree
