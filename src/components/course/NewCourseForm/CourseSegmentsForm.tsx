@@ -97,10 +97,10 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
 
   return (
     <Widget className="flex flex-col gap-2 p-4">
-      <h1 className="text-3xl font-bold text-slate-500 dark:text-neutral-200">
-        Create a Course
+      <h1 className="text-2xl font-bold text-slate-500 dark:text-neutral-200">
+        Course Segments
       </h1>
-      <h2 className="text-xl font-medium text-slate-500 dark:text-zinc-400">
+      <h2 className="text-lg font-medium text-slate-500 dark:text-zinc-400">
         Grading Scheme{' '}
         <small
           className={`ml-2 text-opacity-70 transition-all duration-200 ease-linear ${
@@ -117,7 +117,9 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
               key={i}
               type="button"
               onClick={() => setSelectedSegment(i)}
-              className={`list-button ${selectedSegment === i && 'active'}`}
+              className={`list-button gap-1 ${
+                selectedSegment === i && 'active'
+              }`}
             >
               <span className="text-md whitespace-nowrap font-normal text-slate-500 text-opacity-70">
                 {segment.quantity}
@@ -135,7 +137,9 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
                 setSelectedSegment(-1)
                 setSelectInput((prevState) => !prevState)
               }}
-              className={`list-button ${selectedSegment === -1 && 'active'}`}
+              className={`list-button gap-1 ${
+                selectedSegment === -1 && 'active'
+              }`}
             >
               <span className="text-emerald-500">+</span> Add Segment{' '}
             </button>

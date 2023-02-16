@@ -28,6 +28,13 @@ type CreateCourseFormData = {
   segments: Omit<Segment, 'id' | 'courseId'>[]
 }
 
+type CreateCourseVariationFormData = {
+  year: string
+  term: string
+  instructor: string
+  segments: Omit<Segment, 'id' | 'courseId'>[]
+}
+
 type CreatePartialCourse = {
   code: string
   name: string

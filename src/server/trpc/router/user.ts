@@ -19,6 +19,13 @@ export const userRouter = router({
     })
     const school = await ctx.prisma.school.findUnique({
       where: { id: user.schoolId },
+      include: {
+        _count: {
+          select: {
+            users: true,
+          },
+        },
+      },
     })
     const degree = await ctx.prisma.degree.findUnique({
       where: { id: user.degreeId },

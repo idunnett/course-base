@@ -128,6 +128,64 @@ export const courseRouter = router({
       })
       return courseId
     }),
+  createVariation: protectedProcedure
+    .input(
+      z
+        .object({
+          infoId: z.string(),
+          segments: z
+            .array(
+              z
+                .object({
+                  name: z.string(),
+                  value: z.number().int(),
+                  quantity: z.number().int(),
+                })
+                .required()
+            )
+            .min(1),
+          year: z.number().int(),
+          term: z.nativeEnum(Term),
+          instructor: z.string(),
+        })
+        .required()
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { segments, infoId, ...course } = input
+      const courseInfo = await ctx.prisma.courseInfo.findUnique({
+        where: { id: infoId },
+      })
+      if (!courseInfo)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Course info not found',
+        })
+      const { id: courseId } = await ctx.prisma.course.create({
+        data: {
+          info: {
+            connect: {
+              id: infoId,
+            },
+          },
+          ...course,
+        },
+        select: {
+          id: true,
+        },
+      })
+      segments.forEach(async (segment) => {
+        await ctx.prisma.segment.create({
+          data: { ...segment, courseId },
+        })
+      })
+      await ctx.prisma.usersOnCourses.create({
+        data: {
+          userId: ctx.session.user.id,
+          courseId,
+        },
+      })
+      return courseId
+    }),
   findById: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
