@@ -14,6 +14,13 @@ export const schoolRouter = router({
       where: {
         id: ctx.session.user.schoolId,
       },
+      include: {
+        _count: {
+          select: {
+            users: true,
+          },
+        },
+      },
     })
     if (!school)
       throw new TRPCError({
@@ -116,6 +123,13 @@ export const schoolRouter = router({
             },
           },
         },
+        include: {
+          _count: {
+            select: {
+              users: true,
+            },
+          },
+        },
       })
       return newSchool
     }),
@@ -128,6 +142,13 @@ export const schoolRouter = router({
           users: {
             connect: {
               id: ctx.session.user.id,
+            },
+          },
+        },
+        include: {
+          _count: {
+            select: {
+              users: true,
             },
           },
         },

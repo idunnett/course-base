@@ -1,20 +1,12 @@
-import type { Course, Segment } from '@prisma/client'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import LoadingOrError from '../../components/common/LoadingOrError'
-import CourseDetails from '../../components/course/CourseDetails'
-import getTermName from '../../utils/termUtils'
-import { trpc } from '../../utils/trpc'
+import LoadingOrError from '../../../components/common/LoadingOrError'
+import CourseDetails from '../../../components/course/CourseDetails'
+import { trpc } from '../../../utils/trpc'
 
 const CourseView = () => {
   const { id } = useRouter().query
-  const [activeCourse, setActiveCourse] = useState<
-    | (Course & {
-        segments: Segment[]
-        members: number
-      })
-    | null
-  >(null)
+  const [activeCourseId, setActiveCourseId] = useState<string | null>(null)
 
   const { data: myCourseIds } = trpc.course.myCourseIds.useQuery(undefined, {
     retry: false,
@@ -35,21 +27,26 @@ const CourseView = () => {
     return (
       <div className="flex w-full items-center justify-center gap-6 pt-16">
         <div className="flex flex-col items-center justify-center gap-6">
-          <CourseDetails courseInfo={courseInfo} />
-          {myCourseIds && activeCourse && (
+          <CourseDetails
+            courseInfo={courseInfo}
+            setActiveCourseId={setActiveCourseId}
+          />
+          {myCourseIds && activeCourseId && (
             <div className="flex flex-col items-center gap-2">
               <button
-                disabled={myCourseIds.includes(activeCourse.id)}
+                disabled={myCourseIds.includes(activeCourseId)}
                 className={`primary-btn px-4 text-2xl ${
-                  myCourseIds.includes(activeCourse.id) &&
+                  myCourseIds.includes(activeCourseId) &&
                   'cursor-not-allowed opacity-50 hover:bg-slate-500'
                 }`}
               >
                 Join
               </button>
-              <p className="text-sm text-slate-400 dark:text-white">
-                You are already in this course.
-              </p>
+              {myCourseIds.includes(activeCourseId) && (
+                <p className="text-sm text-slate-400 dark:text-white">
+                  You are already in this course.
+                </p>
+              )}
             </div>
           )}
         </div>

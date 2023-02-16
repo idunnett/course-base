@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import type { CreateCourseFormData } from '../../../types'
 import { trpc } from '../../../utils/trpc'
 import type { School } from '@prisma/client'
+import CourseDetailsForm from './CourseDetailsForm'
 
 const INITIAL_DATA: CreateCourseFormData = {
   name: '',
@@ -33,7 +34,8 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
   const { currentStepIndex, steps, step, isFirstStep, isLastStep, next, back } =
     useMultiStepForm([
       <CourseInfoForm {...data} updateFields={updateFields} key={1} />,
-      <CourseSegmentsForm {...data} updateFields={updateFields} key={2} />,
+      <CourseDetailsForm {...data} updateFields={updateFields} key={2} />,
+      <CourseSegmentsForm {...data} updateFields={updateFields} key={3} />,
     ])
 
   const { mutate: createCourse } = trpc.course.create.useMutation({
@@ -49,7 +51,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
     setData((prev) => ({ ...prev, ...fields }))
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!isLastStep) return next()
 
@@ -79,7 +81,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
   }
 
   return (
-    <div className="flex justify-evenly py-16">
+    <div className="relative flex w-full justify-evenly py-16">
       <form
         className="relative w-11/12 sm:w-4/5 md:w-3/5 lg:w-2/5"
         onSubmit={handleSubmit}
@@ -99,7 +101,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
           </div>
         </div>
       </form>
-      {currentStepIndex === 1 && (
+      {currentStepIndex === 2 && (
         <div className="flex flex-col items-center justify-center gap-24 text-slate-700 dark:text-neutral-300">
           <h2
             className="text-4xl font-bold"

@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState, type FC } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import SegmentList from './SegmentList'
 import SegmentPieChart from '../../diagrams/SegmentPieChart'
@@ -7,12 +7,14 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import getTermName from '../../../utils/termUtils'
 import Members from '../../common/Members'
 import { RiBuilding2Line, RiTimeLine, RiUser6Line } from 'react-icons/ri'
+import Link from 'next/link'
 
 interface Props {
   courseInfo: FullCourseInfo
+  setActiveCourseId?: Dispatch<SetStateAction<string | null>>
 }
 
-const CourseDetails: FC<Props> = ({ courseInfo }) => {
+const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null)
   const [activeCourseDetails, setActiveCourseDetails] =
     useState<FullCourse | null>()
@@ -27,6 +29,13 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
       info,
     })
   }
+
+  useEffect(() => {
+    if (setActiveCourseId) {
+      if (activeCourseDetails) setActiveCourseId(activeCourseDetails?.id)
+      else setActiveCourseId(null)
+    }
+  }, [activeCourseDetails])
 
   return (
     <div className="relative flex w-full flex-col items-center gap-12">
@@ -109,9 +118,12 @@ const CourseDetails: FC<Props> = ({ courseInfo }) => {
               <h2 className="text-slate-500 dark:text-neutral-400">
                 Course Variations
               </h2>
-              <button className="list-button flex items-center justify-center py-1 text-green-500 hover:text-green-500">
+              <Link
+                href={`/courses/${courseInfo.id}/new`}
+                className="list-button flex items-center justify-center py-1 text-green-500 hover:text-green-500"
+              >
                 +
-              </button>
+              </Link>
               {courseInfo.courses.map((course, index) => (
                 <button
                   key={course.id}
