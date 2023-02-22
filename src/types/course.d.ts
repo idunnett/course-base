@@ -1,4 +1,10 @@
-import type { Course, CourseInfo, School, Segment } from '@prisma/client'
+import type {
+  Course,
+  CourseInfo,
+  CourseLocation,
+  School,
+  Segment,
+} from '@prisma/client'
 
 type FullCourseWithVariations = {
   school: School
@@ -8,7 +14,8 @@ type FullCourseWithVariations = {
 }
 
 type FullCourse = Course & {
-  segments: Segment[]
+  segments?: Segment[]
+  location?: CourseLocation | null
   info: Omit<CourseInfo, 'schoolId'> & {
     school: School
   }
@@ -26,6 +33,8 @@ type CreateCourseFormData = {
   degreeYear: string | undefined
   credits: string
   segments: Omit<Segment, 'id' | 'courseId'>[]
+  lat: number | null
+  lng: number | null
 }
 
 type CreateCourseVariationFormData = {
@@ -33,6 +42,8 @@ type CreateCourseVariationFormData = {
   term: string
   instructor: string
   segments: Omit<Segment, 'id' | 'courseId'>[]
+  lat: number | null
+  lng: number | null
 }
 
 type CreatePartialCourse = {
@@ -48,7 +59,7 @@ type CourseInfoWithSchool = CourseInfo & {
 
 type FullCourseInfo = CourseInfo & {
   courses: (Course & {
-    segments: Segment[]
+    segments?: Segment[]
     _count: { users: number }
   })[]
   school: School

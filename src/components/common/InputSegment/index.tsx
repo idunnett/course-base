@@ -13,6 +13,7 @@ interface Props {
   label?: string
   name?: string
   type?: string
+  disabled?: boolean
   autoFocus?: boolean
   autoSelect?: boolean
   isValidInput?: boolean
@@ -40,6 +41,7 @@ const InputSegment = forwardRef<HTMLInputElement, Props>(
       value,
       onChange,
       type = 'text',
+      disabled = false,
       name,
       autoFocus = false,
       autoSelect = false,
@@ -99,6 +101,7 @@ const InputSegment = forwardRef<HTMLInputElement, Props>(
         <input
           name={name}
           type={type}
+          disabled={disabled}
           id={id}
           ref={ref ?? inputRef}
           value={value}

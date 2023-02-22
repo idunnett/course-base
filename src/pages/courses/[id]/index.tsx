@@ -25,7 +25,7 @@ const CourseView = () => {
 
   if (!isLoading && courseInfo)
     return (
-      <div className="flex w-full items-center justify-center gap-6 pt-16">
+      <div className="flex w-full items-center justify-center gap-6 py-16">
         <div className="flex flex-col items-center justify-center gap-6">
           <CourseDetails
             courseInfo={courseInfo}

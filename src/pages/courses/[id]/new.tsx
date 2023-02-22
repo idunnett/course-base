@@ -16,17 +16,13 @@ const INITIAL_DATA: CreateCourseVariationFormData = {
   term: '',
   instructor: '',
   segments: [],
+  lat: null,
+  lng: null,
 }
 
 const NewCourseVariation = () => {
   const router = useRouter()
   const [data, setData] = useState(INITIAL_DATA)
-
-  const { currentStepIndex, steps, step, isFirstStep, isLastStep, next, back } =
-    useMultiStepForm([
-      <CourseDetailsForm {...data} updateFields={updateFields} key={1} />,
-      <CourseSegmentsForm {...data} updateFields={updateFields} key={2} />,
-    ])
 
   const {
     data: courseInfo,
@@ -37,6 +33,17 @@ const NewCourseVariation = () => {
     refetchOnWindowFocus: false,
     enabled: !!router.query.id,
   })
+
+  const { currentStepIndex, steps, step, isFirstStep, isLastStep, next, back } =
+    useMultiStepForm([
+      <CourseDetailsForm
+        {...data}
+        color={courseInfo?.color}
+        updateFields={updateFields}
+        key={1}
+      />,
+      <CourseSegmentsForm {...data} updateFields={updateFields} key={2} />,
+    ])
 
   const { mutate: createCourseVariation } =
     trpc.course.createVariation.useMutation({
@@ -71,12 +78,16 @@ const NewCourseVariation = () => {
       instructor: data.instructor,
       segments,
       infoId: courseInfo.id,
+      location: {
+        lat: data.lat,
+        lng: data.lng,
+      },
     })
   }
 
   if (!isLoading && courseInfo)
     return (
-      <div className="relative flex w-full flex-col items-center justify-center gap-6 pt-16">
+      <div className="relative flex w-full flex-col items-center justify-center gap-6 py-16">
         <div className="flex w-full flex-col items-center gap-2">
           <div className="flex items-start gap-1">
             <MdInsertChart

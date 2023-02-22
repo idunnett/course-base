@@ -99,13 +99,17 @@ export const courseRouter = router({
             year: z.number().int(),
             term: z.nativeEnum(Term),
             instructor: z.string(),
+            location: z.object({
+              lat: z.number().nullable(),
+              lng: z.number().nullable(),
+            }),
           })
           .required(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const { course: fullCourse, ...courseInfo } = input
-      const { segments, ...course } = fullCourse
+      const { segments, location, ...course } = fullCourse
       const { id: infoId } = await ctx.prisma.courseInfo.create({
         data: courseInfo,
       })
@@ -120,6 +124,20 @@ export const courseRouter = router({
           data: { ...segment, courseId },
         })
       })
+      const { lat, lng } = location
+      if (lat && lng) {
+        await ctx.prisma.course.update({
+          where: { id: courseId },
+          data: {
+            location: {
+              create: {
+                lat,
+                lng,
+              },
+            },
+          },
+        })
+      }
       await ctx.prisma.usersOnCourses.create({
         data: {
           userId: ctx.session.user.id,
@@ -147,11 +165,15 @@ export const courseRouter = router({
           year: z.number().int(),
           term: z.nativeEnum(Term),
           instructor: z.string(),
+          location: z.object({
+            lat: z.number().nullable(),
+            lng: z.number().nullable(),
+          }),
         })
         .required()
     )
     .mutation(async ({ input, ctx }) => {
-      const { segments, infoId, ...course } = input
+      const { segments, infoId, location, ...course } = input
       const courseInfo = await ctx.prisma.courseInfo.findUnique({
         where: { id: infoId },
       })
@@ -178,6 +200,20 @@ export const courseRouter = router({
           data: { ...segment, courseId },
         })
       })
+      const { lat, lng } = location
+      if (lat && lng) {
+        await ctx.prisma.course.update({
+          where: { id: courseId },
+          data: {
+            location: {
+              create: {
+                lat,
+                lng,
+              },
+            },
+          },
+        })
+      }
       await ctx.prisma.usersOnCourses.create({
         data: {
           userId: ctx.session.user.id,
@@ -196,6 +232,17 @@ export const courseRouter = router({
           info: {
             include: { school: true },
           },
+        },
+      })
+    }),
+  details: protectedProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.course.findUniqueOrThrow({
+        where: { id: input },
+        select: {
+          segments: true,
+          location: true,
         },
       })
     }),

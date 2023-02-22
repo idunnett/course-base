@@ -2,11 +2,15 @@ import type { FC } from 'react'
 import type { CreateCourseFormData } from '../../../types'
 import InputSegment from '../../common/InputSegment'
 import Widget from '../../common/Widget'
+import LocationAutoComplete from './LocationAutoComplete'
 
 interface Props {
   year: string
   term: string
   instructor: string
+  color?: string
+  lat: number | null
+  lng: number | null
   updateFields: (fields: Partial<CreateCourseFormData>) => void
 }
 
@@ -14,6 +18,9 @@ const CourseDetailsForm: FC<Props> = ({
   year,
   term,
   instructor,
+  color,
+  lat,
+  lng,
   updateFields,
 }) => {
   return (
@@ -66,6 +73,13 @@ const CourseDetailsForm: FC<Props> = ({
         label="Course Instructor"
         required
         autoComplete={false}
+      />
+      <LocationAutoComplete
+        lat={lat}
+        lng={lng}
+        setLat={(val: number) => updateFields({ lat: val })}
+        setLng={(val: number) => updateFields({ lng: val })}
+        color={color}
       />
     </Widget>
   )

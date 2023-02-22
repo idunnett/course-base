@@ -77,10 +77,20 @@ model Course {
   instructor String
   createdAt  DateTime         @default(now())
   infoId     String
+  locationId String?
   info       CourseInfo       @relation(fields: [infoId], references: [id])
+  location   CourseLocation?  @relation(fields: [locationId], references: [id])
   users      UsersOnCourses[]
 
   @@index([infoId])
+  @@index([locationId])
+}
+
+model CourseLocation {
+  id      String   @id @default(cuid())
+  lat     Float
+  lng     Float
+  courses Course[]
 }
 
 model SubjectRequirement {
