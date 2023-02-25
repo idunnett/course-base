@@ -18,6 +18,7 @@ const INITIAL_DATA: CreateCourseVariationFormData = {
   segments: [],
   lat: null,
   lng: null,
+  address: null,
 }
 
 const NewCourseVariation = () => {
@@ -81,6 +82,7 @@ const NewCourseVariation = () => {
       location: {
         lat: data.lat,
         lng: data.lng,
+        address: data.address,
       },
     })
   }

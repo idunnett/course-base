@@ -45,6 +45,7 @@ type CreateCourseVariationFormData = {
   segments: Omit<Segment, 'id' | 'courseId'>[]
   lat: number | null
   lng: number | null
+  address: string | null
 }
 
 type CreatePartialCourse = {
