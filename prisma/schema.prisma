@@ -90,6 +90,7 @@ model CourseLocation {
   id      String   @id @default(cuid())
   lat     Float
   lng     Float
+  address String
   courses Course[]
 }
 

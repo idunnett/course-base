@@ -1,11 +1,17 @@
+import { FC, useEffect } from 'react'
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import InputSegment from '../common/InputSegment'
 
-const PlacesAutoComplete = ({
-  onAddressSelect,
-}: {
+interface Props {
+  address: string | null
   onAddressSelect?: (address: string) => void
-}) => {
+}
+
+const PlacesAutoComplete: FC<Props> = ({ address, onAddressSelect }) => {
+  useEffect(() => {
+    address && setValue(address, false)
+  }, [address])
+
   const {
     ready,
     value,
@@ -34,6 +40,7 @@ const PlacesAutoComplete = ({
             clearSuggestions()
             onAddressSelect && onAddressSelect(description)
           }}
+          className="list-button flex cursor-pointer gap-1"
         >
           <strong>{main_text}</strong> <small>{secondary_text}</small>
         </li>
@@ -44,6 +51,7 @@ const PlacesAutoComplete = ({
   return (
     <div>
       <InputSegment
+        animate={false}
         label="Course Location"
         value={value}
         disabled={!ready}

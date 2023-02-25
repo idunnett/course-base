@@ -11,6 +11,7 @@ interface Props {
   color?: string
   lat: number | null
   lng: number | null
+  address: string | null
   updateFields: (fields: Partial<CreateCourseFormData>) => void
 }
 
@@ -21,6 +22,7 @@ const CourseDetailsForm: FC<Props> = ({
   color,
   lat,
   lng,
+  address,
   updateFields,
 }) => {
   return (
@@ -68,6 +70,7 @@ const CourseDetailsForm: FC<Props> = ({
         </div>
       </div>
       <InputSegment
+        animate={false}
         value={instructor}
         onChange={(e) => updateFields({ instructor: e.target.value })}
         label="Course Instructor"
@@ -77,8 +80,10 @@ const CourseDetailsForm: FC<Props> = ({
       <LocationAutoComplete
         lat={lat}
         lng={lng}
+        address={address}
         setLat={(val: number) => updateFields({ lat: val })}
         setLng={(val: number) => updateFields({ lng: val })}
+        setAddress={(val: string) => updateFields({ address: val })}
         color={color}
       />
     </Widget>

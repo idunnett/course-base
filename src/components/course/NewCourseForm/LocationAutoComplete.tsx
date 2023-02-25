@@ -6,16 +6,20 @@ import PlacesAutoComplete from '../PlacesAutoComplete'
 interface Props {
   lat: number | null
   lng: number | null
+  address: string | null
   setLat: (val: number) => void
   setLng: (val: number) => void
+  setAddress: (val: string) => void
   color?: string
 }
 
 const LocationAutoComplete: React.FC<Props> = ({
   lat,
   lng,
+  address,
   setLat,
   setLng,
+  setAddress,
   color = '#000',
 }) => {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -33,6 +37,7 @@ const LocationAutoComplete: React.FC<Props> = ({
         <div>
           {/* render Places Auto Complete and pass custom handler which updates the state */}
           <PlacesAutoComplete
+            address={address}
             onAddressSelect={(address) => {
               getGeocode({ address: address }).then((results) => {
                 if (!results?.[0]) return
@@ -40,6 +45,7 @@ const LocationAutoComplete: React.FC<Props> = ({
 
                 setLat(lat)
                 setLng(lng)
+                setAddress(address)
               })
             }}
           />

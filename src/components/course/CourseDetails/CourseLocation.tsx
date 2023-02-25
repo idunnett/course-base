@@ -52,34 +52,34 @@ const CourseLocation: React.FC<Props> = ({
     return <LoadingOrError error={loadError?.message} />
   }
 
+  if (!lat || !lng) return null
+
   return (
     <div className="relative h-80 w-full overflow-hidden rounded-xl bg-gray-100">
-      {lat && lng && (
-        <GoogleMap
-          options={mapOptions}
-          zoom={17}
+      <GoogleMap
+        options={mapOptions}
+        zoom={17}
+        center={{ lat, lng }}
+        mapTypeId={google.maps.MapTypeId.ROADMAP}
+        mapContainerStyle={{ width: '100%', height: '100%' }}
+        onLoad={() => console.log('Map Component Loaded...')}
+      >
+        <MarkerF
+          position={{ lat, lng }}
+          onLoad={() => console.log('Marker Loaded')}
+          icon="/map-pin-2-fill.svg"
+        />
+        <CircleF
           center={{ lat, lng }}
-          mapTypeId={google.maps.MapTypeId.ROADMAP}
-          mapContainerStyle={{ width: '100%', height: '100%' }}
-          onLoad={() => console.log('Map Component Loaded...')}
-        >
-          <MarkerF
-            position={{ lat, lng }}
-            onLoad={() => console.log('Marker Loaded')}
-            icon="/map-pin-2-fill.svg"
-          />
-          <CircleF
-            center={{ lat, lng }}
-            radius={36}
-            onLoad={() => console.log('Circle Load...')}
-            options={{
-              strokeWeight: 0,
-              fillColor: color,
-              fillOpacity: 0.2,
-            }}
-          />
-        </GoogleMap>
-      )}
+          radius={36}
+          onLoad={() => console.log('Circle Load...')}
+          options={{
+            strokeWeight: 0,
+            fillColor: color,
+            fillOpacity: 0.2,
+          }}
+        />
+      </GoogleMap>
     </div>
   )
 }

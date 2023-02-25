@@ -23,6 +23,7 @@ const INITIAL_DATA: CreateCourseFormData = {
   segments: [],
   lat: null,
   lng: null,
+  address: null,
 }
 
 const NewCourseForm = ({ school }: { school: School | null }) => {
@@ -81,6 +82,7 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
         location: {
           lat: data.lat,
           lng: data.lng,
+          address: data.address,
         },
       },
     })

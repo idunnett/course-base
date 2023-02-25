@@ -102,6 +102,7 @@ export const courseRouter = router({
             location: z.object({
               lat: z.number().nullable(),
               lng: z.number().nullable(),
+              address: z.string().nullable(),
             }),
           })
           .required(),
@@ -124,8 +125,8 @@ export const courseRouter = router({
           data: { ...segment, courseId },
         })
       })
-      const { lat, lng } = location
-      if (lat && lng) {
+      const { lat, lng, address } = location
+      if (lat && lng && address) {
         await ctx.prisma.course.update({
           where: { id: courseId },
           data: {
@@ -133,6 +134,7 @@ export const courseRouter = router({
               create: {
                 lat,
                 lng,
+                address,
               },
             },
           },
@@ -168,6 +170,7 @@ export const courseRouter = router({
           location: z.object({
             lat: z.number().nullable(),
             lng: z.number().nullable(),
+            address: z.string().nullable(),
           }),
         })
         .required()
@@ -200,8 +203,8 @@ export const courseRouter = router({
           data: { ...segment, courseId },
         })
       })
-      const { lat, lng } = location
-      if (lat && lng) {
+      const { lat, lng, address } = location
+      if (lat && lng && address) {
         await ctx.prisma.course.update({
           where: { id: courseId },
           data: {
@@ -209,6 +212,7 @@ export const courseRouter = router({
               create: {
                 lat,
                 lng,
+                address,
               },
             },
           },
