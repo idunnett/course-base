@@ -10,6 +10,7 @@ import LoadingOrError from '../../common/LoadingOrError'
 interface Props {
   lat: number | null
   lng: number | null
+  address: string | null
   color: string
   libraries?: (
     | 'drawing'
@@ -24,6 +25,7 @@ interface Props {
 const CourseLocation: React.FC<Props> = ({
   lat,
   lng,
+  address,
   color,
   libraries,
   setIsLoaded,
@@ -52,34 +54,37 @@ const CourseLocation: React.FC<Props> = ({
     return <LoadingOrError error={loadError?.message} />
   }
 
-  if (!lat || !lng) return null
+  if (!lat || !lng || !address) return null
 
   return (
-    <div className="relative h-80 w-full overflow-hidden rounded-xl bg-gray-100">
-      <GoogleMap
-        options={mapOptions}
-        zoom={17}
-        center={{ lat, lng }}
-        mapTypeId={google.maps.MapTypeId.ROADMAP}
-        mapContainerStyle={{ width: '100%', height: '100%' }}
-        onLoad={() => console.log('Map Component Loaded...')}
-      >
-        <MarkerF
-          position={{ lat, lng }}
-          onLoad={() => console.log('Marker Loaded')}
-          icon="/map-pin-2-fill.svg"
-        />
-        <CircleF
+    <div className="w-full text-sm font-normal text-slate-500">
+      <span>{address}</span>
+      <div className="relative h-80 w-full overflow-hidden rounded-xl bg-gray-100">
+        <GoogleMap
+          options={mapOptions}
+          zoom={17}
           center={{ lat, lng }}
-          radius={36}
-          onLoad={() => console.log('Circle Load...')}
-          options={{
-            strokeWeight: 0,
-            fillColor: color,
-            fillOpacity: 0.2,
-          }}
-        />
-      </GoogleMap>
+          mapTypeId={google.maps.MapTypeId.ROADMAP}
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          onLoad={() => console.log('Map Component Loaded...')}
+        >
+          <MarkerF
+            position={{ lat, lng }}
+            onLoad={() => console.log('Marker Loaded')}
+            icon="/map-pin-2-fill.svg"
+          />
+          <CircleF
+            center={{ lat, lng }}
+            radius={36}
+            onLoad={() => console.log('Circle Load...')}
+            options={{
+              strokeWeight: 0,
+              fillColor: color,
+              fillOpacity: 0.2,
+            }}
+          />
+        </GoogleMap>
+      </div>
     </div>
   )
 }

@@ -55,6 +55,7 @@ const PlacesAutoComplete: FC<Props> = ({ address, onAddressSelect }) => {
         label="Course Location"
         value={value}
         disabled={!ready}
+        autoComplete={false}
         onChange={(e) => setValue(e.target.value)}
         placeholder="123 University Ave"
       />

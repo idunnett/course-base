@@ -1,4 +1,5 @@
 import type { School } from '@prisma/client'
+import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Suspense, useState } from 'react'
@@ -20,6 +21,7 @@ const CourseDetails = dynamic(
 )
 
 const Degrees = () => {
+  const { data: session } = useSession()
   const [school, setSchool] = useState<School | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [activeDegreeId, setActiveDegreeId] = useState<string | null>(null)
@@ -101,6 +103,24 @@ const Degrees = () => {
                 degree={activeDegree}
                 setCourseModalData={setCourseModalData}
               />
+              {session?.user?.degreeId && (
+                <div className="mt-6 flex flex-col items-center gap-2">
+                  <button
+                    disabled={session.user.degreeId === activeDegreeId}
+                    className={`primary-btn px-4 text-2xl ${
+                      session.user.degreeId === activeDegreeId &&
+                      'cursor-not-allowed opacity-50 hover:bg-slate-500'
+                    }`}
+                  >
+                    Join
+                  </button>
+                  {session.user.degreeId === activeDegreeId && (
+                    <p className="text-sm text-slate-400 dark:text-white">
+                      You are already pursuing this degree.
+                    </p>
+                  )}
+                </div>
+              )}
             </Suspense>
           ) : (
             <LoadingOrError error={activeDegreeError?.message} />

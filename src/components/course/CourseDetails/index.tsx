@@ -137,6 +137,7 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
                   <CourseLocation
                     lat={activeCourseDetails.location.lat}
                     lng={activeCourseDetails.location.lng}
+                    address={activeCourseDetails.location.address}
                     color={activeCourseDetails.info.color}
                   />
                 )}

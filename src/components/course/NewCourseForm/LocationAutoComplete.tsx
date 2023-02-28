@@ -54,6 +54,7 @@ const LocationAutoComplete: React.FC<Props> = ({
       <CourseLocation
         lat={lat}
         lng={lng}
+        address={address}
         color={color}
         libraries={libraries}
         setIsLoaded={setIsLoaded}

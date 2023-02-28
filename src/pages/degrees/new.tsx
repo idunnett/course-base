@@ -1,7 +1,10 @@
+import { useAtomValue } from 'jotai'
+import { userSchoolAtom } from '../../atoms'
 import NewDegreeForm from '../../components/degree/NewDegreeForm'
 
 const DegreeCreate = () => {
-  return <NewDegreeForm school={null} />
+  const school = useAtomValue(userSchoolAtom)
+  return <NewDegreeForm school={school} />
 }
 
 export default DegreeCreate

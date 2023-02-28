@@ -27,20 +27,26 @@ const GeneralInfoForm: React.FC<Props> = ({
         Create a Degree
       </h2>
       <InputSegment
+        animate={false}
         label="Degree name"
+        placeholder='e.g. "Bachelor of Arts"'
+        autoComplete={false}
         autoFocus
         required
         value={name}
         onChange={(e) => updateFields({ name: e.target.value })}
       />
       <SchoolAutoComplete
+        animate={false}
         onInitialFetch={(school: School) => updateFields({ school })}
         onSelect={(school: School) => updateFields({ school })}
         school={school}
       />
       <div className="flex justify-between gap-4">
         <InputSegment
+          animate={false}
           label="Degree years"
+          placeholder="e.g. 4"
           required
           value={degreeYears}
           onChange={(e) => {
@@ -51,7 +57,9 @@ const GeneralInfoForm: React.FC<Props> = ({
           maxLength={1}
         />
         <InputSegment
+          animate={false}
           label="Credits"
+          placeholder="e.g. 180"
           required
           value={credits}
           onChange={(e) => {
@@ -62,7 +70,9 @@ const GeneralInfoForm: React.FC<Props> = ({
           maxLength={3}
         />
         <InputSegment
+          animate={false}
           label="Admission year"
+          placeholder={`e.g. ${new Date().getFullYear()}`}
           required
           value={admissionYear}
           onChange={(e) => {

@@ -1,4 +1,3 @@
-import type { CourseInfo } from '@prisma/client'
 import { type FC, useEffect, useState } from 'react'
 import { RiTimeLine } from 'react-icons/ri'
 import type {
@@ -75,6 +74,7 @@ const RequirementsForm: FC<Props> = ({
         updateFields={updateFields}
       />
       <SubjectRequirements
+        degreeYears={degreeYears}
         subjectRequirements={subjectRequirements}
         updateFields={updateFields}
       />

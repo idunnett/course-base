@@ -27,12 +27,10 @@ const DegreeView = () => {
   if (!isLoading && degree) {
     return (
       <div className="p-4 pt-16">
-        <Widget>
-          <DegreeDetails
-            degree={degree}
-            setCourseModalData={setCourseModalData}
-          />
-        </Widget>
+        <DegreeDetails
+          degree={degree}
+          setCourseModalData={setCourseModalData}
+        />
         {courseModalData && (
           <Modal handleClose={() => setCourseModalData(null)}>
             <Suspense fallback={<LoadingOrError />}>
