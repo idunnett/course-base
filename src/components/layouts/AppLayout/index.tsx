@@ -48,9 +48,9 @@ const AppLayout: FC<Props> = ({ children }) => {
             {user?.degreeName ? (
               <Link
                 href="/my/degree"
-                className="secondary-btn font-normal text-slate-500"
+                className="secondary-btn flex items-center px-3 text-sm font-normal text-slate-500"
               >
-                {user.degreeName}
+                My Degree
               </Link>
             ) : (
               <Link

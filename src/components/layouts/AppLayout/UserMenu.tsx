@@ -53,6 +53,13 @@ const UserMenu = () => {
         }
       >
         <Link
+          href="/"
+          onClick={() => setOpen(false)}
+          className="link text-slate-500 dark:text-neutral-200"
+        >
+          Dashboard
+        </Link>
+        <Link
           href={`/users/${session.data?.user?.id}`}
           onClick={() => setOpen(false)}
           className="link text-slate-500 dark:text-neutral-200"

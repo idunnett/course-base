@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import { FC, Suspense, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import {
   createColumnHelper,
   flexRender,
@@ -7,75 +7,123 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import LoadingOrError from '../../components/common/LoadingOrError'
-import Modal from '../../components/common/Modal'
-import CourseDetails from '../../components/course/CourseDetails'
-import DegreeDetails from '../../components/degree/DegreeDetails'
-import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
-import { drop } from 'lodash'
-import { RiTimeLine } from 'react-icons/ri'
+import { RiExternalLinkLine, RiLink, RiTimeLine } from 'react-icons/ri'
 import Members from '../../components/common/Members'
 import SchoolTag from '../../components/school/SchoolTag'
 import { AiOutlineBarChart } from 'react-icons/ai'
+import DegreeCourseLinkModal from '../../components/degree/DegreeCourseLinkModal'
+import Link from 'next/link'
+import _ from 'lodash'
 
 type DegreeTableColumns = {
   completed: boolean
+  courseCode: string
+  link?: string
+  name: string
   term: string
   degreeYear: number
-  grade: string
-  course: string
-  name: string
-  equivalent: string
+  grade?: number
   credits: number
+  courseInfoId?: string
+  linkedCourseId?: string
   color?: string
 }
 
-const columnHelper = createColumnHelper<DegreeTableColumns>()
-
-const columns = [
-  columnHelper.accessor('completed', {
-    header: 'Completed',
-    cell: (info) => (
-      <input readOnly type="checkbox" checked={info.getValue()} />
-    ),
-  }),
-  columnHelper.accessor('term', {
-    header: 'Term',
-  }),
-  columnHelper.accessor('grade', {
-    header: 'Grade',
-  }),
-  columnHelper.accessor('course', {
-    header: 'Course',
-    cell: (info) =>
-      info.row.original.color ? (
-        <div className="flex items-center gap-1">
-          <AiOutlineBarChart
-            className="h-4 w-4"
-            style={{
-              color: info.row.original.color,
-            }}
-          />
-          {info.getValue()}
-        </div>
-      ) : (
-        info.getValue()
-      ),
-  }),
-  columnHelper.accessor('name', {
-    header: 'Name',
-  }),
-  columnHelper.accessor('equivalent', {
-    header: 'Equivalent',
-  }),
-  columnHelper.accessor('credits', {
-    header: 'Credits',
-  }),
-]
+const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
 const Degree: FC = () => {
   const { data: session } = useSession()
-  const [data, setData] = useState<DegreeTableColumns[]>([])
+  const [data, setData] = useState<(DegreeTableColumns | number)[]>([])
+  const [courseInfoIdToLinkTo, setCourseInfoIdToLinkTo] = useState<
+    string | null
+  >(null)
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('completed', {
+        header: 'Completed',
+        cell: (info) => (
+          <input readOnly type="checkbox" checked={info.getValue()} />
+        ),
+      }),
+      columnHelper.accessor('link', {
+        header: 'Link',
+        cell: (info) => {
+          const row = info.row.original
+          if (typeof row !== 'number') {
+            const { courseInfoId, linkedCourseId } = row
+            if (courseInfoId) {
+              if (linkedCourseId)
+                return (
+                  <Link
+                    href={`/my/courses/${linkedCourseId}`}
+                    className="pointer-cursor flex w-full items-center justify-center"
+                  >
+                    <RiExternalLinkLine />
+                  </Link>
+                )
+              else
+                return (
+                  <button
+                    onClick={() => setCourseInfoIdToLinkTo(courseInfoId)}
+                    className="pointer-cursor flex w-full items-center justify-center"
+                  >
+                    <RiLink />
+                  </button>
+                )
+            }
+          }
+        },
+      }),
+      columnHelper.accessor('courseCode', {
+        header: 'Course',
+        cell: (info) => {
+          if (typeof info.row.original === 'number') return
+          return info.row.original.color ? (
+            <div className="flex items-center gap-1">
+              <AiOutlineBarChart
+                className="h-4 w-4"
+                style={{
+                  color: info.row.original.color,
+                }}
+              />
+              {info.getValue()}
+            </div>
+          ) : (
+            info.getValue()
+          )
+        },
+      }),
+      columnHelper.accessor('name', {
+        header: 'Name',
+      }),
+      columnHelper.accessor('term', {
+        header: 'Term',
+      }),
+      columnHelper.accessor('grade', {
+        header: 'Grade',
+        cell: (info) => {
+          const grade = info.getValue()
+          if (grade != null) return `${grade}%`
+        },
+      }),
+      columnHelper.accessor('credits', {
+        header: 'Credits',
+        footer: (info) => {
+          const totalCredits = info.table
+            .getFilteredRowModel()
+            .rows.reduce((sum, row) => {
+              if (typeof row.original === 'number') return sum
+              return sum + row.original.credits
+            }, 0)
+          return totalCredits
+        },
+      }),
+    ],
+    []
+  )
+
   const table = useReactTable({
     data,
     columns,
@@ -97,24 +145,40 @@ const Degree: FC = () => {
           completed: false,
           term: '',
           degreeYear: courseInfo.degreeYear,
-          grade: '',
-          course: courseInfo.code,
+          courseCode: courseInfo.code,
           name: courseInfo.name,
-          equivalent: '',
           credits: courseInfo.credits,
           color: courseInfo.color,
+          courseInfoId: courseInfo.id,
         })),
         ...partialCourses.map((partialCourse) => ({
           completed: false,
           term: '',
           degreeYear: partialCourse.degreeYear,
-          grade: '',
-          course: partialCourse.code,
+          courseCode: partialCourse.code,
           name: partialCourse.name,
-          equivalent: '',
           credits: partialCourse.credits,
         })),
       ].sort((a, b) => a.degreeYear - b.degreeYear)
+
+      const splitYearCourses = Object.values(
+        coursesArray.reduce(
+          (acc: { [key: number]: (DegreeTableColumns | number)[] }, x) => {
+            acc[(x as DegreeTableColumns).degreeYear] = [
+              ...(acc[(x as DegreeTableColumns).degreeYear] || []),
+              x as DegreeTableColumns,
+            ]
+            return acc
+          },
+          {}
+        )
+      )
+      splitYearCourses.forEach((yearCourses, i) => {
+        yearCourses.unshift(i + 1)
+      })
+      // flatten array into one array
+      const coursesArrayFlattened = splitYearCourses.flat()
+      coursesArrayFlattened.push(-1)
       const subjectRequirementsArray: DegreeTableColumns[] = []
       for (const subjectRequirement of subjectRequirements) {
         const { subject, credits, year, orHigher } = subjectRequirement
@@ -131,17 +195,43 @@ const Degree: FC = () => {
           completed: false,
           term: '',
           degreeYear: year,
-          grade: '',
-          course: joinedSubjectName,
+          courseCode: joinedSubjectName,
           name: '',
-          equivalent: '',
           credits,
         })
       }
-      subjectRequirementsArray.sort((a, b) => a.degreeYear - b.degreeYear)
-      setData([...coursesArray, ...subjectRequirementsArray])
+      subjectRequirementsArray.sort(
+        (a: any, b: any) => a.degreeYear - b.degreeYear
+      )
+      setData([...coursesArrayFlattened, ...subjectRequirementsArray])
     },
   })
+
+  trpc.degree.myUserDegreeCourses.useQuery(degree?.id as string, {
+    enabled: !!degree?.id && data.length > 0,
+    refetchOnWindowFocus: false,
+    retry: false,
+    onSuccess: (myUserDegreeCourses) => {
+      const updatedData = _.cloneDeep(data)
+      for (const myUserDegreeCourse of myUserDegreeCourses) {
+        const { courseInfoId, courseId, completed, term, grade } =
+          myUserDegreeCourse
+        const courseRow = updatedData.find(
+          (courseRow) =>
+            typeof courseRow !== 'number' &&
+            courseRow.courseInfoId === courseInfoId
+        )
+        if (typeof courseRow !== 'number' && courseRow) {
+          courseRow.completed = completed
+          courseRow.linkedCourseId = courseId ?? undefined
+          courseRow.term = term
+          courseRow.grade = grade === null ? undefined : grade
+        }
+      }
+      setData(updatedData)
+    },
+  })
+
   if (!isLoading && degree)
     return (
       <div className="p-4 pt-16">
@@ -170,7 +260,7 @@ const Degree: FC = () => {
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="border border-gray-200 py-1 px-3"
+                      className="border border-gray-200 py-1 px-3 text-left"
                     >
                       {header.isPlaceholder
                         ? null
@@ -184,27 +274,53 @@ const Degree: FC = () => {
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border border-gray-200">
-                  {row.getVisibleCells().map((cell) => (
+              {table.getRowModel().rows.map((row, index) =>
+                typeof row.original === 'number' ? (
+                  <tr
+                    key={'divider-' + index}
+                    className="border border-gray-200 bg-gray-100"
+                  >
                     <td
-                      key={cell.id}
-                      className="border border-gray-200 py-1 px-3"
+                      colSpan={table.getAllColumns().length}
+                      className="border border-gray-200 px-3 text-left"
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      <span className="text-sm font-medium text-slate-600 dark:text-neutral-100">
+                        {row.original > 0
+                          ? `Year ${row.original} Required Courses`
+                          : 'Other Required Courses'}
+                      </span>
                     </td>
-                  ))}
-                </tr>
-              ))}
+                  </tr>
+                ) : (
+                  <tr
+                    key={row.id}
+                    className={`border border-gray-200 ${
+                      index % 2 == 0 ? 'bg-gray-50' : 'bg-white'
+                    }`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="border border-gray-200 py-1 px-3"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                )
+              )}
             </tbody>
             <tfoot>
               {table.getFooterGroups().map((footerGroup) => (
                 <tr key={footerGroup.id}>
                   {footerGroup.headers.map((header) => (
-                    <th key={header.id}>
+                    <th
+                      key={header.id}
+                      className="border border-gray-200 py-1 px-3 text-left"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -218,6 +334,13 @@ const Degree: FC = () => {
             </tfoot>
           </table>
         </div>
+        {courseInfoIdToLinkTo && (
+          <DegreeCourseLinkModal
+            degreeId={degree.id}
+            courseInfoIdToLinkTo={courseInfoIdToLinkTo}
+            setCourseInfoIdToLinkTo={setCourseInfoIdToLinkTo}
+          />
+        )}
       </div>
     )
 
@@ -226,28 +349,6 @@ const Degree: FC = () => {
       <LoadingOrError error={error?.message} />
     </div>
   )
-
-  // const [courseModalData, setCourseModalData] = useState<FullCourseInfo | null>(
-  //   null
-  // )
-
-  // if (!isLoading && degree) {
-  //   return (
-  //     <div className="p-4 pt-16">
-  //       <DegreeDetails
-  //         degree={degree}
-  //         setCourseModalData={setCourseModalData}
-  //       />
-  //       {courseModalData && (
-  //         <Modal handleClose={() => setCourseModalData(null)}>
-  //           <Suspense fallback={<LoadingOrError />}>
-  //             <CourseDetails courseInfo={courseModalData} />
-  //           </Suspense>
-  //         </Modal>
-  //       )}
-  //     </div>
-  //   )
-  // }
 }
 
 export default Degree

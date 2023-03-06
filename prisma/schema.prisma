@@ -39,21 +39,23 @@ model Degree {
   courseInfos         DegreesOnCourseInfos[]
   partialCourses      PartialCourse[]
   subjectRequirements SubjectRequirement[]
+  userDegreeCourses   UserDegreeCourses[]
 
   @@index([schoolId])
 }
 
 model CourseInfo {
-  id         String                 @id @default(cuid())
-  code       String
-  name       String
-  color      String
-  degreeYear Int
-  credits    Float
-  schoolId   String
-  school     School                 @relation(fields: [schoolId], references: [id])
-  courses    Course[]
-  degrees    DegreesOnCourseInfos[]
+  id                String                 @id @default(cuid())
+  code              String
+  name              String
+  color             String
+  degreeYear        Int
+  credits           Float
+  schoolId          String
+  school            School                 @relation(fields: [schoolId], references: [id])
+  courses           Course[]
+  degrees           DegreesOnCourseInfos[]
+  userDegreeCourses UserDegreeCourses[]
 
   @@index([schoolId])
 }
@@ -70,17 +72,18 @@ model DegreesOnCourseInfos {
 }
 
 model Course {
-  id         String           @id @default(cuid())
-  segments   Segment[]
-  year       Int
-  term       Term             @default(F)
-  instructor String
-  createdAt  DateTime         @default(now())
-  infoId     String
-  locationId String?
-  info       CourseInfo       @relation(fields: [infoId], references: [id])
-  location   CourseLocation?  @relation(fields: [locationId], references: [id])
-  users      UsersOnCourses[]
+  id                String              @id @default(cuid())
+  segments          Segment[]
+  year              Int
+  term              Term                @default(F)
+  instructor        String
+  createdAt         DateTime            @default(now())
+  infoId            String
+  locationId        String?
+  info              CourseInfo          @relation(fields: [infoId], references: [id])
+  location          CourseLocation?     @relation(fields: [locationId], references: [id])
+  users             UsersOnCourses[]
+  userDegreeCourses UserDegreeCourses[]
 
   @@index([infoId])
   @@index([locationId])
@@ -196,21 +199,22 @@ model Session {
 }
 
 model User {
-  id            String           @id @default(cuid())
-  name          String?
-  email         String?          @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  schoolId      String           @default("")
-  degreeId      String           @default("")
-  school        School?          @relation(fields: [schoolId], references: [id])
-  darkMode      Boolean          @default(false)
-  degree        Degree?          @relation(fields: [degreeId], references: [id])
-  courses       UsersOnCourses[]
-  tasks         Task[]
-  accounts      Account[]
-  sessions      Session[]
+  id                String              @id @default(cuid())
+  name              String?
+  email             String?             @unique
+  emailVerified     DateTime?
+  password          String?
+  image             String?
+  schoolId          String              @default("")
+  degreeId          String              @default("")
+  school            School?             @relation(fields: [schoolId], references: [id])
+  darkMode          Boolean             @default(false)
+  degree            Degree?             @relation(fields: [degreeId], references: [id])
+  courses           UsersOnCourses[]
+  tasks             Task[]
+  userDegreeCourses UserDegreeCourses[]
+  accounts          Account[]
+  sessions          Session[]
 
   @@index([degreeId])
   @@index([schoolId])
@@ -224,6 +228,26 @@ model UsersOnCourses {
 
   @@id([userId, courseId])
   @@index([userId])
+  @@index([courseId])
+}
+
+model UserDegreeCourses {
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  degree       Degree     @relation(fields: [degreeId], references: [id])
+  degreeId     String
+  courseInfo   CourseInfo @relation(fields: [courseInfoId], references: [id])
+  courseInfoId String
+  completed    Boolean    @default(false)
+  course       Course?    @relation(fields: [courseId], references: [id])
+  courseId     String?
+  term         Term?
+  grade        Float?
+
+  @@id([userId, courseInfoId, degreeId])
+  @@index([userId])
+  @@index([degreeId])
+  @@index([courseInfoId])
   @@index([courseId])
 }
 

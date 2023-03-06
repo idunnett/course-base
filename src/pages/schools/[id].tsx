@@ -1,4 +1,4 @@
-import CourseButton from '../../components/course/CourseButton'
+import CourseInfoButton from '../../components/course/CourseInfoButton'
 import Widget from '../../components/common/Widget'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -83,7 +83,7 @@ const School = () => {
             </h2>
             {school.courseInfos
               ? school.courseInfos.map((courseInfo) => (
-                  <CourseButton
+                  <CourseInfoButton
                     key={courseInfo.id}
                     course={{ ...courseInfo, school }}
                     onClick={() => router.push(`/courses/${courseInfo.id}`)}

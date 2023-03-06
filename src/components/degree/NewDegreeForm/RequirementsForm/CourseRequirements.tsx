@@ -11,7 +11,7 @@ import { trpc } from '../../../../utils/trpc'
 import AutoComplete from '../../../common/AutoComplete'
 import InputSegment from '../../../common/InputSegment'
 import Widget from '../../../common/Widget'
-import CourseButton from '../../../course/CourseButton'
+import CourseInfoButton from '../../../course/CourseInfoButton'
 import { isCourseInfoType } from '../../../../utils/courseUtils'
 import CourseDegreeButton from '../../../course/CourseDegreeButton'
 import { RiTimeLine } from 'react-icons/ri'
@@ -173,7 +173,7 @@ const CourseRequirements: FC<Props> = ({
                       activeItemIndex,
                       onClick,
                     }) => (
-                      <CourseButton
+                      <CourseInfoButton
                         key={course.id}
                         course={course}
                         onClick={onClick}
@@ -227,7 +227,7 @@ const CourseRequirements: FC<Props> = ({
                       activeItemIndex,
                       onClick,
                     }) => (
-                      <CourseButton
+                      <CourseInfoButton
                         key={course.id}
                         course={course}
                         onClick={onClick}

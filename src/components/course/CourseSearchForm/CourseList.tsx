@@ -1,6 +1,6 @@
 import type { Dispatch, FC, SetStateAction } from 'react'
 import type { FullCourseInfo } from '../../../types'
-import CourseButton from '../CourseButton'
+import CourseInfoButton from '../CourseInfoButton'
 
 interface Props {
   courses?: FullCourseInfo[]
@@ -16,7 +16,7 @@ const CourseList: FC<Props> = ({
   return (
     <div className="flex w-full flex-col gap-2">
       {courses?.map((course) => (
-        <CourseButton
+        <CourseInfoButton
           key={course.id}
           course={course}
           onClick={() => setSelectedCourse(course)}

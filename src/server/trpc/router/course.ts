@@ -23,8 +23,17 @@ export const courseRouter = router({
       select: {
         course: {
           include: {
-            info: true,
+            info: {
+              include: {
+                school: true,
+              },
+            },
             segments: true,
+            _count: {
+              select: {
+                users: true,
+              },
+            },
           },
         },
       },

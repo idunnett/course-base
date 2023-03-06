@@ -21,24 +21,24 @@ const NavHeader = ({ children }: { children: ReactNode }) => {
           </span>
         </div>
       </Link>
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-1 text-sm">
         <Link
           href="/schools"
-          className="text-link flex items-center gap-1 text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
         >
           <RiBuilding2Line />
           Schools
         </Link>
         <Link
           href="/degrees"
-          className="text-link flex items-center gap-1 text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
         >
           <RiFilePaper2Line />
           Degrees
         </Link>
         <Link
           href="/courses"
-          className="text-link flex items-center gap-1 text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
         >
           <RiBookletLine />
           Courses
