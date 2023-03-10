@@ -290,7 +290,7 @@ export const degreeRouter = router({
       const resArray = []
 
       for (const userDegreeCourse of userDegreeCourses) {
-        let res = {
+        const res = {
           courseInfoId: userDegreeCourse.courseInfoId,
           courseId: userDegreeCourse.courseId,
           completed: userDegreeCourse.completed,
