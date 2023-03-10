@@ -6,29 +6,17 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { RiCheckFill } from 'react-icons/ri'
 import LoadingOrError from '../../components/common/LoadingOrError'
 import { trpc } from '../../utils/trpc'
 import { RiExternalLinkLine, RiLink, RiTimeLine } from 'react-icons/ri'
 import Members from '../../components/common/Members'
 import SchoolTag from '../../components/school/SchoolTag'
 import { AiOutlineBarChart } from 'react-icons/ai'
-import DegreeCourseLinkModal from '../../components/degree/DegreeCourseLinkModal'
+import DegreeCourseLinkModal from '../../components/degree/MyDegreeTable/DegreeCourseLinkModal'
 import Link from 'next/link'
 import _ from 'lodash'
-
-type DegreeTableColumns = {
-  completed: boolean
-  courseCode: string
-  link?: string
-  name: string
-  term: string
-  degreeYear: number
-  grade?: number
-  credits: number
-  courseInfoId?: string
-  linkedCourseId?: string
-  color?: string
-}
+import CompletedColumn from '../../components/degree/MyDegreeTable/columns/CompletedColumn'
 
 const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
@@ -39,96 +27,12 @@ const Degree: FC = () => {
     string | null
   >(null)
 
-  const columns = useMemo(
-    () => [
-      columnHelper.accessor('completed', {
-        header: 'Completed',
-        cell: (info) => (
-          <input readOnly type="checkbox" checked={info.getValue()} />
-        ),
-      }),
-      columnHelper.accessor('link', {
-        header: 'Link',
-        cell: (info) => {
-          const row = info.row.original
-          if (typeof row !== 'number') {
-            const { courseInfoId, linkedCourseId } = row
-            if (courseInfoId) {
-              if (linkedCourseId)
-                return (
-                  <Link
-                    href={`/my/courses/${linkedCourseId}`}
-                    className="pointer-cursor flex w-full items-center justify-center"
-                  >
-                    <RiExternalLinkLine />
-                  </Link>
-                )
-              else
-                return (
-                  <button
-                    onClick={() => setCourseInfoIdToLinkTo(courseInfoId)}
-                    className="pointer-cursor flex w-full items-center justify-center"
-                  >
-                    <RiLink />
-                  </button>
-                )
-            }
-          }
-        },
-      }),
-      columnHelper.accessor('courseCode', {
-        header: 'Course',
-        cell: (info) => {
-          if (typeof info.row.original === 'number') return
-          return info.row.original.color ? (
-            <div className="flex items-center gap-1">
-              <AiOutlineBarChart
-                className="h-4 w-4"
-                style={{
-                  color: info.row.original.color,
-                }}
-              />
-              {info.getValue()}
-            </div>
-          ) : (
-            info.getValue()
-          )
-        },
-      }),
-      columnHelper.accessor('name', {
-        header: 'Name',
-      }),
-      columnHelper.accessor('term', {
-        header: 'Term',
-      }),
-      columnHelper.accessor('grade', {
-        header: 'Grade',
-        cell: (info) => {
-          const grade = info.getValue()
-          if (grade != null) return `${grade}%`
-        },
-      }),
-      columnHelper.accessor('credits', {
-        header: 'Credits',
-        footer: (info) => {
-          const totalCredits = info.table
-            .getFilteredRowModel()
-            .rows.reduce((sum, row) => {
-              if (typeof row.original === 'number') return sum
-              return sum + row.original.credits
-            }, 0)
-          return totalCredits
-        },
-      }),
-    ],
-    []
-  )
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
+  const { mutate: updateUserDegreeCourse } =
+    trpc.userDegreeCourse.update.useMutation({
+      onSuccess: () => {
+        refetchMyUserDegreeCourses()
+      },
+    })
 
   const {
     data: degree,
@@ -158,6 +62,7 @@ const Degree: FC = () => {
           courseCode: partialCourse.code,
           name: partialCourse.name,
           credits: partialCourse.credits,
+          partialCourseId: partialCourse.id,
         })),
       ].sort((a, b) => a.degreeYear - b.degreeYear)
 
@@ -207,29 +112,129 @@ const Degree: FC = () => {
     },
   })
 
-  trpc.degree.myUserDegreeCourses.useQuery(degree?.id as string, {
-    enabled: !!degree?.id && data.length > 0,
-    refetchOnWindowFocus: false,
-    retry: false,
-    onSuccess: (myUserDegreeCourses) => {
-      const updatedData = _.cloneDeep(data)
-      for (const myUserDegreeCourse of myUserDegreeCourses) {
-        const { courseInfoId, courseId, completed, term, grade } =
-          myUserDegreeCourse
-        const courseRow = updatedData.find(
-          (courseRow) =>
-            typeof courseRow !== 'number' &&
-            courseRow.courseInfoId === courseInfoId
-        )
-        if (typeof courseRow !== 'number' && courseRow) {
-          courseRow.completed = completed
-          courseRow.linkedCourseId = courseId ?? undefined
-          courseRow.term = term
-          courseRow.grade = grade === null ? undefined : grade
+  const { data: myUserDegreeCourses, refetch: refetchMyUserDegreeCourses } =
+    trpc.userDegreeCourse.getMy.useQuery(degree?.id as string, {
+      enabled: !!degree?.id && data.length > 0,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (myUserDegreeCourses) => {
+        const updatedData = _.cloneDeep(data)
+        for (const myUserDegreeCourse of myUserDegreeCourses) {
+          const { courseInfoId, courseId, completed, term, grade } =
+            myUserDegreeCourse
+          const courseRow = updatedData.find(
+            (courseRow) =>
+              typeof courseRow !== 'number' &&
+              (courseRow.courseInfoId === courseInfoId ||
+                courseRow.partialCourseId === courseInfoId)
+          )
+          if (typeof courseRow !== 'number' && courseRow) {
+            courseRow.completed = completed
+            courseRow.linkedCourseId = courseId ?? undefined
+            courseRow.term = term
+            courseRow.grade = grade === null ? undefined : grade
+          }
         }
-      }
-      setData(updatedData)
-    },
+        setData(updatedData)
+      },
+      onError: (err) => {
+        alert(err.message)
+      },
+    })
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('courseCode', {
+        header: 'Course',
+        cell: (info) => {
+          if (typeof info.row.original === 'number') return
+          return info.row.original.color ? (
+            <div className="flex items-center gap-1">
+              <AiOutlineBarChart
+                className="h-4 w-4"
+                style={{
+                  color: info.row.original.color,
+                }}
+              />
+              {info.getValue()}
+            </div>
+          ) : (
+            info.getValue()
+          )
+        },
+      }),
+      columnHelper.accessor('name', {
+        header: 'Name',
+      }),
+      columnHelper.accessor('credits', {
+        header: 'Credits',
+        footer: (info) => {
+          const totalCredits = info.table
+            .getFilteredRowModel()
+            .rows.reduce((sum, row) => {
+              if (typeof row.original === 'number') return sum
+              return sum + row.original.credits
+            }, 0)
+          return totalCredits
+        },
+      }),
+      columnHelper.accessor('link', {
+        header: 'Link',
+        cell: (info) => {
+          const row = info.row.original
+          if (typeof row !== 'number') {
+            const { courseInfoId, linkedCourseId } = row
+            if (courseInfoId) {
+              if (linkedCourseId)
+                return (
+                  <Link
+                    href={`/my/courses/${linkedCourseId}`}
+                    className="pointer-cursor flex w-full items-center justify-center"
+                  >
+                    <RiExternalLinkLine />
+                  </Link>
+                )
+              else
+                return (
+                  <button
+                    onClick={() => setCourseInfoIdToLinkTo(courseInfoId)}
+                    className="pointer-cursor flex w-full items-center justify-center"
+                  >
+                    <RiLink />
+                  </button>
+                )
+            }
+          }
+        },
+      }),
+      columnHelper.accessor('term', {
+        header: 'Term',
+      }),
+      columnHelper.accessor('grade', {
+        header: 'Grade',
+        cell: (info) => {
+          const grade = info.getValue()
+          if (grade != null) return `${grade}%`
+        },
+      }),
+      columnHelper.accessor('completed', {
+        header: () => <RiCheckFill />,
+        cell: (info) => (
+          <CompletedColumn
+            info={info}
+            updateData={updateUserDegreeCourse}
+            setData={setData}
+          />
+        ),
+      }),
+    ],
+    [session?.user, myUserDegreeCourses]
+  )
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   })
 
   if (!isLoading && degree)
@@ -260,7 +265,7 @@ const Degree: FC = () => {
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="border border-gray-200 py-1 px-3 text-left"
+                      className="border border-gray-100 px-1.5 py-0.5 text-left"
                     >
                       {header.isPlaceholder
                         ? null
@@ -278,11 +283,11 @@ const Degree: FC = () => {
                 typeof row.original === 'number' ? (
                   <tr
                     key={'divider-' + index}
-                    className="border border-gray-200 bg-gray-100"
+                    className="relative border border-gray-100 bg-gray-50"
                   >
                     <td
                       colSpan={table.getAllColumns().length}
-                      className="border border-gray-200 px-3 text-left"
+                      className="border border-gray-100 px-1.5 text-left"
                     >
                       <span className="text-sm font-medium text-slate-600 dark:text-neutral-100">
                         {row.original > 0
@@ -292,16 +297,16 @@ const Degree: FC = () => {
                     </td>
                   </tr>
                 ) : (
-                  <tr
-                    key={row.id}
-                    className={`border border-gray-200 ${
-                      index % 2 == 0 ? 'bg-gray-50' : 'bg-white'
-                    }`}
-                  >
+                  <tr key={row.id} className="border border-gray-100">
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className="border border-gray-200 py-1 px-3"
+                        className={`whitespace-nowrap border border-gray-100 py-1 px-1.5 ${
+                          typeof row.original !== 'number' &&
+                          cell.column.id !== 'completed'
+                            ? row.original.completed && 'opacity-50'
+                            : 'text-center'
+                        }`}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -319,7 +324,7 @@ const Degree: FC = () => {
                   {footerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="border border-gray-200 py-1 px-3 text-left"
+                      className="border border-gray-200 py-0.5 px-1.5 text-left"
                     >
                       {header.isPlaceholder
                         ? null

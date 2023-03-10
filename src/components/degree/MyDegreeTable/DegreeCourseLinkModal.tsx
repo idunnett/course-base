@@ -1,9 +1,9 @@
 import type { isNull } from 'lodash'
 import { useSession } from 'next-auth/react'
-import { trpc } from '../../utils/trpc'
-import LoadingOrError from '../common/LoadingOrError'
-import Modal from '../common/Modal'
-import FullCourseButton from '../course/FullCourseButton'
+import { trpc } from '../../../utils/trpc'
+import LoadingOrError from '../../common/LoadingOrError'
+import Modal from '../../common/Modal'
+import FullCourseButton from '../../course/FullCourseButton'
 
 interface Props {
   degreeId: string
@@ -27,12 +27,13 @@ const DegreeCourseLinkModal: React.FC<Props> = ({
     retry: false,
   })
 
-  const { mutate: linkCourseToDegree } = trpc.degree.linkCourse.useMutation({
-    onSuccess: (data) => {
-      console.log(data)
-      setCourseInfoIdToLinkTo(null)
-    },
-  })
+  const { mutate: linkCourseToDegree } =
+    trpc.userDegreeCourse.linkCourse.useMutation({
+      onSuccess: (data) => {
+        console.log(data)
+        setCourseInfoIdToLinkTo(null)
+      },
+    })
 
   return (
     <Modal
