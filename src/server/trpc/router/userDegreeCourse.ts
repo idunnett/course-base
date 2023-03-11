@@ -53,7 +53,7 @@ export const userDegreeCourseRouter = router({
         degreeId: z.string(),
         courseInfoId: z.string(),
         term: z.string().optional(),
-        grade: z.number().min(0).max(100).optional(),
+        grade: z.number().min(0).max(100).nullable().optional(),
         completed: z.boolean().optional(),
       })
     )
@@ -77,7 +77,7 @@ export const userDegreeCourseRouter = router({
         },
         update: {
           term: term ? getTerm(term) : undefined,
-          grade: grade ?? undefined,
+          grade: grade,
           completed: completed ?? undefined,
         },
       })

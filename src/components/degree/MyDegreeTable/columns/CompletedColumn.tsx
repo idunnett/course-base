@@ -1,7 +1,7 @@
 import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
-import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
+import type { ChangeEvent, Dispatch, FC, SetStateAction } from 'react'
 
 interface Props {
   info: CellContext<number | DegreeTableColumns, boolean>
@@ -9,7 +9,7 @@ interface Props {
   setData: Dispatch<SetStateAction<(number | DegreeTableColumns)[]>>
 }
 
-const CompletedColumn: React.FC<Props> = ({ info, updateData, setData }) => {
+const CompletedColumn: FC<Props> = ({ info, updateData, setData }) => {
   const { data: session } = useSession()
 
   function handleCompletedChange(e: ChangeEvent<HTMLInputElement>) {

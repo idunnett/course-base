@@ -17,6 +17,7 @@ import DegreeCourseLinkModal from '../../components/degree/MyDegreeTable/DegreeC
 import Link from 'next/link'
 import _ from 'lodash'
 import CompletedColumn from '../../components/degree/MyDegreeTable/columns/CompletedColumn'
+import GradeColumn from '../../components/degree/MyDegreeTable/columns/GradeColumn'
 
 const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
@@ -212,10 +213,13 @@ const Degree: FC = () => {
       }),
       columnHelper.accessor('grade', {
         header: 'Grade',
-        cell: (info) => {
-          const grade = info.getValue()
-          if (grade != null) return `${grade}%`
-        },
+        cell: (info) => (
+          <GradeColumn
+            info={info}
+            updateData={updateUserDegreeCourse}
+            setData={setData}
+          />
+        ),
       }),
       columnHelper.accessor('completed', {
         header: () => <RiCheckFill />,
@@ -306,7 +310,7 @@ const Degree: FC = () => {
                           cell.column.id !== 'completed'
                             ? row.original.completed && 'opacity-50'
                             : 'text-center'
-                        }`}
+                        } ${cell.column.id === 'grade' && 'w-14'}`}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

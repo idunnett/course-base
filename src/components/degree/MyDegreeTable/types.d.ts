@@ -17,6 +17,6 @@ type UserDegreeCourseUpdateInput = {
   degreeId: string
   courseInfoId: string
   term?: string
-  grade?: number
+  grade?: number | null
   completed?: boolean
 }
