@@ -19,27 +19,21 @@ interface Props {
   setData: Dispatch<SetStateAction<(number | DegreeTableColumns)[]>>
 }
 
-const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
+const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
   const { data: session } = useSession()
-  const [grade, setGrade] = useState(
-    info.getValue()?.toString() ? info.getValue()?.toString() + '%' : ''
-  )
+  const [year, setYear] = useState(info.getValue()?.toString() ?? '')
   const [pressedEnter, setPressedEnter] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    const val = info.getValue()
-    if (val) setGrade(val.toString() + '%')
-    else setGrade('')
-  }, [info])
+  useEffect(() => setYear(info.getValue()?.toString() ?? ''), [info])
 
   useEffect(() => {
-    if (pressedEnter) handleGradeUpdate()
+    if (pressedEnter) handleYearUpdate()
   }, [pressedEnter])
 
-  function handleGradeUpdate() {
-    if (info.getValue() === parseFloat(grade)) {
+  function handleYearUpdate() {
+    if (info.getValue() === parseInt(year)) {
       if (pressedEnter) inputRef.current?.blur()
       return
     }
@@ -63,41 +57,36 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
             courseRow.subjectRequirementId === courseInfoId)
       )
       if (typeof courseRow !== 'number' && courseRow) {
-        courseRow.grade = grade === '' ? undefined : parseFloat(grade)
+        courseRow.year = year ? parseInt(year) : undefined
       }
       return updatedData
     })
-    inputRef.current?.blur()
-    setPressedEnter(false)
+    if (pressedEnter) {
+      inputRef.current?.blur()
+      setPressedEnter(false)
+    }
     updateData({
       degreeId: session.user.degreeId,
       courseInfoId,
-      grade: grade === '' ? null : parseFloat(grade),
+      year: year ? parseInt(year) : null,
     })
   }
 
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
-    return <span className="w-14">{grade}</span>
+    return <span className="w-14">{year}</span>
   return (
     <input
       type="text"
       ref={inputRef}
-      value={grade ?? ''}
+      value={year ?? ''}
+      maxLength={4}
       onChange={(e) => {
-        const input = e.target.value
-        if (parseFloat(input) > 100) return
-        // regex to allow decimals and slashes
-        const regex = /^\d*\.?\d*$/
-        const divisionRegex = /^(\d+\.?\d*|\d*\.?\d+)\/\d*\.?\d*$/
-        if (input.match(regex) || input.match(divisionRegex)) setGrade(input)
-      }}
-      onFocus={() => {
-        setGrade(grade.replace('%', ''))
+        const num = Number(e.target.value.replace(/\D/g, ''))
+        if (e.target.value && num === 0) return
+        setYear(e.target.value.replace(/\D/g, ''))
       }}
       onBlur={() => {
-        if (!pressedEnter) handleGradeUpdate()
-        if (grade === '') return
-        setGrade(grade + '%')
+        if (!pressedEnter) handleYearUpdate()
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') setPressedEnter(true)
@@ -106,4 +95,4 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
     />
   )
 }
-export default GradeColumn
+export default YearColumn

@@ -18,6 +18,10 @@ import Link from 'next/link'
 import _ from 'lodash'
 import CompletedColumn from '../../components/degree/MyDegreeTable/columns/CompletedColumn'
 import GradeColumn from '../../components/degree/MyDegreeTable/columns/GradeColumn'
+import type { DegreeTableColumns } from '../../components/degree/MyDegreeTable/types'
+import getTermName from '../../utils/termUtils'
+import TermColumn from '../../components/degree/MyDegreeTable/columns/TermColumn'
+import YearColumn from '../../components/degree/MyDegreeTable/columns/YearColumn'
 
 const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
@@ -48,7 +52,6 @@ const Degree: FC = () => {
       const coursesArray: DegreeTableColumns[] = [
         ...courseInfos.map(({ courseInfo }) => ({
           completed: false,
-          term: '',
           degreeYear: courseInfo.degreeYear,
           courseCode: courseInfo.code,
           name: courseInfo.name,
@@ -58,7 +61,6 @@ const Degree: FC = () => {
         })),
         ...partialCourses.map((partialCourse) => ({
           completed: false,
-          term: '',
           degreeYear: partialCourse.degreeYear,
           courseCode: partialCourse.code,
           name: partialCourse.name,
@@ -87,7 +89,7 @@ const Degree: FC = () => {
       coursesArrayFlattened.push(-1)
       const subjectRequirementsArray: DegreeTableColumns[] = []
       for (const subjectRequirement of subjectRequirements) {
-        const { subject, credits, year, orHigher } = subjectRequirement
+        const { subject, credits, year, orHigher, id } = subjectRequirement
         let joinedSubjectName = ''
         subject.forEach((subjectName, i) => {
           if (i === 0) joinedSubjectName += subjectName
@@ -99,11 +101,11 @@ const Degree: FC = () => {
         if (orHigher) joinedSubjectName += ' (or above)'
         subjectRequirementsArray.push({
           completed: false,
-          term: '',
           degreeYear: year,
           courseCode: joinedSubjectName,
           name: '',
           credits,
+          subjectRequirementId: id,
         })
       }
       subjectRequirementsArray.sort(
@@ -121,18 +123,20 @@ const Degree: FC = () => {
       onSuccess: (myUserDegreeCourses) => {
         const updatedData = _.cloneDeep(data)
         for (const myUserDegreeCourse of myUserDegreeCourses) {
-          const { courseInfoId, courseId, completed, term, grade } =
+          const { courseInfoId, courseId, completed, term, year, grade } =
             myUserDegreeCourse
           const courseRow = updatedData.find(
             (courseRow) =>
               typeof courseRow !== 'number' &&
               (courseRow.courseInfoId === courseInfoId ||
-                courseRow.partialCourseId === courseInfoId)
+                courseRow.partialCourseId === courseInfoId ||
+                courseRow.subjectRequirementId === courseInfoId)
           )
           if (typeof courseRow !== 'number' && courseRow) {
             courseRow.completed = completed
             courseRow.linkedCourseId = courseId ?? undefined
-            courseRow.term = term
+            courseRow.term = term === null ? undefined : term
+            courseRow.year = year === null ? undefined : year
             courseRow.grade = grade === null ? undefined : grade
           }
         }
@@ -210,6 +214,23 @@ const Degree: FC = () => {
       }),
       columnHelper.accessor('term', {
         header: 'Term',
+        cell: (info) => (
+          <TermColumn
+            info={info}
+            updateData={updateUserDegreeCourse}
+            setData={setData}
+          />
+        ),
+      }),
+      columnHelper.accessor('year', {
+        header: 'Year',
+        cell: (info) => (
+          <YearColumn
+            info={info}
+            setData={setData}
+            updateData={updateUserDegreeCourse}
+          />
+        ),
       }),
       columnHelper.accessor('grade', {
         header: 'Grade',

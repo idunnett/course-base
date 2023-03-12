@@ -1,3 +1,4 @@
+import { Term } from '@prisma/client'
 import { z } from 'zod'
 import { getTotalCurrentGrade } from '../../../utils/diagramUtils'
 import getTermName, { getTerm } from '../../../utils/termUtils'
@@ -26,7 +27,8 @@ export const userDegreeCourseRouter = router({
         courseInfoId: userDegreeCourse.courseInfoId,
         courseId: userDegreeCourse.courseId,
         completed: userDegreeCourse.completed,
-        term: getTermName(userDegreeCourse.term),
+        term: userDegreeCourse.term,
+        year: userDegreeCourse.year,
         grade: userDegreeCourse.grade,
       }
       if (userDegreeCourse.course) {
@@ -37,10 +39,8 @@ export const userDegreeCourseRouter = router({
           },
         })
         res.grade = getTotalCurrentGrade(userDegreeCourse.course, tasks)
-        res.term =
-          getTermName(userDegreeCourse.course.term) +
-          ' ' +
-          userDegreeCourse.course.year
+        res.term = userDegreeCourse.course.term
+        res.year = userDegreeCourse.course.year
       }
       resArray.push(res)
     }
@@ -52,13 +52,14 @@ export const userDegreeCourseRouter = router({
       z.object({
         degreeId: z.string(),
         courseInfoId: z.string(),
-        term: z.string().optional(),
+        term: z.nativeEnum(Term).nullable().optional(),
+        year: z.number().min(1900).max(2100).nullable().optional(),
         grade: z.number().min(0).max(100).nullable().optional(),
         completed: z.boolean().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { degreeId, courseInfoId, term, grade, completed } = input
+      const { degreeId, courseInfoId, term, year, grade, completed } = input
       return await ctx.prisma.userDegreeCourses.upsert({
         where: {
           userId_courseInfoId_degreeId: {
@@ -71,14 +72,16 @@ export const userDegreeCourseRouter = router({
           degreeId,
           courseInfoId,
           userId: ctx.session.user.id,
-          term: term ? getTerm(term) : undefined,
-          grade: grade ?? undefined,
-          completed: completed ?? undefined,
+          term,
+          year,
+          grade,
+          completed,
         },
         update: {
-          term: term ? getTerm(term) : undefined,
-          grade: grade,
-          completed: completed ?? undefined,
+          term,
+          year,
+          grade,
+          completed,
         },
       })
     }),

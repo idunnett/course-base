@@ -79,7 +79,9 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
     subjectRequirements.forEach((s) => {
       creditsArray.push(s.credits)
     })
-    const totalAddedCredits = creditsArray.reduce((a, b) => a + b)
+    const totalAddedCredits = creditsArray.length
+      ? creditsArray.reduce((a, b) => a + b)
+      : 0
     if (totalAddedCredits !== parseFloat(data.credits))
       return alert(
         `Credits must add up to ${data.credits}. Current credits: ${totalAddedCredits}`

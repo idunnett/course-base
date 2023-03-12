@@ -59,7 +59,7 @@ const GeneralInfoForm: React.FC<Props> = ({
         <InputSegment
           animate={false}
           label="Credits"
-          placeholder="e.g. 180"
+          placeholder="e.g. 120"
           required
           value={credits}
           onChange={(e) => {

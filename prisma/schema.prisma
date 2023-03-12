@@ -242,6 +242,7 @@ model UserDegreeCourses {
   course       Course?    @relation(fields: [courseId], references: [id])
   courseId     String?
   term         Term?
+  year         Int?
   grade        Float?
 
   @@id([userId, courseInfoId, degreeId])
