@@ -10,7 +10,6 @@ export const courseInfoRouter = router({
         include: {
           courses: {
             include: {
-              segments: true,
               _count: {
                 select: {
                   users: true,
@@ -30,7 +29,6 @@ export const courseInfoRouter = router({
         select: {
           courses: {
             include: {
-              segments: true,
               _count: {
                 select: {
                   users: true,

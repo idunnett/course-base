@@ -11,11 +11,13 @@ import { HiDuplicate } from 'react-icons/hi'
 import SubjectEditRow from './SubjectEditRow'
 
 interface Props {
+  degreeYears: string
   subjectRequirements: Array<CreateSubjectRequirement>
   updateFields: (fields: Partial<CreateDegreeFormData>) => void
 }
 
 const SubjectRequirements: FC<Props> = ({
+  degreeYears,
   subjectRequirements,
   updateFields,
 }) => {
@@ -28,57 +30,65 @@ const SubjectRequirements: FC<Props> = ({
       </h2>
       <div className="flex flex-col gap-1">
         <Widget className="relative flex flex-col gap-1">
-          {subjectRequirements.map((subjectRequirement, index) =>
-            showAddSubject === index ? (
-              <SubjectEditRow
-                key={index}
-                subjectRequirements={subjectRequirements}
-                showAddSubject={showAddSubject}
-                setShowAddSubject={setShowAddSubject}
-                updateFields={updateFields}
-              />
-            ) : (
-              <div className="flex items-center gap-2" key={index}>
-                <button
-                  type="button"
-                  className="secondary-btn px-0"
-                  onClick={() => {
-                    const updatedSubjectRequirements =
-                      _.cloneDeep(subjectRequirements)
-                    updatedSubjectRequirements.splice(index, 1)
-                    updateFields({
-                      subjectRequirements: updatedSubjectRequirements,
-                    })
-                  }}
-                >
-                  <FiX className="h-5 w-5" />
-                </button>
-                <button
-                  type="button"
-                  className="secondary-btn px-0"
-                  onClick={() => {
-                    const updatedSubjectRequirements =
-                      _.cloneDeep(subjectRequirements)
-                    const newSubjectReq = updatedSubjectRequirements[index]
-                    if (newSubjectReq) {
-                      updatedSubjectRequirements.splice(index, 0, newSubjectReq)
+          {subjectRequirements
+            .sort((a, b) => Number(a.year) - Number(b.year))
+            .map((subjectRequirement, index) =>
+              showAddSubject === index ? (
+                <SubjectEditRow
+                  key={index}
+                  degreeYears={degreeYears}
+                  subjectRequirements={subjectRequirements}
+                  showAddSubject={showAddSubject}
+                  setShowAddSubject={setShowAddSubject}
+                  updateFields={updateFields}
+                />
+              ) : (
+                <div className="flex items-center gap-2" key={index}>
+                  <button
+                    type="button"
+                    className="secondary-btn px-0"
+                    onClick={() => {
+                      const updatedSubjectRequirements =
+                        _.cloneDeep(subjectRequirements)
+                      updatedSubjectRequirements.splice(index, 1)
                       updateFields({
                         subjectRequirements: updatedSubjectRequirements,
                       })
-                    }
-                  }}
-                >
-                  <HiDuplicate className="h-5 w-5" />
-                </button>
-                <SubjectRequirementButton
-                  subjectRequirement={subjectRequirement}
-                  onClick={() => setShowAddSubject(index)}
-                />
-              </div>
-            )
-          )}
+                    }}
+                  >
+                    <FiX className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    className="secondary-btn px-0"
+                    onClick={() => {
+                      const updatedSubjectRequirements =
+                        _.cloneDeep(subjectRequirements)
+                      const newSubjectReq = updatedSubjectRequirements[index]
+                      if (newSubjectReq) {
+                        updatedSubjectRequirements.splice(
+                          index,
+                          0,
+                          newSubjectReq
+                        )
+                        updateFields({
+                          subjectRequirements: updatedSubjectRequirements,
+                        })
+                      }
+                    }}
+                  >
+                    <HiDuplicate className="h-5 w-5" />
+                  </button>
+                  <SubjectRequirementButton
+                    subjectRequirement={subjectRequirement}
+                    onClick={() => setShowAddSubject(index)}
+                  />
+                </div>
+              )
+            )}
           {!!showAddSubject && showAddSubject < 0 && (
             <SubjectEditRow
+              degreeYears={degreeYears}
               subjectRequirements={subjectRequirements}
               setShowAddSubject={setShowAddSubject}
               updateFields={updateFields}

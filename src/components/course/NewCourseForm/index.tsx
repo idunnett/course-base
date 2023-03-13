@@ -21,6 +21,9 @@ const INITIAL_DATA: CreateCourseFormData = {
   degreeYear: undefined,
   credits: '',
   segments: [],
+  lat: null,
+  lng: null,
+  address: null,
 }
 
 const NewCourseForm = ({ school }: { school: School | null }) => {
@@ -76,6 +79,11 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
         term: getTerm(data.term),
         instructor: data.instructor,
         segments,
+        location: {
+          lat: data.lat,
+          lng: data.lng,
+          address: data.address,
+        },
       },
     })
   }

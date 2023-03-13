@@ -10,10 +10,8 @@ import type {
 import { trpc } from '../../../../utils/trpc'
 import AutoComplete from '../../../common/AutoComplete'
 import InputSegment from '../../../common/InputSegment'
-import Modal from '../../../common/Modal'
 import Widget from '../../../common/Widget'
-import CourseButton from '../../../course/CourseButton'
-import CourseDetails from '../../../course/CourseDetails'
+import CourseInfoButton from '../../../course/CourseInfoButton'
 import { isCourseInfoType } from '../../../../utils/courseUtils'
 import CourseDegreeButton from '../../../course/CourseDegreeButton'
 import { RiTimeLine } from 'react-icons/ri'
@@ -33,7 +31,7 @@ const CourseRequirements: FC<Props> = ({
   const [searchVal, setSearchVal] = useState('')
   const [codeInput, setCodeInput] = useState('')
   const [nameInput, setNameInput] = useState('')
-  const [creditsInput, setCreditsInput] = useState('1')
+  const [creditsInput, setCreditsInput] = useState('')
   const [showAddCourseInput, setShowAddCourseInput] = useState<number>(-1)
   const [modalData, setModalData] = useState<CourseInfoWithSchool | null>(null)
 
@@ -52,7 +50,7 @@ const CourseRequirements: FC<Props> = ({
   useEffect(() => {
     setCodeInput('')
     setNameInput('')
-    setCreditsInput('1')
+    setCreditsInput('')
   }, [courseInfos])
   return (
     <>
@@ -121,7 +119,7 @@ const CourseRequirements: FC<Props> = ({
               <div className="relative flex items-center justify-between gap-2">
                 <button
                   type="button"
-                  className="secondary-btn"
+                  className="secondary-btn mt-6"
                   onClick={() => {
                     setShowAddCourseInput(-1)
                     setCodeInput('')
@@ -135,7 +133,7 @@ const CourseRequirements: FC<Props> = ({
                     animate={false}
                     inputValue={codeInput}
                     setInputValue={setCodeInput}
-                    containerClassName="!w-96 !static"
+                    containerClassName="!w-1/2 !static"
                     className="!text-lg"
                     label="Code"
                     suggestions={
@@ -175,7 +173,7 @@ const CourseRequirements: FC<Props> = ({
                       activeItemIndex,
                       onClick,
                     }) => (
-                      <CourseButton
+                      <CourseInfoButton
                         key={course.id}
                         course={course}
                         onClick={onClick}
@@ -229,7 +227,7 @@ const CourseRequirements: FC<Props> = ({
                       activeItemIndex,
                       onClick,
                     }) => (
-                      <CourseButton
+                      <CourseInfoButton
                         key={course.id}
                         course={course}
                         onClick={onClick}
@@ -241,10 +239,11 @@ const CourseRequirements: FC<Props> = ({
                   />
                   <InputSegment
                     label="Credits"
+                    autoComplete={false}
                     placeholder="3"
                     animate={false}
                     className="!text-lg"
-                    containerClassName="!w-32 "
+                    containerClassName="!w-1/4"
                     labelClassName="!w-16 text-xs flex items-end"
                     value={creditsInput}
                     onChange={(e) => setCreditsInput(e.target.value)}
@@ -252,7 +251,7 @@ const CourseRequirements: FC<Props> = ({
                 </div>
                 <button
                   type="button"
-                  className="secondary-btn"
+                  className="secondary-btn mt-6"
                   onClick={() => {
                     if (!codeInput) return
                     const updatedRequiredCourses = [...courseInfos]

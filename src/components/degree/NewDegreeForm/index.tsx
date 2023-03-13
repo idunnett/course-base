@@ -69,6 +69,24 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
       credits: parseFloat(s.credits),
     }))
 
+    const creditsArray: number[] = []
+    courseInfos.forEach((c) => {
+      creditsArray.push(c.credits)
+    })
+    partialCourses.forEach((c) => {
+      creditsArray.push(parseFloat(c.credits))
+    })
+    subjectRequirements.forEach((s) => {
+      creditsArray.push(s.credits)
+    })
+    const totalAddedCredits = creditsArray.length
+      ? creditsArray.reduce((a, b) => a + b)
+      : 0
+    if (totalAddedCredits !== parseFloat(data.credits))
+      return alert(
+        `Credits must add up to ${data.credits}. Current credits: ${totalAddedCredits}`
+      )
+
     createDegree({
       name: data.name,
       schoolId: data.school.id,
@@ -87,7 +105,7 @@ const NewDegreeForm = ({ school }: { school: School | null }) => {
   return (
     <div className="flex justify-evenly py-16">
       <form
-        className="relative z-10 w-11/12 md:w-4/5 lg:w-1/2"
+        className="relative z-10 w-11/12 sm:w-4/5 md:w-3/5 lg:w-2/5"
         onSubmit={handleSubmit}
       >
         {step}

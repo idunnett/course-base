@@ -46,13 +46,16 @@ const CourseInfoForm: FC<Props> = ({
       />
       <div className="flex w-full gap-1">
         <InputSegment
+          animate={false}
           value={code}
           onChange={(e) => updateFields({ code: e.target.value })}
           label="Course Code"
+          placeholder="e.g. PSYCH101"
           autoComplete={false}
           required
         />
         <InputSegment
+          animate={false}
           value={degreeYear ?? ''}
           onChange={(e) => {
             const num = Number(e.target.value.replace(/\D/g, ''))
@@ -60,11 +63,13 @@ const CourseInfoForm: FC<Props> = ({
             updateFields({ degreeYear: e.target.value.replace(/\D/g, '') })
           }}
           label="Year of Degree"
+          placeholder="e.g. 1 for 1st Year"
           autoComplete={false}
           required
           maxLength={1}
         />
         <InputSegment
+          animate={false}
           value={credits}
           onChange={(e) => {
             const num = Number(e.target.value.replace(/\D/g, ''))
@@ -72,6 +77,7 @@ const CourseInfoForm: FC<Props> = ({
             updateFields({ credits: e.target.value.replace(/\D/g, '') })
           }}
           label="Credits"
+          placeholder="e.g. 3"
           autoComplete={false}
           required
           maxLength={1}

@@ -6,6 +6,7 @@ import { schoolRouter } from './school'
 import { taskRouter } from './task'
 import { userRouter } from './user'
 import { courseInfoRouter } from './courseInfo'
+import { userDegreeCourseRouter } from './userDegreeCourse'
 
 export const appRouter = router({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   task: taskRouter,
   degree: degreeRouter,
   courseInfo: courseInfoRouter,
+  userDegreeCourse: userDegreeCourseRouter,
 })
 
 // export type definition of API

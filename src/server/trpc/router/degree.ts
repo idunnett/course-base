@@ -1,4 +1,3 @@
-import type { Subject } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import _ from 'lodash'
 import { z } from 'zod'

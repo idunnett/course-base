@@ -1,13 +1,16 @@
 import { Dispatch, SetStateAction, useEffect, useState, type FC } from 'react'
 import { MdInsertChart } from 'react-icons/md'
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
+import { RiBuilding2Line, RiTimeLine, RiUser6Line } from 'react-icons/ri'
+import Link from 'next/link'
 import SegmentList from './SegmentList'
 import SegmentPieChart from '../../diagrams/SegmentPieChart'
 import type { FullCourse, FullCourseInfo } from '../../../types'
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import getTermName from '../../../utils/termUtils'
 import Members from '../../common/Members'
-import { RiBuilding2Line, RiTimeLine, RiUser6Line } from 'react-icons/ri'
-import Link from 'next/link'
+import { trpc } from '../../../utils/trpc'
+import LoadingOrError from '../../common/LoadingOrError'
+import CourseLocation from './CourseLocation'
 
 interface Props {
   courseInfo: FullCourseInfo
@@ -18,6 +21,23 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null)
   const [activeCourseDetails, setActiveCourseDetails] =
     useState<FullCourse | null>()
+
+  const { isFetching, error } = trpc.course.details.useQuery(
+    activeCourseDetails?.id as string,
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!activeCourseDetails?.id && !activeCourseDetails?.segments,
+      onSuccess: (data) => {
+        if (!activeCourseDetails) return
+        const updatedCourse = {
+          ...activeCourseDetails,
+          ...data,
+        }
+        setActiveCourseDetails(updatedCourse)
+      },
+    }
+  )
 
   function setActiveCourseDetailsIndex(index: number) {
     if (!courseInfo) return
@@ -92,25 +112,39 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
                 </div>
               </div>
             </div>
-            <div className="my-4">
-              <SegmentPieChart
-                segments={activeCourseDetails.segments.map((seg) => {
-                  const dataEntry = {
-                    ...seg,
-                    color: courseInfo.color ?? '#64748b',
-                    title: seg.name,
-                  }
-                  return dataEntry
-                })}
-                hoveredSegment={hoveredSegment}
-                setHoveredSegment={setHoveredSegment}
-              />
-            </div>
-            <SegmentList
-              selectedCourse={activeCourseDetails}
-              hoveredSegment={hoveredSegment}
-              setHoveredSegment={setHoveredSegment}
-            />
+            {!isFetching && activeCourseDetails.segments ? (
+              <>
+                <div className="my-4">
+                  <SegmentPieChart
+                    segments={activeCourseDetails.segments.map((seg) => {
+                      const dataEntry = {
+                        ...seg,
+                        color: courseInfo.color ?? '#64748b',
+                        title: seg.name,
+                      }
+                      return dataEntry
+                    })}
+                    hoveredSegment={hoveredSegment}
+                    setHoveredSegment={setHoveredSegment}
+                  />
+                </div>
+                <SegmentList
+                  selectedCourse={activeCourseDetails}
+                  hoveredSegment={hoveredSegment}
+                  setHoveredSegment={setHoveredSegment}
+                />
+                {activeCourseDetails.location && (
+                  <CourseLocation
+                    lat={activeCourseDetails.location.lat}
+                    lng={activeCourseDetails.location.lng}
+                    address={activeCourseDetails.location.address}
+                    color={activeCourseDetails.info.color}
+                  />
+                )}
+              </>
+            ) : (
+              <LoadingOrError error={error?.message} />
+            )}
           </div>
         ) : (
           <div className="bg flex w-full flex-col items-center gap-2 pt-2">

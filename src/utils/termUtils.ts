@@ -1,6 +1,6 @@
 import { Term } from '@prisma/client'
 
-export default function getTermName(term: Term) {
+export default function getTermName(term: Term | null) {
   switch (term) {
     case 'F':
       return 'Fall'

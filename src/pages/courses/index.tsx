@@ -11,6 +11,7 @@ const CourseSearch = () => {
   const [selectedCourse, setSelectedCourse] = useState<FullCourseInfo | null>(
     null
   )
+  const [activeCourseId, setActiveCourseId] = useState<string | null>(null)
 
   const { refetch, isFetching } = trpc.courseInfo.variations.useQuery(
     selectedCourse?.id as string,
@@ -29,6 +30,11 @@ const CourseSearch = () => {
       },
     }
   )
+
+  const { data: myCourseIds } = trpc.course.myCourseIds.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
   useEffect(() => {
     if (selectedCourse && !selectedCourse.courses.length && !isFetching) {
@@ -51,7 +57,28 @@ const CourseSearch = () => {
         {selectedCourse && selectedCourse.courses.length > 0 && !isFetching ? (
           <Widget className="my-4 w-full">
             <div className="flex flex-col gap-4">
-              <CourseDetails courseInfo={selectedCourse} />
+              <CourseDetails
+                courseInfo={selectedCourse}
+                setActiveCourseId={setActiveCourseId}
+              />
+              {myCourseIds && activeCourseId && (
+                <div className="flex flex-col items-center gap-2">
+                  <button
+                    disabled={myCourseIds.includes(activeCourseId)}
+                    className={`primary-btn px-4 text-2xl ${
+                      myCourseIds.includes(activeCourseId) &&
+                      'cursor-not-allowed opacity-50 hover:bg-slate-500'
+                    }`}
+                  >
+                    Join
+                  </button>
+                  {myCourseIds.includes(activeCourseId) && (
+                    <p className="text-sm text-slate-400 dark:text-white">
+                      You are already in this course.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </Widget>
         ) : (

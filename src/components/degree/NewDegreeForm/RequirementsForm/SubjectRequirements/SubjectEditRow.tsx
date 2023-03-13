@@ -17,6 +17,7 @@ import { subjects } from '../../../../../constants'
 import InputSegment from '../../../../common/InputSegment'
 
 interface Props {
+  degreeYears: string
   showAddSubject?: number
   subjectRequirements: CreateSubjectRequirement[]
   setShowAddSubject: Dispatch<SetStateAction<number | null>>
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const SubjectEditRow: FC<Props> = ({
+  degreeYears,
   showAddSubject,
   subjectRequirements,
   setShowAddSubject,
@@ -35,7 +37,7 @@ const SubjectEditRow: FC<Props> = ({
     useState<CreateSubjectRequirement>({
       orHigher: true,
       subject: [],
-      credits: '1',
+      credits: '3',
       year: '',
     })
 
@@ -53,13 +55,13 @@ const SubjectEditRow: FC<Props> = ({
     <div className="relative flex items-center justify-between gap-2">
       <button
         type="button"
-        className="secondary-btn"
+        className="secondary-btn mt-6"
         onClick={() => {
           setShowAddSubject(null)
           setSubjectRequirement({
             orHigher: true,
             subject: [],
-            credits: '1',
+            credits: '3',
             year: '',
           })
         }}
@@ -162,20 +164,36 @@ const SubjectEditRow: FC<Props> = ({
             </button>
           )}
         </div>
-        <InputSegment
-          label="Year"
-          placeholder="1"
-          animate={false}
-          className="!text-lg"
-          containerClassName="!w-32"
-          value={subjectRequirement.year}
-          onChange={(e) =>
-            setSubjectRequirement((prevVal) => ({
-              ...prevVal,
-              year: e.target.value,
-            }))
-          }
-        />
+        <div className="my-1 flex h-auto flex-col gap-1">
+          <label
+            htmlFor="term-select"
+            className="h-6 text-slate-500 dark:text-neutral-400"
+          >
+            Year
+          </label>
+          <select
+            id="term-select"
+            className={`peer h-full max-h-11 w-16 flex-grow rounded-xl bg-white px-4 py-2 text-lg text-black outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 focus:shadow-inner-lg focus:brightness-100 dark:bg-zinc-600 dark:text-white ${
+              subjectRequirement.year
+                ? 'shadow-inner-lg brightness-100'
+                : 'brightness-95'
+            }`}
+            value={subjectRequirement.year}
+            onChange={(e) =>
+              setSubjectRequirement((prevVal) => ({
+                ...prevVal,
+                year: e.target.value,
+              }))
+            }
+            required
+          >
+            {[...Array(Number(degreeYears))].map((_, index) => (
+              <option key={index} value={index + 1}>
+                {index + 1}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="my-1 flex flex-col">
           <label
             htmlFor="orAbove"
@@ -202,6 +220,7 @@ const SubjectEditRow: FC<Props> = ({
         <InputSegment
           label="Credits"
           placeholder="3"
+          autoComplete={false}
           animate={false}
           className="!text-lg"
           containerClassName="!w-32"
@@ -216,7 +235,7 @@ const SubjectEditRow: FC<Props> = ({
       </div>
       <button
         type="button"
-        className="secondary-btn"
+        className="secondary-btn mt-6"
         onClick={() => {
           if (
             !subjectRequirement.subject.length ||
