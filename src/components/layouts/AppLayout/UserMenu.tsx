@@ -55,14 +55,14 @@ const UserMenu = () => {
         <Link
           href="/"
           onClick={() => setOpen(false)}
-          className="link text-slate-500 dark:text-neutral-200"
+          className="link text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700 dark:hover:bg-opacity-50"
         >
           Dashboard
         </Link>
         <Link
           href={`/users/${session.data?.user?.id}`}
           onClick={() => setOpen(false)}
-          className="link text-slate-500 dark:text-neutral-200"
+          className="link text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700 dark:hover:bg-opacity-50"
         >
           Profile
         </Link>
@@ -71,7 +71,7 @@ const UserMenu = () => {
             localStorage.clear()
             signOut()
           }}
-          className="link text-slate-500 dark:text-neutral-200"
+          className="link text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700 dark:hover:bg-opacity-50"
         >
           Sign out
         </button>

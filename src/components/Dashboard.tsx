@@ -25,7 +25,7 @@ const Dashboard = () => {
   if (courses && tasks) {
     if (courses.length)
       return (
-        <div className="relative grid h-full w-full grid-cols-1 gap-4 overflow-auto p-4 pt-16 lg:grid-cols-2">
+        <div className="relative flex w-full flex-wrap overflow-auto p-2 pt-14">
           {courses.map((course) => (
             <CourseWidget key={course.id} course={course} tasks={tasks} />
           ))}

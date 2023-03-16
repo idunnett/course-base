@@ -39,7 +39,7 @@ const AppLayout: FC<Props> = ({ children }) => {
     }
   }, [])
   return (
-    <div className="relative h-full w-full overflow-auto">
+    <div className="relative h-full w-full overflow-auto bg-white dark:bg-zinc-800">
       <NavHeader>
         {isFetching ? (
           <div className="skeleton-loading-text mr-2 w-24 bg-slate-500" />
@@ -48,14 +48,14 @@ const AppLayout: FC<Props> = ({ children }) => {
             {user?.degreeName ? (
               <Link
                 href="/my/degree"
-                className="secondary-btn flex items-center px-3 text-sm font-normal text-slate-500"
+                className="secondary-btn flex items-center px-3 text-sm font-normal text-slate-500 dark:hover:bg-zinc-700"
               >
                 My Degree
               </Link>
             ) : (
               <Link
                 href="/degrees"
-                className="secondary-btn text-sm font-normal text-slate-500"
+                className="secondary-btn text-sm font-normal text-slate-500 dark:hover:bg-zinc-700"
               >
                 Add my degree
               </Link>

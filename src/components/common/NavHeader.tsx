@@ -14,7 +14,10 @@ const NavHeader = ({ children }: { children: ReactNode }) => {
         <div className="flex items-center gap-2 text-slate-500 dark:text-gray-300">
           <h1 className="flex items-center gap-1 text-lg font-semibold text-slate-500 dark:text-gray-300">
             <RiDonutChartFill />
-            <span className="-translate-y-0.5">gradebase</span>
+            <div className="tracking-tight text-slate-400 dark:text-white">
+              Grade
+              <span className="text-slate-500 dark:text-slate-400">Base</span>
+            </div>
           </h1>
           <span className="text-xs italic text-slate-400 dark:text-gray-400">
             ALPHA
@@ -24,21 +27,21 @@ const NavHeader = ({ children }: { children: ReactNode }) => {
       <div className="flex items-center gap-1 text-sm">
         <Link
           href="/schools"
-          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700"
         >
           <RiBuilding2Line />
           Schools
         </Link>
         <Link
           href="/degrees"
-          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700"
         >
           <RiFilePaper2Line />
           Degrees
         </Link>
         <Link
           href="/courses"
-          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200"
+          className="secondary-btn flex items-center gap-1 font-normal text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700"
         >
           <RiBookletLine />
           Courses

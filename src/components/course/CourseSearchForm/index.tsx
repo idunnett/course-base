@@ -64,8 +64,11 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
           {isFetching && (
             <RiLoader5Line className="ml-2 animate-spin dark:text-neutral-200" />
           )}
-          <div className="flex w-full justify-end">
-            <Link href="/courses/new" className="secondary-btn">
+          <div className="flex w-full justify-end gap-2">
+            <Link
+              href="/courses/new"
+              className="secondary-btn dark:text-neutral-200 dark:hover:bg-zinc-700"
+            >
               Create new
             </Link>
             {selectedCourse && (

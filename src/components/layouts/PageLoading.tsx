@@ -22,8 +22,8 @@ const PageLoading = () => {
   })
 
   return loading ? (
-    <div className="absolute z-40 flex h-full w-full items-center justify-center bg-white">
-      <RiLoader5Line className="animate-spin" />
+    <div className="absolute z-40 flex h-full w-full items-center justify-center bg-white dark:bg-zinc-800">
+      <RiLoader5Line className="animate-spin dark:text-white" />
     </div>
   ) : null
 }

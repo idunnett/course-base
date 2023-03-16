@@ -78,7 +78,10 @@ const Degrees = () => {
             className="!w-96"
           />
         </div>
-        <Link href="/degrees/new" className="secondary-btn">
+        <Link
+          href="/degrees/new"
+          className="secondary-btn dark:text-neutral-200 dark:hover:bg-zinc-700"
+        >
           Create new
         </Link>
       </Form>

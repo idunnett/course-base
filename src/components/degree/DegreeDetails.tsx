@@ -39,7 +39,7 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
           <h3 className="text-md text-slate-400 dark:text-neutral-300">
             Year {year + 1} required courses
           </h3>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
             {degree.courseInfos.map(
               ({ courseInfo }) =>
                 courseInfo.degreeYear === year + 1 && (
@@ -79,11 +79,14 @@ const DegreeDetails: FC<Props> = ({ degree, setCourseModalData }) => {
       <h2 className="text-lg font-semibold text-slate-500 dark:text-neutral-200">
         Subject Requirements
       </h2>
-      {degree.subjectRequirements.map((subjectRequirement, index) => (
-        <div className="flex items-center gap-2" key={index}>
-          <SubjectRequirementButton subjectRequirement={subjectRequirement} />
-        </div>
-      ))}
+      <div className="flex flex-col items-center gap-0.5">
+        {degree.subjectRequirements.map((subjectRequirement, index) => (
+          <SubjectRequirementButton
+            subjectRequirement={subjectRequirement}
+            key={index}
+          />
+        ))}
+      </div>
     </div>
   )
 }
