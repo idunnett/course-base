@@ -140,7 +140,6 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
     if (!file) return
 
     const pdfjs = await import('pdfjs-dist')
-    // @ts-ignore
     const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.entry')
     pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
