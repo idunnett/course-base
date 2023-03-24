@@ -5,6 +5,7 @@ import Widget from '../../common/Widget'
 import SchoolAutoComplete from '../../school/SchoolAutoComplete'
 import type { School } from '@prisma/client'
 import type { CreateCourseFormData } from '../../../types'
+import LoadingOrError from '../../common/LoadingOrError'
 
 interface Props {
   name: string
@@ -14,6 +15,7 @@ interface Props {
   credits: string
   school: School | null
   updateFields: (fields: Partial<CreateCourseFormData>) => void
+  isExtractingCourseInfo: boolean
 }
 
 const CourseInfoForm: FC<Props> = ({
@@ -24,6 +26,7 @@ const CourseInfoForm: FC<Props> = ({
   credits,
   school,
   updateFields,
+  isExtractingCourseInfo,
 }) => {
   useEffect(() => {
     if (degreeYear !== undefined) return
@@ -32,7 +35,7 @@ const CourseInfoForm: FC<Props> = ({
   }, [code, degreeYear])
 
   return (
-    <Widget className="p-4">
+    <Widget className="relative overflow-hidden p-4">
       <h1 className="text-2xl font-bold text-slate-500 dark:text-neutral-200">
         Course Info
       </h1>
@@ -93,6 +96,11 @@ const CourseInfoForm: FC<Props> = ({
         onSelect={(school) => updateFields({ school })}
         school={school}
       />
+      {isExtractingCourseInfo && (
+        <div className="absolute top-0 left-0 h-full w-full bg-white bg-opacity-60 backdrop-blur-[2px]">
+          <LoadingOrError />
+        </div>
+      )}
     </Widget>
   )
 }

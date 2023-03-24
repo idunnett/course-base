@@ -110,14 +110,14 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
           {100 - totalCourseValue}% remaining
         </small>
       </h2>
-      <div className="flex">
-        <div className="flex w-full flex-col items-start gap-1 rounded-l-md bg-gray-300 bg-opacity-30 p-2 dark:bg-zinc-800 dark:bg-opacity-30">
+      <div className="flex w-full">
+        <div className="flex w-1/2 flex-col items-start gap-1 rounded-l-md bg-gray-300 bg-opacity-30 p-2 dark:bg-zinc-800 dark:bg-opacity-30">
           {segments?.map((segment, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setSelectedSegment(i)}
-              className={`list-button gap-1 ${
+              className={`list-button gap-1 truncate text-sm ${
                 selectedSegment === i && 'active'
               }`}
             >
@@ -145,7 +145,7 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
             </button>
           )}
         </div>
-        <div className="flex w-full flex-col pl-4">
+        <div className="flex w-1/2 flex-col pl-4">
           <InputSegment
             label="Name"
             placeholder="Quizzes"
