@@ -7,25 +7,29 @@ import TaskModal, { type ModalData } from '../../../components/task/TaskModal'
 import ScatterChart from '../../../components/diagrams/ScatterChart'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
-import { RiLoader5Line } from 'react-icons/ri'
+import LoadingOrError from '../../../components/common/LoadingOrError'
 
 const Course = () => {
   const { id } = useRouter().query
 
   const [modalData, setModalData] = useState<ModalData | null>(null)
 
-  const { data: course, isFetching: isFetchingCourse } =
-    trpc.course.getMyCourse.useQuery(id as string, {
-      enabled: !!id,
-      refetchOnWindowFocus: false,
-      retry: false,
-    })
+  const {
+    data: course,
+    isFetching: isFetchingCourse,
+    error: courseError,
+  } = trpc.course.getMyCourse.useQuery(id as string, {
+    enabled: !!id,
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
 
   const {
     data: tasks,
     refetch: refetchTasks,
     isLoading: isLoadingTasks,
     isFetching: isFetchingTasks,
+    error: tasksError,
   } = trpc.task.getMyCourseTasks.useQuery(id as string, {
     enabled: !!id,
     refetchOnWindowFocus: false,
@@ -34,7 +38,7 @@ const Course = () => {
 
   if (!isFetchingCourse && !isLoadingTasks && course && tasks)
     return (
-      <div className="relative h-full overflow-y-auto py-4 pt-16 xl:px-48">
+      <div className="relative h-full py-4 xl:px-48">
         <h1
           className="px-4 text-4xl font-bold"
           style={{
@@ -74,24 +78,20 @@ const Course = () => {
           <div className="relative flex h-96 w-full flex-col">
             <ScatterChart course={course} tasks={tasks} />
           </div>
-          {modalData && (
-            <TaskModal
-              modalData={modalData}
-              setModalData={setModalData}
-              course={course}
-              refetchTasks={refetchTasks}
-              isFetchingTasks={isFetchingTasks}
-            />
-          )}
         </div>
+        {modalData && (
+          <TaskModal
+            modalData={modalData}
+            setModalData={setModalData}
+            course={course}
+            refetchTasks={refetchTasks}
+            isFetchingTasks={isFetchingTasks}
+          />
+        )}
       </div>
     )
 
-  return (
-    <div className="flex h-full w-full items-center justify-center">
-      <RiLoader5Line className="animate-spin dark:text-white" />
-    </div>
-  )
+  return <LoadingOrError error={courseError?.message ?? tasksError?.message} />
 }
 
 export default Course

@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <title>GradeBase</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="relative h-screen w-full bg-white dark:bg-zinc-800">
+        <main className="relative h-auto w-full bg-white dark:bg-zinc-800">
           <Component {...pageProps} />
         </main>
       </Layout>

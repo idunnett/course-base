@@ -9,3 +9,8 @@ export const userSchoolAtom = atom<
 export const darkModeAtom = atomWithStorage<boolean>('darkMode', false)
 
 export const toRouteAtom = atom('/')
+
+export const alertAtom = atom<{
+  message: string
+  type: 'success' | 'info' | 'warning' | 'error'
+} | null>(null)

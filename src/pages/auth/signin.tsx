@@ -38,7 +38,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-6">
+    <div className="-mt-12 flex h-screen w-full flex-col items-center justify-center gap-6">
       {error && error === 'CredentialsSignin' && (
         <p className="rounded-md bg-red-400 px-2 py-1 text-white">
           Invalid Credentials

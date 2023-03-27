@@ -9,7 +9,7 @@ import {
 
 const NavHeader = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="fixed top-0 z-50 flex h-12 w-full items-center justify-between bg-white py-2 px-4 shadow-sm dark:bg-zinc-800 dark:shadow-neutral-700">
+    <div className="relative z-50 flex h-12 w-full flex-none grow-0 items-center justify-between bg-white py-2 px-4 shadow-sm dark:bg-zinc-800 dark:shadow-neutral-700">
       <Link href="/">
         <div className="flex items-center gap-2 text-slate-500 dark:text-gray-300">
           <h1 className="flex items-center gap-1 text-lg font-semibold text-slate-500 dark:text-gray-300">

@@ -23,7 +23,7 @@ const School = () => {
 
   if (!isLoading && school)
     return (
-      <div className="flex h-full flex-col gap-4 p-4 pt-16">
+      <div className="flex h-full flex-col gap-4 p-4">
         <div className="flex items-end gap-2">
           <h1
             className="flex items-center gap-1 rounded-md p-2 pl-1 text-3xl font-semibold text-slate-500 dark:text-neutral-400"

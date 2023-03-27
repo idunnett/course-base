@@ -9,9 +9,8 @@ interface Props {
 const Widget: FC<Props> = ({ children, className, style }) => {
   return (
     <div
-      className={`rounded-2xl bg-white p-3 dark:bg-zinc-700 ${className}`}
+      className={`rounded-2xl bg-white p-3 shadow-even-lg dark:bg-zinc-700 ${className}`}
       style={{
-        boxShadow: '0 0 12px 0 rgba(0, 0, 0, 0.1)',
         ...style,
       }}
     >

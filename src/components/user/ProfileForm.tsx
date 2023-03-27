@@ -62,7 +62,7 @@ const ProfileForm = () => {
 
   if (!isLoading && user)
     return (
-      <Form title="Profile" className="w-11/12 sm:w-4/5 md:w-3/5 lg:w-2/5">
+      <Form title="Profile">
         <div className="flex items-center gap-6 text-slate-500 dark:text-white">
           {user.image ? (
             <Image

@@ -7,7 +7,8 @@ import { trpc } from '../../../utils/trpc'
 import { signOut, useSession } from 'next-auth/react'
 import PageLoading from '../PageLoading'
 import { useAtom } from 'jotai'
-import { userSchoolAtom } from '../../../atoms'
+import { alertAtom, userSchoolAtom } from '../../../atoms'
+import Sidebar from './Sidebar'
 
 interface Props {
   children: ReactNode
@@ -16,6 +17,7 @@ interface Props {
 const AppLayout: FC<Props> = ({ children }) => {
   const { data: session } = useSession()
   const [userSchool, setUserSchool] = useAtom(userSchoolAtom)
+  const [alert, setAlert] = useAtom(alertAtom)
 
   const { data: user, isFetching } = trpc.user.me.useQuery(undefined, {
     retry: false,
@@ -38,8 +40,41 @@ const AppLayout: FC<Props> = ({ children }) => {
       document.documentElement.classList.remove('dark')
     }
   }, [])
+
+  useEffect(() => {
+    if (alert) {
+      setTimeout(() => {
+        setAlert(null)
+      }, 5000)
+    }
+  }, [alert])
+
+  function getAlertColor(type: string) {
+    switch (type) {
+      case 'success':
+        return 'bg-green-100 text-green-800'
+      case 'error':
+        return 'bg-red-100 text-red-800'
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'info':
+        return 'bg-blue-100 text-blue-800'
+    }
+  }
+
   return (
-    <div className="relative h-full w-full overflow-auto bg-white dark:bg-zinc-800">
+    <div className="relative flex h-screen w-full flex-col bg-white dark:bg-zinc-800">
+      {alert && (
+        <div className="fixed top-14 z-50 flex w-screen animate-pop-in justify-center">
+          <span
+            className={`rounded-md py-0.5 px-2 text-sm ${getAlertColor(
+              alert.type
+            )}`}
+          >
+            {alert.message}
+          </span>
+        </div>
+      )}
       <NavHeader>
         {isFetching ? (
           <div className="skeleton-loading-text mr-2 w-24 bg-slate-500" />
@@ -67,9 +102,15 @@ const AppLayout: FC<Props> = ({ children }) => {
           <UserMenu />
         </div>
       </NavHeader>
-      <div className="relative h-full w-full">
-        <PageLoading />
-        {children}
+      <div className="relative z-10 flex min-h-0 w-full grow">
+        <Sidebar />
+        <section
+          id="page-section"
+          className="w-full flex-auto grow overflow-auto"
+        >
+          <PageLoading />
+          {children}
+        </section>
       </div>
     </div>
   )

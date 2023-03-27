@@ -19,7 +19,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       !publicPaths.includes(router.pathname)
     ) {
       setUserSchool(null)
-      setToRoute(router.pathname)
+      setToRoute(router.asPath)
       router.replace('/auth/signin')
     }
   }, [session])

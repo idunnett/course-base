@@ -3,13 +3,14 @@ import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
 import {
-  ChangeEvent,
   Dispatch,
   FC,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from 'react'
+import { HiChevronDown } from 'react-icons/hi'
 import getTermName from '../../../../utils/termUtils'
 import type { DegreeTableColumns, UserDegreeCourseUpdateInput } from '../types'
 
@@ -19,19 +20,32 @@ interface Props {
   setData: Dispatch<SetStateAction<(number | DegreeTableColumns)[]>>
 }
 
+const TERMS = [Term.F, Term.W, Term.S]
+
 const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
   const { data: session } = useSession()
   const [term, setTerm] = useState(info.getValue())
+  const [open, setOpen] = useState(false)
+  const selectButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    document.addEventListener('click', handleClick)
+    return () => {
+      document.removeEventListener('click', handleClick)
+    }
+  }, [])
+
+  const handleClick = (e: MouseEvent) => {
+    if (selectButtonRef.current?.contains(e.target as HTMLElement)) return
+    setOpen(false)
+  }
 
   useEffect(() => {
     const val = info.getValue()
     if (val) setTerm(val)
   }, [info])
 
-  function handleGradeUpdate(
-    e: ChangeEvent<HTMLSelectElement>,
-    newTerm: Term | undefined
-  ) {
+  function handleTermUpdate(newTerm: Term | undefined) {
     if (typeof info.row.original === 'number') return
     else if (!session?.user?.degreeId) return alert('No degree ID found')
     const courseInfoId: string | undefined =
@@ -51,13 +65,9 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
             courseRow.partialCourseId === courseInfoId ||
             courseRow.subjectRequirementId === courseInfoId)
       )
-      if (typeof courseRow !== 'number' && courseRow) {
-        courseRow.term = newTerm
-      }
+      if (typeof courseRow !== 'number' && courseRow) courseRow.term = newTerm
       return updatedData
     })
-    e.currentTarget.blur()
-    console.log(newTerm)
     updateData({
       degreeId: session.user.degreeId,
       courseInfoId,
@@ -65,26 +75,74 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
     })
   }
 
+  function getTermColor(term: Term | undefined) {
+    let color = 'bg-gray-50'
+    if (term === Term.F) color = 'bg-orange-300'
+    if (term === Term.W) color = 'bg-blue-200'
+    if (term === Term.S) color = 'bg-yellow-300'
+    return color
+  }
+
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
-    return <span>{term ? getTermName(term) : ''}</span>
+    return (
+      <div className="w-24">
+        <span
+          className={`block w-min rounded-md bg-opacity-75 px-2 text-base ${getTermColor(
+            term
+          )}`}
+        >
+          {term ? getTermName(term) : ''}
+        </span>
+      </div>
+    )
   return (
-    <select
-      id="term-select"
-      className="h-full w-min rounded-lg bg-white pr-1 text-lg text-black outline-none transition-all duration-200 ease-linear placeholder:text-gray-400 dark:bg-zinc-600 dark:text-white
-      "
-      value={term}
-      onChange={(e) => {
-        const newTerm = e.target.value as Term
-        setTerm(newTerm)
-        handleGradeUpdate(e, newTerm)
-      }}
-      required
-    >
-      <option value={undefined}></option>
-      <option value={Term.F}>Fall</option>
-      <option value={Term.W}>Winter</option>
-      <option value={Term.S}>Summer</option>
-    </select>
+    <div className="relative h-full w-24">
+      <button
+        ref={selectButtonRef}
+        className={`flex h-6 items-center bg-opacity-75 ${
+          term ? 'w-min justify-between' : 'w-full justify-end'
+        } gap-1 rounded-md px-2 text-base ${getTermColor(term)}`}
+        onClick={() => setOpen(!open)}
+      >
+        {term ? getTermName(term) : ''}
+        <HiChevronDown
+          className={
+            'h-4 w-4 min-w-max text-inherit transition-transform duration-100 ease-linear ' +
+            (open ? 'rotate-180' : 'rotate-0')
+          }
+        />
+      </button>
+      {open && (
+        <div
+          className={
+            'absolute top-full left-0 z-50 mt-1.5 flex w-full origin-top flex-col items-start overflow-hidden rounded-lg border border-gray-50 bg-white shadow-lg transition-all duration-75 ease-linear dark:border-neutral-700 dark:bg-zinc-800 ' +
+            (open ? 'scale-100' : 'scale-0')
+          }
+        >
+          {TERMS.map(
+            (t) =>
+              t !== term && (
+                <button
+                  key={t}
+                  className={`link flex w-full justify-start py-0.5 px-0 text-base`}
+                  onClick={() => {
+                    setTerm(t)
+                    handleTermUpdate(t)
+                  }}
+                >
+                  <span
+                    className={`mx-1 w-min rounded-md bg-opacity-75 px-2 ${getTermColor(
+                      t
+                    )}`}
+                  >
+                    {getTermName(t)}
+                  </span>
+                </button>
+              )
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 export default TermColumn

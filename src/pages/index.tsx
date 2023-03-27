@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   if (session.status === 'loading') return <LoadingOrError />
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 ">
+    <div className="-mt-12 flex h-screen w-full flex-col items-center justify-center gap-12 px-4">
       <h1 className="text-5xl font-extrabold tracking-tight text-slate-400 dark:text-white sm:text-[5rem]">
         Grade
         <span className="text-slate-500 dark:text-slate-400">Base</span>

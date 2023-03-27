@@ -14,12 +14,14 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: MouseEventHandler
   className?: string
   showSchool?: boolean
+  showTerm?: boolean
 }
 
 const FullCourseButton: FC<Props> = ({
   course,
   className,
   showSchool = true,
+  showTerm = true,
   ...props
 }) => {
   return (
@@ -30,7 +32,9 @@ const FullCourseButton: FC<Props> = ({
     >
       <div className="flex w-full items-center justify-between gap-1 whitespace-nowrap">
         <div className="flex items-center">
-          <h2 className="flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white">
+          <h2
+            className={`flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white`}
+          >
             <MdInsertChart
               style={{
                 color: course.info.color,
@@ -42,9 +46,11 @@ const FullCourseButton: FC<Props> = ({
             : {course.info.name}
           </p>
         </div>
-        <span className="whitespace-nowrap text-base font-normal text-slate-500 dark:text-neutral-300">
-          {getTermName(course.term)} {course.year}
-        </span>
+        {showTerm && (
+          <span className="whitespace-nowrap text-base font-normal text-slate-500 dark:text-neutral-300">
+            {getTermName(course.term)} {course.year}
+          </span>
+        )}
       </div>
 
       <div className="flex w-full justify-between">

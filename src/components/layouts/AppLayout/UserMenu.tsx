@@ -66,6 +66,13 @@ const UserMenu = () => {
         >
           Profile
         </Link>
+        <Link
+          href="/pricing"
+          onClick={() => setOpen(false)}
+          className="link text-slate-500 dark:text-neutral-200 dark:hover:bg-zinc-700 dark:hover:bg-opacity-50"
+        >
+          Upgrade
+        </Link>
         <button
           onClick={() => {
             localStorage.clear()

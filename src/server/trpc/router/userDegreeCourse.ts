@@ -1,7 +1,6 @@
 import { Term } from '@prisma/client'
 import { z } from 'zod'
 import { getTotalCurrentGrade } from '../../../utils/diagramUtils'
-import getTermName, { getTerm } from '../../../utils/termUtils'
 import { router, protectedProcedure } from '../trpc'
 
 export const userDegreeCourseRouter = router({
@@ -146,5 +145,24 @@ export const userDegreeCourseRouter = router({
             courseId,
           },
         })
+    }),
+  unlinkCourse: protectedProcedure
+    .input(
+      z.object({
+        degreeId: z.string(),
+        courseInfoId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { degreeId, courseInfoId } = input
+      return await ctx.prisma.userDegreeCourses.delete({
+        where: {
+          userId_courseInfoId_degreeId: {
+            userId: ctx.session.user.id,
+            courseInfoId,
+            degreeId,
+          },
+        },
+      })
     }),
 })

@@ -12,7 +12,7 @@ const NotFound = () => {
       </div>
       <Link
         href="/"
-        className="primary-btn group whitespace-nowrap py-2 px-3 text-xl"
+        className="secondary-btn group whitespace-nowrap py-2 px-3 text-xl"
       >
         <span className="flex items-center">
           <IoIosArrowBack className="h-6 w-6 group-hover:animate-bounce-left" />

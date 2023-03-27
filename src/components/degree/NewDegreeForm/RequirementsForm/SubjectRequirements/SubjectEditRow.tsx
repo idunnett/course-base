@@ -38,7 +38,7 @@ const SubjectEditRow: FC<Props> = ({
       orHigher: true,
       subject: [],
       credits: '3',
-      year: '',
+      year: '1',
     })
 
   useEffect(() => {

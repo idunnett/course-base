@@ -6,23 +6,22 @@ const PageLoading = () => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    const handleStart = (url: string) =>
-      url !== router.asPath && setLoading(true)
-    const handleComplete = (url: string) =>
-      url === router.asPath && setLoading(false)
-
     router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleComplete)
-    router.events.on('routeChangeError', handleComplete)
+    router.events.on('routeChangeComplete', (url) => handleComplete(url))
+    router.events.on('routeChangeError', (url) => handleComplete(url))
     return () => {
       router.events.off('routeChangeStart', handleStart)
       router.events.off('routeChangeComplete', handleComplete)
       router.events.off('routeChangeError', handleComplete)
     }
-  })
+  }, [router.events, router.asPath])
+
+  const handleStart = (url: string) => url !== router.asPath && setLoading(true)
+  const handleComplete = (url: string) =>
+    url === router.asPath && setLoading(false)
 
   return loading ? (
-    <div className="absolute z-40 flex h-full w-full items-center justify-center bg-white dark:bg-zinc-800">
+    <div className="z-40 -mt-12 flex h-screen w-full items-center justify-center bg-white dark:bg-zinc-800">
       <RiLoader5Line className="animate-spin dark:text-white" />
     </div>
   ) : null

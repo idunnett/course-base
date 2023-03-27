@@ -7,34 +7,36 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { RiCheckFill } from 'react-icons/ri'
-import LoadingOrError from '../../components/common/LoadingOrError'
+import { RiTimeLine } from 'react-icons/ri'
+import { AiOutlineBarChart } from 'react-icons/ai'
+import _ from 'lodash'
+import { useSetAtom } from 'jotai'
 import { trpc } from '../../utils/trpc'
-import { RiExternalLinkLine, RiLink, RiTimeLine } from 'react-icons/ri'
+import { alertAtom } from '../../atoms'
+import LoadingOrError from '../../components/common/LoadingOrError'
 import Members from '../../components/common/Members'
 import SchoolTag from '../../components/school/SchoolTag'
-import { AiOutlineBarChart } from 'react-icons/ai'
-import DegreeCourseLinkModal from '../../components/degree/MyDegreeTable/DegreeCourseLinkModal'
-import Link from 'next/link'
-import _ from 'lodash'
 import CompletedColumn from '../../components/degree/MyDegreeTable/columns/CompletedColumn'
 import GradeColumn from '../../components/degree/MyDegreeTable/columns/GradeColumn'
 import type { DegreeTableColumns } from '../../components/degree/MyDegreeTable/types'
-import getTermName from '../../utils/termUtils'
 import TermColumn from '../../components/degree/MyDegreeTable/columns/TermColumn'
 import YearColumn from '../../components/degree/MyDegreeTable/columns/YearColumn'
+import LinkColumn from '../../components/degree/MyDegreeTable/columns/LinkColumn'
 
 const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
 const Degree: FC = () => {
   const { data: session } = useSession()
+  const setAlert = useSetAtom(alertAtom)
   const [data, setData] = useState<(DegreeTableColumns | number)[]>([])
-  const [courseInfoIdToLinkTo, setCourseInfoIdToLinkTo] = useState<
-    string | null
-  >(null)
 
   const { mutate: updateUserDegreeCourse } =
     trpc.userDegreeCourse.update.useMutation({
       onSuccess: () => {
+        setAlert({
+          message: 'Successfully updated degree course',
+          type: 'success',
+        })
         refetchMyUserDegreeCourses()
       },
     })
@@ -185,32 +187,14 @@ const Degree: FC = () => {
       }),
       columnHelper.accessor('link', {
         header: 'Link',
-        cell: (info) => {
-          const row = info.row.original
-          if (typeof row !== 'number') {
-            const { courseInfoId, linkedCourseId } = row
-            if (courseInfoId) {
-              if (linkedCourseId)
-                return (
-                  <Link
-                    href={`/my/courses/${linkedCourseId}`}
-                    className="pointer-cursor flex w-full items-center justify-center"
-                  >
-                    <RiExternalLinkLine />
-                  </Link>
-                )
-              else
-                return (
-                  <button
-                    onClick={() => setCourseInfoIdToLinkTo(courseInfoId)}
-                    className="pointer-cursor flex w-full items-center justify-center"
-                  >
-                    <RiLink />
-                  </button>
-                )
-            }
-          }
-        },
+        cell: (info) => (
+          <LinkColumn
+            info={info}
+            setData={setData}
+            degreeId={degree?.id as string}
+            refetchMyUserDegreeCourses={refetchMyUserDegreeCourses}
+          />
+        ),
       }),
       columnHelper.accessor('term', {
         header: 'Term',
@@ -264,7 +248,7 @@ const Degree: FC = () => {
 
   if (!isLoading && degree)
     return (
-      <div className="p-4 pt-16">
+      <div className="p-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold text-slate-600 dark:text-neutral-100">
             {degree.name}
@@ -364,21 +348,10 @@ const Degree: FC = () => {
             </tfoot>
           </table>
         </div>
-        {courseInfoIdToLinkTo && (
-          <DegreeCourseLinkModal
-            degreeId={degree.id}
-            courseInfoIdToLinkTo={courseInfoIdToLinkTo}
-            setCourseInfoIdToLinkTo={setCourseInfoIdToLinkTo}
-          />
-        )}
       </div>
     )
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <LoadingOrError error={error?.message} />
-    </div>
-  )
+  return <LoadingOrError error={error?.message} />
 }
 
 export default Degree

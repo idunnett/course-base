@@ -30,7 +30,7 @@ const SchoolSearch = () => {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-evenly">
+    <div className="-mt-16 flex h-screen w-full items-center justify-evenly">
       <Form
         title="Find your school"
         handleSubmit={handleSubmit}

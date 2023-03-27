@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion'
 import Backdrop from './Backdrop'
-import type { FC, ReactNode } from 'react'
+import { FC, ReactNode, useEffect } from 'react'
 import styles from './Modal.module.css'
 
 interface Props {
   children: ReactNode
   title?: ReactNode
   handleClose: () => void
+  parentRef?: React.RefObject<HTMLDivElement>
 }
 
 const dropIn = {
@@ -30,7 +31,15 @@ const dropIn = {
   },
 }
 
-const Modal: FC<Props> = ({ children, title, handleClose }) => {
+const Modal: FC<Props> = ({ children, title, handleClose, parentRef }) => {
+  useEffect(() => {
+    const pageSection = document.getElementById('page-section')
+    if (pageSection) pageSection.style.overflow = 'hidden'
+    return () => {
+      if (pageSection) pageSection.style.overflow = 'auto'
+    }
+  }, [])
+
   return (
     <Backdrop onClick={handleClose}>
       <div className="h-full w-2/3 overflow-auto pb-12 scrollbar-hide">
