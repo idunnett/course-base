@@ -7,9 +7,7 @@ import { MdInsertChart } from 'react-icons/md'
 import Link from 'next/link'
 import { RiDashboardFill, RiDashboardLine } from 'react-icons/ri'
 
-interface Props {}
-
-const Sidebar: React.FC<Props> = () => {
+const Sidebar: React.FC = () => {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [overflowHidden, setOverflowHidden] = useState(false)
