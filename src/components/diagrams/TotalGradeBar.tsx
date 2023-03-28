@@ -13,7 +13,10 @@ interface Props {
 }
 
 const TotalGradeBar: FC<Props> = ({ course, tasks }) => {
-  const grade = useMemo(() => getTotalCurrentGrade(course, tasks), [tasks])
+  const grade = useMemo(
+    () => getTotalCurrentGrade(course, tasks),
+    [course, tasks]
+  )
   return (
     <div className="relative mt-1 rounded-md bg-gray-400 bg-opacity-20 p-[1px] text-sm text-white">
       <motion.div

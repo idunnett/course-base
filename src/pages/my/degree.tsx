@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react'
-import { FC, useMemo, useState } from 'react'
+import type { FC } from 'react'
+import { useMemo, useState } from 'react'
 import {
   createColumnHelper,
   flexRender,
@@ -117,7 +118,7 @@ const Degree: FC = () => {
     },
   })
 
-  const { data: myUserDegreeCourses, refetch: refetchMyUserDegreeCourses } =
+  const { refetch: refetchMyUserDegreeCourses } =
     trpc.userDegreeCourse.getMy.useQuery(degree?.id as string, {
       enabled: !!degree?.id && data.length > 0,
       refetchOnWindowFocus: false,
@@ -237,7 +238,7 @@ const Degree: FC = () => {
         ),
       }),
     ],
-    [session?.user, myUserDegreeCourses]
+    [degree?.id, refetchMyUserDegreeCourses, updateUserDegreeCourse]
   )
 
   const table = useReactTable({

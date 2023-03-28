@@ -31,6 +31,7 @@ function isJsonString(str: string) {
 }
 
 function isInstanceOfCourseInfoTemplate(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   object: any
 ): object is CourseInfoTemplate {
   return (
@@ -56,7 +57,6 @@ export const gptRouter = router({
         const prompt = `Extract the course info from the following syllabus in JSON format. Example: ${JSON.stringify(
           courseInfoTemplate
         )}\nSyllabus:\n\n${input}\n\nCourse Info:\n`
-        console.log(prompt)
         const { data } = await axios.post(
           'https://api.openai.com/v1/completions',
           {
@@ -88,6 +88,7 @@ export const gptRouter = router({
             message: 'Invalid response format from OpenAI API',
           })
         return courseInfo
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (error.response) console.error(error.response.data)
         else console.error(error)

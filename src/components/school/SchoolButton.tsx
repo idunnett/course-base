@@ -1,4 +1,3 @@
-import type { School } from '@prisma/client'
 import type { ButtonHTMLAttributes, FC } from 'react'
 import Members from '../common/Members'
 import SchoolTag from './SchoolTag'

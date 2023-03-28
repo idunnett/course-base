@@ -22,7 +22,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
 
     if (min === 100) return 0
     return min
-  }, [tasks])
+  }, [course.id, tasks])
   const max = useMemo(() => {
     let max = 0
     tasks
@@ -32,7 +32,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
       })
     if (max === 0) return 100
     return max
-  }, [tasks])
+  }, [course.id, tasks])
   const segments = useMemo(() => {
     const segmentDict: any = {}
     course.segments.forEach((segment) => {
@@ -40,7 +40,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
       segmentDict[id] = rest
     })
     return segmentDict
-  }, [tasks])
+  }, [course.segments])
   const scatterTasks = useMemo(() => {
     const scatterTasks = tasks
       .filter((t) => t.courseId === course.id)
@@ -56,7 +56,7 @@ const ScatterChart: FC<Props> = ({ course, tasks }) => {
         }
       })
     return scatterTasks
-  }, [tasks, min, max])
+  }, [tasks, course.id, min, max])
 
   return (
     <div className="flex h-full w-full">

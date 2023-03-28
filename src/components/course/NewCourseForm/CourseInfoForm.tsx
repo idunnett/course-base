@@ -32,7 +32,7 @@ const CourseInfoForm: FC<Props> = ({
     if (degreeYear !== undefined) return
     const firstNumIndex = code.search(/[0-9]/)
     if (firstNumIndex !== -1) updateFields({ degreeYear: code[firstNumIndex] })
-  }, [code, degreeYear])
+  }, [code, degreeYear, updateFields])
 
   return (
     <Widget className="relative overflow-hidden p-4">

@@ -60,7 +60,7 @@ const TaskModal: FC<Props> = ({
       })
       setGradeDivisionPreview(null)
     }
-  }, [debouncedGradeInput])
+  }, [debouncedGradeInput, gradeDivisionPreview, modalData, setModalData])
 
   useEffect(() => {
     if (modalData?.task.grade.toString().includes('/')) {

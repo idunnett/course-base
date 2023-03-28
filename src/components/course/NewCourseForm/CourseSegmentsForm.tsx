@@ -27,7 +27,7 @@ const CourseSegmentsForm: FC<Props> = ({ segments, updateFields }) => {
     setSegmentName(segments[selectedSegment]?.name || '')
     setSegmentValue(segments[selectedSegment]?.value.toString() || '')
     setSegmentQuantity(segments[selectedSegment]?.quantity.toString() || '')
-  }, [selectedSegment])
+  }, [segments, selectedSegment])
 
   const handleAddSegment = () => {
     if (!!!segmentValue || !!!segmentName || !!!segmentQuantity) return

@@ -1,16 +1,8 @@
 import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
-import {
-  Dispatch,
-  FC,
-  FocusEvent,
-  KeyboardEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DegreeTableColumns, UserDegreeCourseUpdateInput } from '../types'
 
 interface Props {
@@ -34,13 +26,13 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
     else setGrade('')
   }, [info])
 
-  useEffect(() => {
-    if (pressedEnter) handleGradeUpdate()
-  }, [pressedEnter])
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleGradeUpdate() {
     if (info.getValue() === parseFloat(grade)) {
-      if (pressedEnter) inputRef.current?.blur()
+      if (pressedEnter) {
+        setPressedEnter(false)
+        inputRef.current?.blur()
+      }
       return
     }
     if (typeof info.row.original === 'number') return
@@ -75,6 +67,10 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
       grade: grade === '' ? null : parseFloat(grade),
     })
   }
+
+  useEffect(() => {
+    if (pressedEnter) handleGradeUpdate()
+  }, [handleGradeUpdate, pressedEnter])
 
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
     return <span className="w-14">{grade}</span>

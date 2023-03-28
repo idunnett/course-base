@@ -6,12 +6,7 @@ import type {
   SubjectRequirement,
 } from '@prisma/client'
 import type { subjects } from '../constants'
-import type {
-  CourseInfoWithSchool,
-  CreatePartialCourse,
-  FullCourse,
-  FullCourseInfo,
-} from './course'
+import type { CourseInfoWithSchool, CreatePartialCourse } from './course'
 
 type FullDegree = Degree & {
   _count: {

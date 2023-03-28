@@ -1,16 +1,8 @@
 import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
-import {
-  Dispatch,
-  FC,
-  FocusEvent,
-  KeyboardEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DegreeTableColumns, UserDegreeCourseUpdateInput } from '../types'
 
 interface Props {
@@ -28,10 +20,7 @@ const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
 
   useEffect(() => setYear(info.getValue()?.toString() ?? ''), [info])
 
-  useEffect(() => {
-    if (pressedEnter) handleYearUpdate()
-  }, [pressedEnter])
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleYearUpdate() {
     if (info.getValue() === parseInt(year)) {
       if (pressedEnter) inputRef.current?.blur()
@@ -71,6 +60,10 @@ const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
       year: year ? parseInt(year) : null,
     })
   }
+
+  useEffect(() => {
+    if (pressedEnter) handleYearUpdate()
+  }, [handleYearUpdate, pressedEnter])
 
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
     return <span className="w-14">{year}</span>

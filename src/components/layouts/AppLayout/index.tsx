@@ -47,7 +47,7 @@ const AppLayout: FC<Props> = ({ children }) => {
         setAlert(null)
       }, 5000)
     }
-  }, [alert])
+  }, [alert, setAlert])
 
   function getAlertColor(type: string) {
     switch (type) {

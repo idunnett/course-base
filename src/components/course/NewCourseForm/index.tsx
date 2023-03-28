@@ -1,4 +1,5 @@
-import { type FormEvent, useEffect, useState, ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import CourseSegmentsForm from './CourseSegmentsForm'
 import CourseInfoForm from './CourseInfoForm'
 import { useMultiStepForm } from '../../../hooks/useMultiStepForm'
@@ -7,7 +8,8 @@ import SegmentPieChart from '../../diagrams/SegmentPieChart'
 import { useRouter } from 'next/router'
 import type { CreateCourseFormData } from '../../../types'
 import { trpc } from '../../../utils/trpc'
-import { School, Term } from '@prisma/client'
+import type { School } from '@prisma/client'
+import { Term } from '@prisma/client'
 import CourseDetailsForm from './CourseDetailsForm'
 import type {
   TextItem,
@@ -35,7 +37,6 @@ const INITIAL_DATA: CreateCourseFormData = {
 const NewCourseForm = ({ school }: { school: School | null }) => {
   const router = useRouter()
   const [data, setData] = useState(INITIAL_DATA)
-  const [syllabus, setSyllabus] = useState<File | null>(null)
 
   useEffect(() => {
     updateFields({ school })
@@ -134,7 +135,6 @@ const NewCourseForm = ({ school }: { school: School | null }) => {
   async function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
     const fileInput = e.target.files?.[0]
     if (!fileInput) return
-    setSyllabus(fileInput)
 
     const file = await readFile(fileInput)
     if (!file) return

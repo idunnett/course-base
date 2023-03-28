@@ -1,4 +1,5 @@
-import { FC, useEffect } from 'react'
+import type { FC } from 'react'
+import { useEffect } from 'react'
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import InputSegment from '../common/InputSegment'
 
@@ -8,10 +9,6 @@ interface Props {
 }
 
 const PlacesAutoComplete: FC<Props> = ({ address, onAddressSelect }) => {
-  useEffect(() => {
-    address && setValue(address, false)
-  }, [address])
-
   const {
     ready,
     value,
@@ -23,6 +20,10 @@ const PlacesAutoComplete: FC<Props> = ({ address, onAddressSelect }) => {
     debounce: 300,
     cache: 86400,
   })
+
+  useEffect(() => {
+    address && setValue(address, false)
+  }, [address, setValue])
 
   const renderSuggestions = () => {
     return data.map((suggestion) => {

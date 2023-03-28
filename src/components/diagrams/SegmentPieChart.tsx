@@ -33,7 +33,7 @@ const SegmentPieChart: FC<Props> = ({
       paddingAngle={18}
       rounded
       label={({ dataEntry }) => dataEntry.value + '% - ' + dataEntry.title}
-      labelStyle={(_index) => ({
+      labelStyle={() => ({
         fontSize: '0.325em',
         fill: 'currentcolor',
       })}

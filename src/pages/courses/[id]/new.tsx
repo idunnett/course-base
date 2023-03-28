@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { FormEvent, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useState } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import { RiBuilding2Line } from 'react-icons/ri'
 import LoadingOrError from '../../../components/common/LoadingOrError'

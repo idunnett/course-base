@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import Backdrop from './Backdrop'
-import { FC, ReactNode, useEffect } from 'react'
+import type { FC, ReactNode } from 'react'
+import { useEffect } from 'react'
 import styles from './Modal.module.css'
 
 interface Props {
@@ -31,7 +32,7 @@ const dropIn = {
   },
 }
 
-const Modal: FC<Props> = ({ children, title, handleClose, parentRef }) => {
+const Modal: FC<Props> = ({ children, title, handleClose }) => {
   useEffect(() => {
     const pageSection = document.getElementById('page-section')
     if (pageSection) pageSection.style.overflow = 'hidden'

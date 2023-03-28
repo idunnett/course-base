@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useMemo } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
   CircleF,
   GoogleMap,
@@ -48,7 +49,7 @@ const CourseLocation: React.FC<Props> = ({
 
   useEffect(() => {
     setIsLoaded && setIsLoaded(isLoaded)
-  }, [isLoaded])
+  }, [isLoaded, setIsLoaded])
 
   if (!isLoaded) {
     return <LoadingOrError error={loadError?.message} />

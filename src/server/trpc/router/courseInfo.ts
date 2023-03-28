@@ -79,7 +79,7 @@ export const courseInfoRouter = router({
       let nextCursor: typeof cursor | undefined = undefined
       if (courseInfos.length > limit) {
         const nextItem = courseInfos.pop()
-        nextCursor = nextItem!.id
+        nextCursor = nextItem?.id
       }
       const items = courseInfos.map((courseInfo) => ({
         ...courseInfo,

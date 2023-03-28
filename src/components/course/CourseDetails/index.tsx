@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState, type FC } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, type FC } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import { RiBuilding2Line, RiTimeLine, RiUser6Line } from 'react-icons/ri'
@@ -55,7 +56,7 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
       if (activeCourseDetails) setActiveCourseId(activeCourseDetails?.id)
       else setActiveCourseId(null)
     }
-  }, [activeCourseDetails])
+  }, [activeCourseDetails, setActiveCourseId])
 
   return (
     <div className="relative flex w-full flex-col items-center gap-12">

@@ -27,7 +27,7 @@ const GradesBarGraph: FC<Props> = ({ course, tasks }) => {
 
   useEffect(() => {
     setBarHeightScaleFactor(getBarHeightScaleFactor(course.segments))
-  }, [])
+  }, [course.segments])
 
   return (
     <div className="relative flex h-full w-full items-end gap-[2px]">

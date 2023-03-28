@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { useState, useEffect } from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
 import Widget from '../../components/common/Widget'
@@ -42,7 +41,7 @@ const CourseSearch = () => {
         queryKey: ['courseInfo.variations', '1'],
       })
     }
-  }, [selectedCourse])
+  }, [isFetching, refetch, selectedCourse])
 
   return (
     <div className="relative flex h-full w-full gap-1 px-4 pt-12">

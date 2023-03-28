@@ -56,7 +56,7 @@ const SchoolAutoComplete: FC<Props> = ({
       autoCompleteRef.current?.focus()
       onShowInputField && onShowInputField()
     }
-  }, [showAddSchoolInput])
+  }, [onShowInputField, showAddSchoolInput])
 
   if (!showAddSchoolInput && school)
     return (

@@ -2,14 +2,8 @@ import { Term } from '@prisma/client'
 import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import type { Dispatch, FC, SetStateAction } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { HiChevronDown } from 'react-icons/hi'
 import getTermName from '../../../../utils/termUtils'
 import type { DegreeTableColumns, UserDegreeCourseUpdateInput } from '../types'

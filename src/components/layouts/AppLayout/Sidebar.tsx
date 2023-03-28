@@ -12,11 +12,10 @@ const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(false)
   const [overflowHidden, setOverflowHidden] = useState(false)
 
-  const { data: courses, error: coursesError } =
-    trpc.course.getMyCourses.useQuery(undefined, {
-      retry: false,
-      refetchOnWindowFocus: false,
-    })
+  const { data: courses } = trpc.course.getMyCourses.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
   useEffect(() => {
     setOverflowHidden(true)

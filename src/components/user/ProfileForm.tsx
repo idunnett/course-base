@@ -49,11 +49,11 @@ const ProfileForm = () => {
       if (darkMode) document.documentElement.classList.add('dark')
       else document.documentElement.classList.remove('dark')
     }
-  }, [darkMode])
+  }, [darkMode, user])
 
   useEffect(() => {
     if (user) setDarkMode(user?.darkMode ?? false)
-  }, [user])
+  }, [setDarkMode, user])
 
   const toggleDarkMode = () => {
     changeDarkMode(!darkMode)

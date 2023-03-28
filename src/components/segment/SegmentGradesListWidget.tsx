@@ -5,12 +5,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from 'react-beautiful-dnd'
+import type { DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Widget from '../common/Widget'
 import type { Segment, Task } from '@prisma/client'
 import type { ModalData } from '../task/TaskModal'

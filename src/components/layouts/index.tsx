@@ -22,7 +22,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       setToRoute(router.asPath)
       router.replace('/auth/signin')
     }
-  }, [session])
+  }, [router, session, setToRoute, setUserSchool])
 
   if (session.status === 'unauthenticated')
     return <BasicLayout>{children}</BasicLayout>

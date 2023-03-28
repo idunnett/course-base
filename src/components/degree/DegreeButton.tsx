@@ -1,4 +1,4 @@
-import type { Degree, School } from '@prisma/client'
+import type { Degree } from '@prisma/client'
 import type { ButtonHTMLAttributes, FC } from 'react'
 import { RiBuilding2Line, RiTimeLine } from 'react-icons/ri'
 import Members from '../common/Members'

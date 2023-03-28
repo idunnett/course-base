@@ -49,7 +49,7 @@ const SubjectEditRow: FC<Props> = ({
         setShowSubjectInput(false)
       }
     }
-  }, [])
+  }, [showAddSubject, subjectRequirements])
 
   return (
     <div className="relative flex items-center justify-between gap-2">
