@@ -4,10 +4,9 @@ import Link from 'next/link'
 import InputSegment from '../../common/InputSegment'
 import Form from '../../common/Form'
 import useDebounce from '../../../hooks/useDebounce'
-import { useRouter } from 'next/router'
-import { trpc } from '../../../utils/trpc'
 import type { FullCourseInfo } from '../../../types'
 import { RiLoader5Line } from 'react-icons/ri'
+import { trpc } from '../../../utils/trpc'
 
 interface Props {
   selectedCourse: FullCourseInfo | null
@@ -15,16 +14,8 @@ interface Props {
 }
 
 const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
-  const router = useRouter()
-
   const [courseInput, setCourseInput] = useState('')
   const debouncedCourseInput = useDebounce(courseInput, 300)
-
-  const { mutate: joinCourse, isLoading: isJoining } =
-    trpc.course.join.useMutation({
-      onSuccess: (data) => router.push(`/courses/${data.id}`),
-      onError: (error) => alert(error.message),
-    })
 
   const { data: courses, isFetching } = trpc.courseInfo.search.useQuery(
     {
@@ -41,18 +32,13 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
     }
   )
 
-  const handleSubmit = () => {
-    if (!selectedCourse) return alert('Please select a course to join')
-    joinCourse(selectedCourse.id)
-  }
-
   // const handleLoadMore = () => {
   //   searchCourses(token, courseInput, lastKey, courses)
   // }
 
   return (
     <div className="relative row-span-2 h-full w-full">
-      <Form title="Find your course">
+      <Form title="Find your course" className="!gap-1">
         <InputSegment
           value={courseInput}
           onChange={(e) => setCourseInput(e.target.value)}
@@ -64,26 +50,13 @@ const CourseSearchForm: FC<Props> = ({ selectedCourse, setSelectedCourse }) => {
           {isFetching && (
             <RiLoader5Line className="ml-2 animate-spin dark:text-neutral-200" />
           )}
-          <div className="flex w-full justify-end gap-2">
+          <div className="flex w-full justify-end">
             <Link
               href="/courses/new"
               className="secondary-btn dark:text-neutral-200 dark:hover:bg-zinc-700"
             >
               Create new
             </Link>
-            {selectedCourse && (
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="primary-btn"
-              >
-                {isJoining ? (
-                  <RiLoader5Line className="animate-spin" />
-                ) : (
-                  'Join'
-                )}
-              </button>
-            )}
           </div>
         </div>
         <CourseList

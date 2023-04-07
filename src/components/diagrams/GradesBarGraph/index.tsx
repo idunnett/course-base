@@ -1,7 +1,8 @@
 import { type FC, useEffect, useState } from 'react'
-import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
+import type { Segment, Task } from '@prisma/client'
 import SegmentBar from './SegmentBar'
 import { getCourseSegmentTasks } from '../../../utils/diagramUtils'
+import type { FullCourse } from '../../../types'
 
 // determines how much to scale the height of each bar in the chart
 // so that the largest segment takes up the full height
@@ -15,10 +16,7 @@ function getBarHeightScaleFactor(segments: Segment[]) {
 }
 
 interface Props {
-  course: Course & {
-    info: CourseInfo
-    segments: Segment[]
-  }
+  course: FullCourse
   tasks: Task[]
 }
 

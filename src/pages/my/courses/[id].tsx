@@ -8,10 +8,10 @@ import ScatterChart from '../../../components/diagrams/ScatterChart'
 import { useRouter } from 'next/router'
 import { trpc } from '../../../utils/trpc'
 import LoadingOrError from '../../../components/common/LoadingOrError'
+import MyCourseOptionsMenu from '../../../components/course/MyCourseOptionsMenu'
 
 const Course = () => {
   const { id } = useRouter().query
-
   const [modalData, setModalData] = useState<ModalData | null>(null)
 
   const {
@@ -39,14 +39,17 @@ const Course = () => {
   if (!isFetchingCourse && !isLoadingTasks && course && tasks)
     return (
       <div className="relative h-full py-4 xl:px-48">
-        <h1
-          className="px-4 text-4xl font-bold"
-          style={{
-            color: course.info.color,
-          }}
-        >
-          {course.info.name}
-        </h1>
+        <div className="flex w-full items-center justify-between pr-4">
+          <h1
+            className="px-4 text-4xl font-bold"
+            style={{
+              color: course.info.color,
+            }}
+          >
+            {course.info.name}
+          </h1>
+          <MyCourseOptionsMenu courseId={course.id} />
+        </div>
         <div className="relative my-2 mx-4 flex flex-col gap-4 text-black dark:text-white">
           <TotalGradeBar course={course} tasks={tasks} />
           <div className="flex flex-wrap gap-2">

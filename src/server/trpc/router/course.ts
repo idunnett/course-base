@@ -2,6 +2,7 @@ import { Term } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc'
+import _ from 'lodash'
 
 export const courseRouter = router({
   myCourseIds: protectedProcedure.query(async ({ ctx }) => {
@@ -15,32 +16,125 @@ export const courseRouter = router({
     })
     return usersOnCourses.map(({ courseId }) => courseId)
   }),
-  getMyCourses: protectedProcedure.query(async ({ ctx }) => {
+  getMyCourseTerms: protectedProcedure.query(async ({ ctx }) => {
     const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
       where: {
         userId: ctx.session.user.id,
       },
       select: {
         course: {
-          include: {
-            info: {
-              include: {
-                school: true,
+          select: {
+            year: true,
+            term: true,
+          },
+        },
+      },
+      orderBy: {
+        course: {
+          year: 'desc',
+        },
+      },
+    })
+
+    const termsByYear = Object.values(
+      usersOnCourses.reduce((acc, { course }) => {
+        if (!acc[course.year]) acc[course.year] = []
+        const t = acc[course.year]
+        if (t) t.push(course)
+        return acc
+      }, {} as Record<number, { year: number; term: Term }[]>)
+    )
+    const orderedTermsByYear = termsByYear.sort((a, b) => {
+      if (!b[0] || !a[0]) return 0
+      return b[0].year - a[0].year
+    })
+    // order each term by F, W, S
+    for (const terms of orderedTermsByYear) {
+      terms.sort((a, b) => {
+        if (a.term === b.term) return 0
+        if (a.term === Term.F) return -1
+        if (b.term === Term.F) return 1
+        if (a.term === Term.W) return -1
+        if (b.term === Term.W) return 1
+        return 0
+      })
+    }
+    const terms: { year: number; term: Term }[] = []
+    for (const year of orderedTermsByYear)
+      for (const term of year) if (!_.find(terms, term)) terms.push(term)
+
+    return terms
+  }),
+  getMyCourses: protectedProcedure
+    .input(
+      z
+        .object({
+          year: z.number().int(),
+          term: z.nativeEnum(Term),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          course: {
+            year: input?.year,
+            term: input?.term,
+          },
+        },
+        select: {
+          course: {
+            include: {
+              info: {
+                include: {
+                  school: true,
+                },
               },
-            },
-            segments: true,
-            _count: {
-              select: {
-                users: true,
+              segments: true,
+              _count: {
+                select: {
+                  users: true,
+                },
               },
             },
           },
         },
-      },
-    })
-    const courses = usersOnCourses.map(({ course }) => course)
-    return courses
-  }),
+      })
+      const courses = usersOnCourses.map(({ course }) => course)
+      return courses
+    }),
+  getMyCoursesByInfoId: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const usersOnCourses = await ctx.prisma.usersOnCourses.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          course: {
+            infoId: input,
+          },
+        },
+        select: {
+          course: {
+            include: {
+              info: {
+                include: {
+                  school: true,
+                },
+              },
+              segments: true,
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
+            },
+          },
+        },
+      })
+      const courses = usersOnCourses.map(({ course }) => course)
+      return courses
+    }),
   getMyCourse: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -51,8 +145,17 @@ export const courseRouter = router({
         select: {
           course: {
             include: {
-              info: true,
+              info: {
+                include: {
+                  school: true,
+                },
+              },
               segments: true,
+              _count: {
+                select: {
+                  users: true,
+                },
+              },
             },
           },
         },
@@ -72,12 +175,26 @@ export const courseRouter = router({
           code: 'CONFLICT',
           message: 'You are already in this course',
         })
-      return await ctx.prisma.course.update({
-        where: { id: input },
+      const { courseId } = await ctx.prisma.usersOnCourses.create({
         data: {
-          users: {
-            connect: {
-              userId_courseId: { userId: ctx.session.user.id, courseId: input },
+          userId: ctx.session.user.id,
+          courseId: input,
+        },
+      })
+      return await ctx.prisma.course.findUnique({
+        where: {
+          id: courseId,
+        },
+        include: {
+          info: {
+            include: {
+              school: true,
+            },
+          },
+          segments: true,
+          _count: {
+            select: {
+              users: true,
             },
           },
         },
@@ -258,5 +375,27 @@ export const courseRouter = router({
           location: true,
         },
       })
+    }),
+  leave: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.usersOnCourses.delete({
+        where: {
+          userId_courseId: { userId: ctx.session.user.id, courseId: input },
+        },
+      })
+      await ctx.prisma.task.deleteMany({
+        where: {
+          courseId: input,
+          userId: ctx.session.user.id,
+        },
+      })
+      await ctx.prisma.userDegreeCourses.deleteMany({
+        where: {
+          courseId: input,
+          userId: ctx.session.user.id,
+        },
+      })
+      return input
     }),
 })

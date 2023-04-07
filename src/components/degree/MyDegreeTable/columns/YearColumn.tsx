@@ -14,18 +14,14 @@ interface Props {
 const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
   const { data: session } = useSession()
   const [year, setYear] = useState(info.getValue()?.toString() ?? '')
-  const [pressedEnter, setPressedEnter] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => setYear(info.getValue()?.toString() ?? ''), [info])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleYearUpdate() {
-    if (info.getValue() === parseInt(year)) {
-      if (pressedEnter) inputRef.current?.blur()
-      return
-    }
+    if (info.getValue() === parseInt(year)) return
+
     if (typeof info.row.original === 'number') return
     else if (!session?.user?.degreeId) return alert('No degree ID found')
     const courseInfoId: string | undefined =
@@ -50,20 +46,12 @@ const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
       }
       return updatedData
     })
-    if (pressedEnter) {
-      inputRef.current?.blur()
-      setPressedEnter(false)
-    }
     updateData({
       degreeId: session.user.degreeId,
       courseInfoId,
       year: year ? parseInt(year) : null,
     })
   }
-
-  useEffect(() => {
-    if (pressedEnter) handleYearUpdate()
-  }, [handleYearUpdate, pressedEnter])
 
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
     return <span className="w-14">{year}</span>
@@ -78,12 +66,8 @@ const YearColumn: FC<Props> = ({ info, setData, updateData }) => {
         if (e.target.value && num === 0) return
         setYear(e.target.value.replace(/\D/g, ''))
       }}
-      onBlur={() => {
-        if (!pressedEnter) handleYearUpdate()
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') setPressedEnter(true)
-      }}
+      onBlur={handleYearUpdate}
+      onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
       className="w-14"
     />
   )

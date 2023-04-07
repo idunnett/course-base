@@ -2,13 +2,11 @@ import { type FC, useMemo } from 'react'
 import CountUp from 'react-countup'
 import { motion } from 'framer-motion'
 import { getTotalCurrentGrade } from '../../utils/diagramUtils'
-import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
+import type { Task } from '@prisma/client'
+import type { FullCourse } from '../../types'
 
 interface Props {
-  course: Course & {
-    info: CourseInfo
-    segments: Segment[]
-  }
+  course: FullCourse
   tasks: Task[]
 }
 

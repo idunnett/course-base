@@ -18,7 +18,7 @@ const TERMS = [Term.F, Term.W, Term.S]
 
 const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
   const { data: session } = useSession()
-  const [term, setTerm] = useState(info.getValue())
+  const [term, setTerm] = useState<Term | null>(info.getValue() ?? null)
   const [open, setOpen] = useState(false)
   const selectButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -39,7 +39,7 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
     if (val) setTerm(val)
   }, [info])
 
-  function handleTermUpdate(newTerm: Term | undefined) {
+  function handleTermUpdate(newTerm: Term | null) {
     if (typeof info.row.original === 'number') return
     else if (!session?.user?.degreeId) return alert('No degree ID found')
     const courseInfoId: string | undefined =
@@ -59,7 +59,8 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
             courseRow.partialCourseId === courseInfoId ||
             courseRow.subjectRequirementId === courseInfoId)
       )
-      if (typeof courseRow !== 'number' && courseRow) courseRow.term = newTerm
+      if (typeof courseRow !== 'number' && courseRow)
+        courseRow.term = newTerm ?? undefined
       return updatedData
     })
     updateData({
@@ -69,8 +70,8 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
     })
   }
 
-  function getTermColor(term: Term | undefined) {
-    let color = 'bg-gray-50'
+  function getTermColor(term: Term | null) {
+    let color = 'bg-gray-100'
     if (term === Term.F) color = 'bg-orange-300'
     if (term === Term.W) color = 'bg-blue-200'
     if (term === Term.S) color = 'bg-yellow-300'
@@ -113,6 +114,21 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
             (open ? 'scale-100' : 'scale-0')
           }
         >
+          {term && (
+            <button
+              className={`link group flex w-full justify-start py-0.5 px-0 text-base`}
+              onClick={() => {
+                setTerm(null)
+                handleTermUpdate(null)
+              }}
+            >
+              <div
+                className={`mx-1 flex h-6 w-full rounded-md bg-opacity-75 px-2 group-hover:bg-gray-200 ${getTermColor(
+                  null
+                )}`}
+              ></div>
+            </button>
+          )}
           {TERMS.map(
             (t) =>
               t !== term && (
@@ -125,7 +141,7 @@ const TermColumn: FC<Props> = ({ info, setData, updateData }) => {
                   }}
                 >
                   <span
-                    className={`mx-1 w-min rounded-md bg-opacity-75 px-2 ${getTermColor(
+                    className={`mx-1 h-6 w-min rounded-md bg-opacity-75 px-2 ${getTermColor(
                       t
                     )}`}
                   >

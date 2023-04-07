@@ -14,7 +14,7 @@ type FullCourseWithVariations = {
 }
 
 type FullCourse = Course & {
-  segments?: Segment[]
+  segments: Segment[]
   location?: CourseLocation | null
   info: Omit<CourseInfo, 'schoolId'> & {
     school: School

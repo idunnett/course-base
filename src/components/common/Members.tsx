@@ -10,7 +10,7 @@ interface Props {
 const Members: FC<Props> = ({ number, className, showText = true }) => {
   return (
     <p
-      className={`flex items-center gap-1 whitespace-nowrap text-slate-500 dark:text-neutral-400 ${className}`}
+      className={`flex items-center gap-1 whitespace-nowrap text-xs text-slate-500 dark:text-neutral-400 ${className}`}
     >
       <RiGroupLine />
       {showText ? (

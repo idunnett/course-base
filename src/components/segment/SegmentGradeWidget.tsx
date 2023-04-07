@@ -55,7 +55,7 @@ const SegmentGradeWidget: FC<Props> = ({
 
   return (
     <button onClick={openModal}>
-      <Widget className="group flex h-24 w-24 min-w-fit cursor-pointer flex-col items-start justify-between">
+      <Widget className="group flex h-24 min-w-[6rem] cursor-pointer flex-col items-start justify-between">
         <h2
           className="truncate text-lg font-semibold"
           style={{

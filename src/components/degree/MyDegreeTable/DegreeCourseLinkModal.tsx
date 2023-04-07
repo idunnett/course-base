@@ -1,14 +1,14 @@
 import { useSetAtom } from 'jotai'
-import _ from 'lodash'
 import { useSession } from 'next-auth/react'
 import type { Dispatch, SetStateAction } from 'react'
 import { alertAtom } from '../../../atoms'
 import type { FullCourse } from '../../../types'
 import { trpc } from '../../../utils/trpc'
-import LoadingOrError from '../../common/LoadingOrError'
 import Modal from '../../common/Modal'
 import FullCourseButton from '../../course/FullCourseButton'
 import type { DegreeTableColumns } from './types'
+import _ from 'lodash'
+import { RiLoader5Line } from 'react-icons/ri'
 
 interface Props {
   degreeId: string
@@ -28,15 +28,12 @@ const DegreeCourseLinkModal: React.FC<Props> = ({
   const { data: session } = useSession()
   const setAlert = useSetAtom(alertAtom)
 
-  const {
-    data: myCourses,
-    isLoading,
-    error,
-  } = trpc.course.getMyCourses.useQuery(undefined, {
-    enabled: !!session?.user?.id,
-    refetchOnWindowFocus: false,
-    retry: false,
-  })
+  const { data: myLinkableCourses, isLoading } =
+    trpc.course.getMyCoursesByInfoId.useQuery(courseInfoIdToLinkTo, {
+      enabled: !!session?.user?.id,
+      refetchOnWindowFocus: false,
+      retry: false,
+    })
 
   const { mutate: linkCourseToDegree } =
     trpc.userDegreeCourse.linkCourse.useMutation({
@@ -79,21 +76,31 @@ const DegreeCourseLinkModal: React.FC<Props> = ({
       title="Link My Course"
       handleClose={() => setCourseInfoIdToLinkTo(null)}
     >
-      {myCourses && !isLoading ? (
-        <div className="flex flex-col gap-4">
-          {myCourses?.map(
-            (course) =>
-              course.infoId === courseInfoIdToLinkTo && (
-                <FullCourseButton
-                  key={course.id}
-                  onClick={() => handleLinkCourse(course)}
-                  course={course}
-                />
-              )
-          )}
-        </div>
+      {myLinkableCourses && !isLoading ? (
+        myLinkableCourses.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            {myLinkableCourses?.map(
+              (course) =>
+                course.infoId === courseInfoIdToLinkTo && (
+                  <FullCourseButton
+                    key={course.id}
+                    onClick={() => handleLinkCourse(course)}
+                    course={course}
+                  />
+                )
+            )}
+          </div>
+        ) : (
+          <div className="flex h-32 w-full items-center justify-center">
+            <p className="text-center dark:text-white">
+              You have no courses that match this requirement.
+            </p>
+          </div>
+        )
       ) : (
-        <LoadingOrError error={error?.message} />
+        <div className="flex h-32 w-full items-center justify-center">
+          <RiLoader5Line className="animate-spin dark:text-white" />
+        </div>
       )}
     </Modal>
   )

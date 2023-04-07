@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-table'
 import { RiCheckFill } from 'react-icons/ri'
 import { RiTimeLine } from 'react-icons/ri'
-import { AiOutlineBarChart } from 'react-icons/ai'
 import _ from 'lodash'
 import { useSetAtom } from 'jotai'
 import { trpc } from '../../utils/trpc'
@@ -23,10 +22,11 @@ import type { DegreeTableColumns } from '../../components/degree/MyDegreeTable/t
 import TermColumn from '../../components/degree/MyDegreeTable/columns/TermColumn'
 import YearColumn from '../../components/degree/MyDegreeTable/columns/YearColumn'
 import LinkColumn from '../../components/degree/MyDegreeTable/columns/LinkColumn'
+import CodeColumn from '../../components/degree/MyDegreeTable/columns/CodeColumn'
 
 const columnHelper = createColumnHelper<DegreeTableColumns | number>()
 
-const Degree: FC = () => {
+const MyDegree: FC = () => {
   const { data: session } = useSession()
   const setAlert = useSetAtom(alertAtom)
   const [data, setData] = useState<(DegreeTableColumns | number)[]>([])
@@ -154,22 +154,7 @@ const Degree: FC = () => {
     () => [
       columnHelper.accessor('courseCode', {
         header: 'Course',
-        cell: (info) => {
-          if (typeof info.row.original === 'number') return
-          return info.row.original.color ? (
-            <div className="flex items-center gap-1">
-              <AiOutlineBarChart
-                className="h-4 w-4"
-                style={{
-                  color: info.row.original.color,
-                }}
-              />
-              {info.getValue()}
-            </div>
-          ) : (
-            info.getValue()
-          )
-        },
+        cell: (info) => <CodeColumn info={info} />,
       }),
       columnHelper.accessor('name', {
         header: 'Name',
@@ -307,7 +292,16 @@ const Degree: FC = () => {
                     </td>
                   </tr>
                 ) : (
-                  <tr key={row.id} className="border border-gray-100">
+                  <tr
+                    key={row.id}
+                    className="border border-gray-100"
+                    style={{
+                      backgroundColor:
+                        row.original.linkedCourseId &&
+                        row.original.color &&
+                        row.original.color + '1A',
+                    }}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
@@ -355,4 +349,4 @@ const Degree: FC = () => {
   return <LoadingOrError error={error?.message} />
 }
 
-export default Degree
+export default MyDegree

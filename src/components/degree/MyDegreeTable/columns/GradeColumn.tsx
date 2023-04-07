@@ -2,7 +2,7 @@ import type { CellContext } from '@tanstack/react-table'
 import _ from 'lodash'
 import { useSession } from 'next-auth/react'
 import type { Dispatch, FC, SetStateAction } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { DegreeTableColumns, UserDegreeCourseUpdateInput } from '../types'
 
 interface Props {
@@ -16,25 +16,20 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
   const [grade, setGrade] = useState(
     info.getValue()?.toString() ? info.getValue()?.toString() + '%' : ''
   )
-  const [pressedEnter, setPressedEnter] = useState(false)
-
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [isFocused, setIsFocused] = useState(false)
 
   useEffect(() => {
     const val = info.getValue()
-    if (val) setGrade(val.toString() + '%')
-    else setGrade('')
-  }, [info])
+    if (val) {
+      let valString = val.toString()
+      if (!isFocused) valString += '%'
+      setGrade(valString)
+    } else setGrade('')
+  }, [info, isFocused])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleGradeUpdate() {
-    if (info.getValue() === parseFloat(grade)) {
-      if (pressedEnter) {
-        setPressedEnter(false)
-        inputRef.current?.blur()
-      }
-      return
-    }
+    if (info.getValue() === parseFloat(grade)) return
+
     if (typeof info.row.original === 'number') return
     else if (!session?.user?.degreeId) return alert('No degree ID found')
     const courseInfoId: string | undefined =
@@ -59,8 +54,6 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
       }
       return updatedData
     })
-    inputRef.current?.blur()
-    setPressedEnter(false)
     updateData({
       degreeId: session.user.degreeId,
       courseInfoId,
@@ -68,16 +61,11 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
     })
   }
 
-  useEffect(() => {
-    if (pressedEnter) handleGradeUpdate()
-  }, [handleGradeUpdate, pressedEnter])
-
   if (typeof info.row.original !== 'number' && info.row.original.linkedCourseId)
     return <span className="w-14">{grade}</span>
   return (
     <input
       type="text"
-      ref={inputRef}
       value={grade ?? ''}
       onChange={(e) => {
         const input = e.target.value
@@ -88,16 +76,16 @@ const GradeColumn: FC<Props> = ({ info, setData, updateData }) => {
         if (input.match(regex) || input.match(divisionRegex)) setGrade(input)
       }}
       onFocus={() => {
+        setIsFocused(true)
         setGrade(grade.replace('%', ''))
       }}
       onBlur={() => {
-        if (!pressedEnter) handleGradeUpdate()
+        setIsFocused(false)
+        handleGradeUpdate()
         if (grade === '') return
-        setGrade(grade + '%')
+        if (!grade.includes('%')) setGrade(grade + '%')
       }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') setPressedEnter(true)
-      }}
+      onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
       className="w-14"
     />
   )

@@ -24,7 +24,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     }
   }, [router, session, setToRoute, setUserSchool])
 
-  if (session.status === 'unauthenticated')
+  if (session.status === 'unauthenticated' || session.status === 'loading')
     return <BasicLayout>{children}</BasicLayout>
 
   return <AppLayout>{children}</AppLayout>

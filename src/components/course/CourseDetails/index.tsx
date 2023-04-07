@@ -12,6 +12,7 @@ import Members from '../../common/Members'
 import { trpc } from '../../../utils/trpc'
 import LoadingOrError from '../../common/LoadingOrError'
 import CourseLocation from './CourseLocation'
+import type { Segment } from '@prisma/client'
 
 interface Props {
   courseInfo: FullCourseInfo
@@ -20,8 +21,12 @@ interface Props {
 
 const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null)
-  const [activeCourseDetails, setActiveCourseDetails] =
-    useState<FullCourse | null>()
+  const [activeCourseDetails, setActiveCourseDetails] = useState<
+    | (Omit<FullCourse, 'segments'> & {
+        segments?: Segment[]
+      })
+    | null
+  >()
 
   const { isFetching, error } = trpc.course.details.useQuery(
     activeCourseDetails?.id as string,
@@ -105,9 +110,9 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
                 <RiUser6Line className="translate-y-[1px]" />{' '}
                 {activeCourseDetails.instructor}
               </p>
-              <div className="flex gap-4 text-slate-500 dark:text-neutral-400">
+              <div className="flex gap-4 text-xs text-slate-500 dark:text-neutral-400">
                 <Members number={activeCourseDetails._count.users} />
-                <div className="flex items-center gap-0.5">
+                <div className="flex items-center gap-0.5 whitespace-nowrap">
                   <RiTimeLine />
                   <span>{courseInfo.credits} credits</span>
                 </div>
@@ -170,10 +175,7 @@ const CourseDetails: FC<Props> = ({ courseInfo, setActiveCourseId }) => {
                       <span className="font-medium">
                         {getTermName(course.term)} {course.year}
                       </span>
-                      <Members
-                        number={course._count.users}
-                        className="font-medium"
-                      />
+                      <Members number={course._count.users} />
                     </div>
                     <span className="flex items-center gap-1 px-0 text-sm font-normal">
                       <RiUser6Line className="translate-y-[1px]" />{' '}

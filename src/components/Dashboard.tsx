@@ -1,18 +1,26 @@
+import { useAtom, useAtomValue } from 'jotai'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { RiBuilding2Line } from 'react-icons/ri'
 import { SlNotebook } from 'react-icons/sl'
+import { activeTermAtom, myCoursesAtom } from '../atoms'
 import { trpc } from '../utils/trpc'
 import LoadingOrError from './common/LoadingOrError'
 import CourseWidget from './course/CourseWidget'
 
 const Dashboard = () => {
   const session = useSession()
-  const { data: courses, error: coursesError } =
-    trpc.course.getMyCourses.useQuery(undefined, {
+  const activeTerm = useAtomValue(activeTermAtom)
+  const [myCourses, setMyCourses] = useAtom(myCoursesAtom)
+  const { error: coursesError } = trpc.course.getMyCourses.useQuery(
+    activeTerm,
+    {
+      queryKey: ['course.getMyCourses', activeTerm],
       retry: false,
       refetchOnWindowFocus: false,
-    })
+      onSuccess: (data) => setMyCourses(data),
+    }
+  )
 
   const { data: tasks, error: tasksError } = trpc.task.getMyTasks.useQuery(
     undefined,
@@ -22,11 +30,11 @@ const Dashboard = () => {
     }
   )
 
-  if (courses && tasks) {
-    if (courses.length)
+  if (myCourses && tasks) {
+    if (myCourses.length)
       return (
         <div className="relative flex w-full flex-wrap p-2">
-          {courses.map((course) => (
+          {myCourses.map((course) => (
             <CourseWidget key={course.id} course={course} tasks={tasks} />
           ))}
         </div>

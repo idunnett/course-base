@@ -27,13 +27,13 @@ const FullCourseButton: FC<Props> = ({
   return (
     <button
       type="button"
-      className={`list-button flex-col justify-between ${className}`}
+      className={`list-button flex-col justify-between hover:min-w-max hover:shadow-sm ${className}`}
       {...props}
     >
       <div className="flex w-full items-center justify-between gap-1 whitespace-nowrap">
-        <div className="flex items-center">
+        <div className="flex items-center overflow-hidden">
           <h2
-            className={`flex items-center gap-1 text-base font-semibold text-slate-700 dark:text-white`}
+            className={`flex min-w-max items-center gap-1 text-base font-semibold text-slate-700 dark:text-white`}
           >
             <MdInsertChart
               style={{
@@ -42,7 +42,7 @@ const FullCourseButton: FC<Props> = ({
             />
             {course.info.code}
           </h2>
-          <p className="text-md text-base font-medium text-slate-500 dark:text-neutral-400">
+          <p className="text-md block truncate text-base font-medium text-slate-500 dark:text-neutral-400">
             : {course.info.name}
           </p>
         </div>

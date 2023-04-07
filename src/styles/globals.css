@@ -20,11 +20,11 @@
   }
 
   .list-button {
-    @apply flex w-full items-center whitespace-nowrap rounded-md bg-slate-500 bg-opacity-5 p-2 text-lg font-medium text-slate-500 shadow-sm outline-none hover:bg-opacity-10 hover:text-slate-600 dark:text-neutral-200 dark:hover:text-white;
+    @apply flex w-full items-center whitespace-nowrap rounded-md bg-[#F7F8F9] p-2 text-lg font-medium text-slate-500 shadow-sm outline-none hover:bg-[#F0F1F3] hover:text-slate-600 dark:text-neutral-200 dark:hover:text-white;
   }
 
   .list-button.active {
-    @apply bg-opacity-20 text-slate-600 hover:bg-opacity-20 dark:text-white;
+    @apply bg-gray-200 text-slate-600 hover:bg-gray-200 dark:text-white;
   }
 
   .link {

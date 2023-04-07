@@ -63,7 +63,7 @@ const LinkColumn: React.FC<Props> = ({
     })
   }
 
-  if (typeof row === 'number') return null
+  if (typeof row === 'number' || !row.courseInfoId) return null
   return (
     <>
       {row.courseInfoId && row.linkedCourseId ? (

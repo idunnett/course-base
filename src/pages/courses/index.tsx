@@ -1,5 +1,9 @@
+import { useSetAtom } from 'jotai'
+import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { RiLoader5Line } from 'react-icons/ri'
 import { PieChart } from 'react-minimal-pie-chart'
+import { alertAtom, myCoursesAtom } from '../../atoms'
 import Widget from '../../components/common/Widget'
 import CourseDetails from '../../components/course/CourseDetails'
 import CourseSearchForm from '../../components/course/CourseSearchForm'
@@ -7,6 +11,9 @@ import type { FullCourseInfo } from '../../types'
 import { trpc } from '../../utils/trpc'
 
 const CourseSearch = () => {
+  const router = useRouter()
+  const setAlert = useSetAtom(alertAtom)
+  const setMyCourses = useSetAtom(myCoursesAtom)
   const [selectedCourse, setSelectedCourse] = useState<FullCourseInfo | null>(
     null
   )
@@ -35,6 +42,31 @@ const CourseSearch = () => {
     refetchOnWindowFocus: false,
   })
 
+  const { mutate: joinCourse, isLoading: isJoining } =
+    trpc.course.join.useMutation({
+      onSuccess: (data) => {
+        if (!data)
+          return setAlert({
+            type: 'error',
+            message: 'Failed to join course',
+          })
+        setAlert({
+          type: 'success',
+          message: 'Successfully joined course',
+        })
+        setMyCourses((prev) => {
+          if (!prev) return [data]
+          return [...prev, data]
+        })
+        router.push(`/my/courses/${data.id}`)
+      },
+      onError: () =>
+        setAlert({
+          type: 'error',
+          message: 'Failed to join course',
+        }),
+    })
+
   useEffect(() => {
     if (selectedCourse && !selectedCourse.courses.length && !isFetching) {
       refetch({
@@ -44,7 +76,7 @@ const CourseSearch = () => {
   }, [isFetching, refetch, selectedCourse])
 
   return (
-    <div className="relative flex h-full w-full gap-1 px-4 pt-12">
+    <div className="relative -mt-12 flex h-screen w-full gap-1 px-4 pt-12">
       <div className="w-7/12">
         <CourseSearchForm
           selectedCourse={selectedCourse}
@@ -68,8 +100,13 @@ const CourseSearch = () => {
                       myCourseIds.includes(activeCourseId) &&
                       'cursor-not-allowed opacity-50 hover:bg-slate-500'
                     }`}
+                    onClick={() => joinCourse(activeCourseId)}
                   >
-                    Join
+                    {isJoining ? (
+                      <RiLoader5Line className="animate-spin dark:text-white" />
+                    ) : (
+                      'Join'
+                    )}
                   </button>
                   {myCourseIds.includes(activeCourseId) && (
                     <p className="text-sm text-slate-400 dark:text-white">

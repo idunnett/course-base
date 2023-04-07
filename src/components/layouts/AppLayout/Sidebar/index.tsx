@@ -1,43 +1,71 @@
 import { useRouter } from 'next/router'
-import { trpc } from '../../../utils/trpc'
+import { trpc } from '../../../../utils/trpc'
 import { TbArrowBarLeft, TbArrowBarRight } from 'react-icons/tb'
-import FullCourseButton from '../../course/FullCourseButton'
-import { useEffect, useState } from 'react'
+import FullCourseButton from '../../../course/FullCourseButton'
+import { useEffect, useRef, useState } from 'react'
 import { MdInsertChart } from 'react-icons/md'
 import Link from 'next/link'
 import { RiDashboardFill, RiDashboardLine } from 'react-icons/ri'
+import { useAtom } from 'jotai'
+import { activeTermAtom, myCoursesAtom } from '../../../../atoms'
+import { useSession } from 'next-auth/react'
+import TermSelect from './TermSelect'
 
 const Sidebar: React.FC = () => {
+  const { data: session } = useSession()
+  const [myCourses, setMyCourses] = useAtom(myCoursesAtom)
+  const [activeTerm, setActiveTerm] = useAtom(activeTermAtom)
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const [overflowHidden, setOverflowHidden] = useState(false)
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
-  const { data: courses } = trpc.course.getMyCourses.useQuery(undefined, {
+  trpc.course.getMyCourses.useQuery(activeTerm, {
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: !!session?.user?.id && !!activeTerm,
+    onSuccess: (data) => setMyCourses(data),
   })
 
-  useEffect(() => {
-    setOverflowHidden(true)
-    const handler = setTimeout(() => setOverflowHidden(false), 300)
-    return () => {
-      clearTimeout(handler)
+  const { data: myCourseTerms } = trpc.course.getMyCourseTerms.useQuery(
+    undefined,
+    {
+      retry: false,
+      refetchOnWindowFocus: false,
+      enabled: !!session?.user?.id,
+      onSuccess: (data) => {
+        const firstTerm = data[0]
+        if (!firstTerm) return
+        setActiveTerm(firstTerm)
+      },
     }
+  )
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const sidebar = sidebarRef.current
+      if (sidebar) sidebar.style.overflow = 'visible'
+    }, 200)
+    return () => clearTimeout(handler)
   }, [open])
 
   return (
     <div
+      ref={sidebarRef}
       className={`relative z-50 flex flex-none grow-0 flex-col gap-2 px-1 py-4 shadow-even-lg transition-all duration-200 ease-in-out ${
-        overflowHidden && 'overflow-hidden'
-      } ${open ? 'w-96' : 'w-10'}`}
+        open ? 'w-72' : 'w-10'
+      }`}
     >
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          const sidebar = sidebarRef.current
+          if (sidebar) sidebar.style.overflow = 'hidden'
+          setOpen(!open)
+        }}
         className="group relative mr-2 flex items-center gap-2 self-end text-slate-400 hover:text-slate-500"
       >
         {open ? (
           <>
-            <span className="text-sm text-slate-400 opacity-0 transition-all duration-100 group-hover:opacity-100">
+            <span className="whitespace-nowrap text-sm text-slate-400 opacity-0 transition-all duration-100 group-hover:opacity-100">
               Toggle Sidebar
             </span>
             <TbArrowBarLeft className="h-5 w-5" />
@@ -79,9 +107,15 @@ const Sidebar: React.FC = () => {
       >
         My Courses
       </h4>
+      <TermSelect
+        sidebarOpen={open}
+        myCourseTerms={myCourseTerms}
+        activeTerm={activeTerm}
+        setActiveTerm={setActiveTerm}
+      />
       <div className="flex flex-col gap-1">
-        {courses &&
-          courses.map((course) =>
+        {myCourses &&
+          myCourses.map((course) =>
             open ? (
               <FullCourseButton
                 course={course}

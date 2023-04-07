@@ -3,15 +3,16 @@ import Link from 'next/link'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import { AiOutlineBarChart, AiOutlineDotChart } from 'react-icons/ai'
 import Widget from '../common/Widget'
-import type { Course, CourseInfo, Segment, Task } from '@prisma/client'
+import type { Task } from '@prisma/client'
 import GradesBarGraph from '../diagrams/GradesBarGraph'
 import TotalGradeBar from '../diagrams/TotalGradeBar'
 import ScatterChart from '../diagrams/ScatterChart'
 import { RiDonutChartLine } from 'react-icons/ri'
 import SegmentPieChart from '../diagrams/SegmentPieChart'
+import type { FullCourse } from '../../types'
 
 interface Props {
-  course: Course & { info: CourseInfo; segments: Segment[] }
+  course: FullCourse
   tasks: Task[]
 }
 
